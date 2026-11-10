@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singles Match Ready: Tactical & Fitness Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'beige-bg': '#F7F4EE',
+                        'beige-card': '#FDFBF7',
+                        'beige-muted': '#EFECE6',
+                        'beige-border': '#E2DDD5',
+                        'navy-deep': '#0F1E36',
+                        'navy-slate': '#1E293B',
+                        'navy-muted': '#5A6578',
+                        'sage-primary': '#5B7065',
+                        'sage-dark': '#4E6E58',
+                        'sage-light': '#EBF0EC',
+                        'sage-accent': '#789078',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7F4EE;
+            color: #0F1E36;
+        }
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #EFECE6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #5B7065;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4E6E58;
+        }
+        .ring-chart {
+            transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .court-svg-bg {
+            background: radial-gradient(circle at center, #1E293B 0%, #0F1E36 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-sage-primary selection:text-white">
+
+    <!-- Toast Notification Overlay Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-2"></div>
+
+    <!-- Confirmation Modal Overlay -->
+    <div id="confirm-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-red-100 text-red-700 rounded-xl">
+                    <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 id="confirm-modal-title" class="text-base font-bold text-navy-deep">Confirm Action</h3>
+                    <p id="confirm-modal-msg" class="text-xs text-navy-muted">Are you sure you want to perform this action?</p>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button id="confirm-modal-cancel" class="px-4 py-2 bg-beige-muted hover:bg-beige-border text-navy-deep text-xs font-bold rounded-xl transition-colors">
+                    Cancel
+                </button>
+                <button id="confirm-modal-ok" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-sm">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Matchday Banner & Status Bar -->
+    <div class="bg-navy-deep text-beige-card text-xs sm:text-sm py-2.5 px-4 shadow-sm border-b border-navy-slate">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-2.5 flex-wrap justify-center sm:justify-start">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-sage-accent animate-pulse"></span>
+                <span>Match Target: <strong id="top-matchday-display" class="text-white font-semibold">Sat, Nov 15, 2026</strong></span>
+                <button onclick="openModal('matchday-modal')" class="text-[11px] bg-navy-slate hover:bg-navy-muted/40 text-sage-accent border border-navy-muted/40 px-2 py-0.5 rounded-md font-mono flex items-center gap-1 transition-colors">
+                    <i data-lucide="calendar" class="w-3 h-3"></i>
+                    <span>Edit Target</span>
+                </button>
+                <span class="hidden md:inline text-navy-muted">•</span>
+                <span class="hidden md:inline text-beige-muted/80">NTRP 4.0 Singles Prep</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div id="sync-status-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-sage-primary/20 text-sage-accent border border-sage-primary/30 flex items-center gap-1.5">
+                    <i data-lucide="cloud-off" class="w-3 h-3"></i>
+                    <span id="sync-status-text">Local Only</span>
+                </div>
+                <div id="top-countdown" class="bg-navy-slate px-3 py-1 rounded-lg border border-navy-muted/40 font-mono text-sage-accent font-semibold text-xs">
+                    Calculating...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-beige-card/90 backdrop-blur-md border-b border-beige-border shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand & Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
+                    <div class="w-10 h-10 rounded-xl bg-navy-deep flex items-center justify-center text-beige-card shadow-md shadow-navy-deep/20">
+                        <i data-lucide="trophy" class="w-5 h-5 text-sage-accent"></i>
+                    </div>
+                    <div>
+                        <div class="font-black text-lg sm:text-xl tracking-tight text-navy-deep flex items-center gap-1.5">
+                            SINGLES<span class="text-sage-primary">READY</span>
+                        </div>
+                        <div class="text-[10px] text-navy-muted font-semibold tracking-wider uppercase">Tactical & Fitness Dashboard</div>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Tabs -->
+                <nav class="hidden md:flex items-center gap-1 bg-beige-muted p-1.5 rounded-xl border border-beige-border">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        <span>Dashboard & Evaluator</span>
+                    </button>
+                    <button onclick="switchTab('checklist')" id="nav-checklist" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                        <i data-lucide="check-square" class="w-4 h-4"></i>
+                        <span>Readiness Checklist</span>
+                        <span id="nav-badge-tasks" class="bg-sage-primary text-white text-xs px-2 py-0.5 rounded-full font-mono">0/9</span>
+                    </button>
+                    <button onclick="switchTab('gym')" id="nav-gym" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                        <i data-lucide="dumbbell" class="w-4 h-4"></i>
+                        <span>Gym Workout</span>
+                    </button>
+                    <button onclick="switchTab('match')" id="nav-match" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                        <i data-lucide="activity" class="w-4 h-4"></i>
+                        <span>Match Audit</span>
+                    </button>
+                    <button onclick="switchTab('playbook')" id="nav-playbook" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                        <i data-lucide="book-open" class="w-4 h-4"></i>
+                        <span>Playbook</span>
+                    </button>
+                </nav>
+
+                <!-- Action Controls -->
+                <div class="flex items-center gap-2">
+                    <button onclick="openModal('sync-modal')" title="Data Management & Sync Center" class="bg-beige-muted hover:bg-beige-border text-navy-deep font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl border border-beige-border transition-all flex items-center gap-1.5">
+                        <i data-lucide="refresh-cw" class="w-4 h-4 text-sage-primary"></i>
+                        <span class="hidden sm:inline">Sync & Data</span>
+                    </button>
+                    <button onclick="openModal('quick-log-modal')" class="bg-sage-primary text-white hover:bg-sage-dark font-bold text-xs sm:text-sm px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-md shadow-sage-primary/20">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Quick Log</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Bar -->
+        <div class="md:hidden flex overflow-x-auto border-t border-beige-border px-2 py-1.5 gap-1 scrollbar-none bg-beige-card">
+            <button onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
+                <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+                <span>Dashboard</span>
+            </button>
+            <button onclick="switchTab('checklist')" id="mobile-nav-checklist" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
+                <i data-lucide="check-square" class="w-3.5 h-3.5"></i>
+                <span>Checklist</span>
+            </button>
+            <button onclick="switchTab('gym')" id="mobile-nav-gym" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
+                <i data-lucide="dumbbell" class="w-3.5 h-3.5"></i>
+                <span>Gym</span>
+            </button>
+            <button onclick="switchTab('match')" id="mobile-nav-match" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
+                <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+                <span>Match Log</span>
+            </button>
+            <button onclick="switchTab('playbook')" id="mobile-nav-playbook" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
+                <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                <span>Playbook</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- TAB 1: MAIN SPLIT DASHBOARD + SIDE EVALUATION PANEL -->
+        <section id="tab-dashboard" class="space-y-6">
+            
+            <!-- Split Layout: Left Main Workspace (7 Cols) + Right Session Evaluation Panel (5 Cols) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- LEFT COLUMN: Workspace, Readiness & Stealth Goals (7 Cols) -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- Matchday Target Card -->
+                    <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between pb-3 border-b border-beige-border">
+                            <div class="flex items-center gap-2.5">
+                                <span class="p-2 bg-sage-light text-sage-dark rounded-xl">
+                                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                                </span>
+                                <div>
+                                    <h3 class="text-sm font-bold text-navy-deep">Target Matchday Manager</h3>
+                                    <p class="text-[11px] text-navy-muted">Update or adjust upcoming singles competition date</p>
+                                </div>
+                            </div>
+                            <span id="matchday-card-badge" class="text-xs px-2.5 py-1 rounded-full font-semibold bg-sage-light text-sage-dark border border-sage-primary/20">
+                                Active Schedule
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-beige-muted p-3.5 rounded-xl border border-beige-border space-y-1">
+                                <div class="text-navy-muted font-medium">Scheduled Matchday</div>
+                                <div id="card-matchday-date" class="text-base font-extrabold text-navy-deep">Sat, Nov 15, 2026</div>
+                                <div id="card-matchday-days" class="text-[11px] text-sage-primary font-semibold">Calculating...</div>
+                            </div>
+
+                            <div class="bg-beige-muted p-3.5 rounded-xl border border-beige-border flex flex-col justify-between space-y-2">
+                                <span class="text-navy-muted font-medium">Quick Date Adjust:</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <button onclick="setPresetMatchday('2026-11-15')" class="px-2 py-1 bg-beige-card hover:bg-beige-border text-navy-deep font-mono text-[11px] rounded border border-beige-border transition-colors">Nov 15</button>
+                                    <button onclick="setPresetMatchday('2026-11-22')" class="px-2 py-1 bg-beige-card hover:bg-beige-border text-navy-deep font-mono text-[11px] rounded border border-beige-border transition-colors">Nov 22</button>
+                                    <button onclick="setPresetMatchday('2026-12-05')" class="px-2 py-1 bg-beige-card hover:bg-beige-border text-navy-deep font-mono text-[11px] rounded border border-beige-border transition-colors">Dec 05</button>
+                                    <button onclick="setPresetMatchday(null)" class="px-2 py-1 bg-red-100/60 hover:bg-red-100 text-red-700 text-[11px] rounded border border-red-200 transition-colors">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Readiness Ring + Stealth Objective Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-6">
+                        
+                        <!-- SVG Match Readiness Index Ring -->
+                        <div class="sm:col-span-5 bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-1.5 text-navy-deep font-bold text-xs">
+                                    <i data-lucide="shield-check" class="w-4 h-4 text-sage-primary"></i>
+                                    <span>Readiness Index</span>
+                                </div>
+                                <span id="readiness-status-badge" class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-sage-light text-sage-dark border border-sage-primary/20">
+                                    On Track
+                                </span>
+                            </div>
+
+                            <div class="flex items-center justify-center my-2 relative">
+                                <svg class="w-36 h-36 transform -rotate-90">
+                                    <circle cx="72" cy="72" r="56" stroke="currentColor" stroke-width="10" class="text-beige-muted" fill="transparent"/>
+                                    <circle id="readiness-ring" cx="72" cy="72" r="56" stroke="currentColor" stroke-width="10" class="text-sage-primary ring-chart" 
+                                            stroke-dasharray="351.8" stroke-dashoffset="351.8" stroke-linecap="round" fill="transparent"/>
+                                </svg>
+                                <div class="absolute flex flex-col items-center justify-center text-center">
+                                    <span id="readiness-percent" class="text-3xl font-black text-navy-deep tracking-tight">0%</span>
+                                    <span class="text-[10px] text-navy-muted font-medium">Preparedness</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-1 pt-3 border-t border-beige-border text-center">
+                                <div>
+                                    <div id="stat-tasks-done" class="text-sm font-bold text-navy-deep">0/0</div>
+                                    <div class="text-[9px] text-navy-muted uppercase font-semibold">Tasks</div>
+                                </div>
+                                <div>
+                                    <div id="stat-gym-done" class="text-sm font-bold text-sage-primary">0</div>
+                                    <div class="text-[9px] text-navy-muted uppercase font-semibold">Gym</div>
+                                </div>
+                                <div>
+                                    <div id="stat-match-avg" class="text-sm font-bold text-navy-slate">0.0</div>
+                                    <div class="text-[9px] text-navy-muted uppercase font-semibold">Avg Score</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Today's Stealth Micro-Goal Card -->
+                        <div class="sm:col-span-7 bg-navy-deep text-beige-card rounded-2xl p-5 shadow-md flex flex-col justify-between">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-sage-primary/20 text-sage-accent p-1.5 rounded-lg border border-sage-primary/30">
+                                        <i data-lucide="target" class="w-4 h-4"></i>
+                                    </span>
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Stealth Micro-Goal</h3>
+                                </div>
+                                <button onclick="cycleStealthObjective()" class="p-1.5 text-beige-muted hover:text-white hover:bg-navy-slate rounded-lg transition-colors flex items-center gap-1 text-[11px]">
+                                    <i data-lucide="refresh-cw" class="w-3 h-3 text-sage-accent"></i>
+                                    <span>Shuffle</span>
+                                </button>
+                            </div>
+
+                            <div class="bg-navy-slate/80 border border-navy-muted/30 rounded-xl p-3.5 my-1">
+                                <div class="flex items-start gap-3">
+                                    <div class="p-2 bg-navy-deep rounded-lg border border-navy-muted/30 text-sage-accent flex-shrink-0">
+                                        <i id="stealth-icon" data-lucide="crosshair" class="w-5 h-5"></i>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <div id="stealth-title" class="text-sm font-bold text-sage-accent">Hold Baseline Position (&lt;1m line)</div>
+                                        <p id="stealth-desc" class="text-xs text-beige-muted leading-relaxed">
+                                            Refuse to yield ground to moonballers. Take high-bouncing balls on the rise at shoulder height to cut forward sprint distance to drop shots.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-1">
+                                <span class="text-[10px] text-navy-muted">Execute during doubles / group play</span>
+                                <button onclick="markStealthCompleted()" id="btn-stealth-complete" class="px-3 py-1.5 bg-navy-slate hover:bg-navy-muted/30 text-beige-card text-xs font-semibold rounded-lg border border-navy-muted/40 transition-all flex items-center gap-1">
+                                    <i data-lucide="check" class="w-3.5 h-3.5 text-sage-accent"></i>
+                                    <span>Mark Done</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile & Racquet Spec Snapshot -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-beige-card border border-beige-border rounded-2xl p-4 shadow-sm space-y-2">
+                            <div class="flex items-center justify-between pb-2 border-b border-beige-border">
+                                <span class="text-xs font-bold text-navy-deep flex items-center gap-1.5">
+                                    <i data-lucide="user" class="w-3.5 h-3.5 text-sage-primary"></i>
+                                    Player Profile
+                                </span>
+                                <span class="text-[10px] bg-beige-muted text-navy-deep px-2 py-0.5 rounded font-mono">NTRP 4.0</span>
+                            </div>
+                            <div class="text-xs space-y-1 text-navy-slate">
+                                <div><strong>Build:</strong> 29 yrs | 100 kg | 175 cm Athletic</div>
+                                <div><strong>Style:</strong> Counterpuncher / Aggressive Baseliner</div>
+                                <div class="text-navy-muted text-[11px] pt-1">Primary Challenge: Drop-shot sprint fatigue & 2HB long errors.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-beige-card border border-beige-border rounded-2xl p-4 shadow-sm space-y-2">
+                            <div class="flex items-center justify-between pb-2 border-b border-beige-border">
+                                <span class="text-xs font-bold text-navy-deep flex items-center gap-1.5">
+                                    <i data-lucide="crosshair" class="w-3.5 h-3.5 text-sage-primary"></i>
+                                    Racquet Setup
+                                </span>
+                                <span class="text-[10px] bg-sage-light text-sage-dark px-2 py-0.5 rounded font-mono font-semibold">Configured</span>
+                            </div>
+                            <div class="text-xs space-y-1 text-navy-slate">
+                                <div><strong>Frame:</strong> Wilson RF01 Pro</div>
+                                <div><strong>String:</strong> Solinco Tour Bite 17g (Full Poly)</div>
+                                <div><strong>Tension:</strong> 51 lbs</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: SIDEBAR SESSION LOGGING & AI EVALUATION (5 Cols) -->
+                <div class="lg:col-span-5 bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-5">
+                    
+                    <div class="flex items-center justify-between pb-3 border-b border-beige-border">
+                        <div class="flex items-center gap-2">
+                            <span class="p-2 bg-navy-deep text-sage-accent rounded-xl">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            </span>
+                            <div>
+                                <h3 class="text-sm font-extrabold text-navy-deep">Session Evaluation & AI Coach</h3>
+                                <p class="text-[11px] text-navy-muted">Real-time analysis & areas of improvement</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] bg-sage-primary/20 text-sage-dark px-2 py-0.5 rounded font-mono font-bold">Gemini 3</span>
+                    </div>
+
+                    <!-- Quick Session Logger Input Form -->
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-bold text-navy-deep mb-1">Session Type</label>
+                                <select id="eval-type-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                                    <option value="Group Play / Doubles">Group Play / Doubles</option>
+                                    <option value="Singles Practice Match">Singles Practice Match</option>
+                                    <option value="Baseline Hitting Drill">Baseline Hitting Drill</option>
+                                    <option value="Gym Workout Session">Gym Workout Session</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-navy-deep mb-1">Date</label>
+                                <input type="date" id="eval-date-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-navy-deep mb-1">Raw Session Description</label>
+                            <textarea id="eval-session-notes" rows="4" placeholder="Describe rallies, physical fatigue, drop shots encountered, or backhand errors..." 
+                                      class="w-full bg-beige-muted border border-beige-border rounded-xl p-3 text-xs text-navy-deep focus:outline-none focus:border-sage-primary leading-relaxed resize-none"></textarea>
+                        </div>
+
+                        <div class="flex gap-1.5 flex-wrap">
+                            <button onclick="fillPresetPrompt(1)" class="px-2 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-[10px] rounded border border-beige-border">
+                                🎾 Drop Shot Sprint Fatigue
+                            </button>
+                            <button onclick="fillPresetPrompt(2)" class="px-2 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-[10px] rounded border border-beige-border">
+                                🎾 2HB Flying Long Fix
+                            </button>
+                        </div>
+
+                        <button onclick="evaluateSessionWithAI()" id="btn-eval-ai" class="w-full py-2.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center justify-center gap-2">
+                            <i data-lucide="bot" class="w-4 h-4"></i>
+                            <span>Evaluate Session with AI</span>
+                        </button>
+                    </div>
+
+                    <!-- Instant AI Evaluation Output Card -->
+                    <div id="ai-evaluation-output" class="bg-navy-deep text-beige-card border border-navy-slate rounded-xl p-4 shadow-md space-y-3">
+                        <div class="flex items-center justify-between pb-2 border-b border-navy-slate">
+                            <span class="text-xs font-bold text-sage-accent flex items-center gap-1.5">
+                                <i data-lucide="award" class="w-4 h-4"></i>
+                                Instant AI Evaluation Result
+                            </span>
+                            <span id="eval-status-badge" class="text-[10px] bg-navy-slate text-navy-muted px-2 py-0.5 rounded font-mono">Ready</span>
+                        </div>
+                        
+                        <div id="eval-output-body" class="text-xs text-beige-muted space-y-2 min-h-[120px] flex items-center justify-center text-center">
+                            <div class="space-y-1 p-2">
+                                <i data-lucide="file-text" class="w-6 h-6 mx-auto text-navy-muted"></i>
+                                <p>Enter your session notes above and click <strong>"Evaluate Session with AI"</strong>.</p>
+                                <p class="text-[10px] text-navy-muted">Tailored technical diagnosis & areas of improvement will render here.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Evaluations Stream -->
+                    <div class="space-y-3 pt-2">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-extrabold text-navy-deep flex items-center gap-1.5">
+                                <i data-lucide="history" class="w-3.5 h-3.5 text-sage-primary"></i>
+                                Recent Evaluated Sessions Stream
+                            </h4>
+                            <span id="eval-stream-count" class="text-[10px] font-mono text-navy-muted">0 logs</span>
+                        </div>
+
+                        <div id="evaluations-stream-container" class="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
+                            <!-- Dynamic Stream Items -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TAB 2: READINESS CHECKLIST -->
+        <section id="tab-checklist" class="space-y-6 hidden">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-beige-card border border-beige-border p-6 rounded-2xl shadow-sm">
+                <div>
+                    <h2 class="text-xl font-extrabold text-navy-deep flex items-center gap-2">
+                        <i data-lucide="check-square" class="w-6 h-6 text-sage-primary"></i>
+                        Singles Match Readiness Checklist
+                    </h2>
+                    <p class="text-xs sm:text-sm text-navy-muted mt-1">
+                        Comprehensive preparation timeline combining gym deceleration routines, group play stealth micro-goals, and matchday prep.
+                    </p>
+                </div>
+                <button onclick="openModal('add-task-modal')" class="px-4 py-2.5 bg-sage-primary text-white hover:bg-sage-dark font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Add Objective</span>
+                </button>
+            </div>
+
+            <div id="checklist-items-container" class="space-y-3">
+                <!-- Dynamic insertion -->
+            </div>
+        </section>
+
+
+        <!-- TAB 3: GYM WORKOUT -->
+        <section id="tab-gym" class="space-y-6 hidden">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-beige-card border border-beige-border p-6 rounded-2xl shadow-sm">
+                <div>
+                    <h2 class="text-xl font-extrabold text-navy-deep flex items-center gap-2">
+                        <i data-lucide="dumbbell" class="w-6 h-6 text-sage-primary"></i>
+                        Gym Conditioning & Deceleration Protocols
+                    </h2>
+                    <p class="text-xs sm:text-sm text-navy-muted mt-1">
+                        Build leg deceleration strength for drop-shot retrieval and rotator cuff durability for topspin 2nd serves.
+                    </p>
+                </div>
+                <button onclick="openModal('gym-log-modal')" class="px-4 py-2.5 bg-sage-primary text-white hover:bg-sage-dark font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Log Workout</span>
+                </button>
+            </div>
+
+            <!-- Workout Presets Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-3">
+                    <h3 class="text-sm font-bold text-navy-deep flex items-center gap-2 border-b border-beige-border pb-2">
+                        <i data-lucide="activity" class="w-4 h-4 text-sage-primary"></i>
+                        Routine A: Leg Deceleration & Quad Braking
+                    </h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="bg-beige-muted p-3 rounded-xl border border-beige-border flex justify-between items-center">
+                            <div>
+                                <div class="font-bold text-navy-deep">Bulgarian Split Squats (3s eccentric)</div>
+                                <div class="text-[11px] text-navy-muted">Slow lowering phase to train quad braking power</div>
+                            </div>
+                            <span class="font-mono text-sage-primary font-bold">3 × 8 reps</span>
+                        </div>
+                        <div class="bg-beige-muted p-3 rounded-xl border border-beige-border flex justify-between items-center">
+                            <div>
+                                <div class="font-bold text-navy-deep">Romanian Deadlifts (RDLs)</div>
+                                <div class="text-[11px] text-navy-muted">Hamstring & posterior chain recovery</div>
+                            </div>
+                            <span class="font-mono text-sage-primary font-bold">3 × 8 reps</span>
+                        </div>
+                        <div class="bg-beige-muted p-3 rounded-xl border border-beige-border flex justify-between items-center">
+                            <div>
+                                <div class="font-bold text-navy-deep">Sled Pushes / Kettlebell Swings</div>
+                                <div class="text-[11px] text-navy-muted">Explosive push-off acceleration</div>
+                            </div>
+                            <span class="font-mono text-sage-primary font-bold">4 × 15 sec</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-3">
+                    <h3 class="text-sm font-bold text-navy-deep flex items-center gap-2 border-b border-beige-border pb-2">
+                        <i data-lucide="shield" class="w-4 h-4 text-sage-primary"></i>
+                        Routine B: Rotator Cuff Protection
+                    </h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="bg-beige-muted p-3 rounded-xl border border-beige-border flex justify-between items-center">
+                            <div>
+                                <div class="font-bold text-navy-deep">Cable Face Pulls w/ External Rotation</div>
+                                <div class="text-[11px] text-navy-muted">Rear delts & rotator cuff stability</div>
+                            </div>
+                            <span class="font-mono text-sage-primary font-bold">3 × 15 reps</span>
+                        </div>
+                        <div class="bg-beige-muted p-3 rounded-xl border border-beige-border flex justify-between items-center">
+                            <div>
+                                <div class="font-bold text-navy-deep">Scapular Y-T-W Raises</div>
+                                <div class="text-[11px] text-navy-muted">Trap activation to protect shoulder joint</div>
+                            </div>
+                            <span class="font-mono text-sage-primary font-bold">2 × 12 reps</span>
+                        </div>
+                        <div class="bg-beige-muted p-3 rounded-xl border border-beige-border flex justify-between items-center">
+                            <div>
+                                <div class="font-bold text-navy-deep">Pallof Press Core Rotation</div>
+                                <div class="text-[11px] text-navy-muted">Anti-rotational stability for backhands</div>
+                            </div>
+                            <span class="font-mono text-sage-primary font-bold">3 × 10 reps</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log History Table -->
+            <div class="bg-beige-card border border-beige-border rounded-2xl p-6 shadow-sm">
+                <h3 class="text-base font-bold text-navy-deep mb-4 flex items-center gap-2">
+                    <i data-lucide="history" class="w-5 h-5 text-sage-primary"></i>
+                    Gym Workout History
+                </h3>
+                <div id="gym-logs-container" class="space-y-3">
+                    <!-- Dynamic insertion -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- TAB 4: MATCH AUDIT LOG -->
+        <section id="tab-match" class="space-y-6 hidden">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-beige-card border border-beige-border p-6 rounded-2xl shadow-sm">
+                <div>
+                    <h2 class="text-xl font-extrabold text-navy-deep flex items-center gap-2">
+                        <i data-lucide="activity" class="w-6 h-6 text-sage-primary"></i>
+                        Match & Group Play Tactical Audit
+                    </h2>
+                    <p class="text-xs sm:text-sm text-navy-muted mt-1">
+                        Rate drop-shot reaction speed, baseline positioning, 2HB control, and 2nd serve consistency.
+                    </p>
+                </div>
+                <button onclick="openModal('match-log-modal')" class="px-4 py-2.5 bg-sage-primary text-white hover:bg-sage-dark font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Log Match Audit</span>
+                </button>
+            </div>
+
+            <div id="match-logs-container" class="space-y-4">
+                <!-- Dynamic insertion -->
+            </div>
+        </section>
+
+
+        <!-- TAB 5: PLAYBOOK -->
+        <section id="tab-playbook" class="space-y-6 hidden">
+            <div class="bg-beige-card border border-beige-border p-6 rounded-2xl shadow-sm">
+                <h2 class="text-xl font-extrabold text-navy-deep flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-6 h-6 text-sage-primary"></i>
+                    Tactical Counter-Playbook: Neutralizing Moonballs & Drop Shots
+                </h2>
+                <p class="text-xs sm:text-sm text-navy-muted mt-1">
+                    Specific tactical blueprints formulated for 4.0 singles competition using your Wilson RF01 & Solinco Tour Bite setup.
+                </p>
+            </div>
+
+            <!-- SVG Court Matrix -->
+            <div class="bg-beige-card border border-beige-border rounded-2xl p-6 shadow-sm">
+                <h3 class="text-base font-bold text-navy-deep mb-4 flex items-center gap-2">
+                    <i data-lucide="map" class="w-5 h-5 text-sage-primary"></i>
+                    Court Geometry & Sprint Distance Reduction Matrix
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    <div class="md:col-span-7 bg-navy-deep border border-navy-slate rounded-xl p-4 flex justify-center relative overflow-hidden court-svg-bg shadow-md">
+                        <svg viewBox="0 0 300 420" class="w-full max-w-[320px] h-auto drop-shadow-md">
+                            <rect x="20" y="20" width="260" height="380" fill="none" stroke="#5A6578" stroke-width="3"/>
+                            <line x1="15" y1="210" x2="285" y2="210" stroke="#FDFBF7" stroke-width="4"/>
+                            <line x1="20" y1="100" x2="280" y2="100" stroke="#5A6578" stroke-width="2"/>
+                            <line x1="20" y1="320" x2="280" y2="320" stroke="#5A6578" stroke-width="2"/>
+                            <line x1="150" y1="100" x2="150" y2="320" stroke="#5A6578" stroke-width="2"/>
+                            <circle cx="150" cy="50" r="10" fill="#E53E3E"/>
+                            <text x="150" y="32" fill="#E53E3E" font-size="10" font-weight="bold" text-anchor="middle">OPPONENT (DROPPER)</text>
+                            <circle cx="150" cy="405" r="9" fill="#94A3B8" stroke="#FDFBF7" stroke-width="1.5" stroke-dasharray="2,2"/>
+                            <text x="210" y="408" fill="#94A3B8" font-size="9" text-anchor="start">❌ Old Position (3m back)</text>
+                            <circle cx="150" cy="375" r="10" fill="#789078" stroke="#000" stroke-width="2"/>
+                            <text x="210" y="378" fill="#789078" font-size="10" font-weight="bold" text-anchor="start">✓ New Position (&lt;1m back)</text>
+                            <line x1="140" y1="400" x2="100" y2="225" stroke="#E53E3E" stroke-width="2" stroke-dasharray="4,4"/>
+                            <text x="75" y="310" fill="#E53E3E" font-size="9" font-weight="bold">14-16m sprint</text>
+                            <line x1="155" y1="365" x2="130" y2="225" stroke="#789078" stroke-width="3"/>
+                            <text x="175" y="295" fill="#789078" font-size="9" font-weight="bold">5-6m sprint</text>
+                            <circle cx="110" cy="220" r="14" fill="#38BDF8" fill-opacity="0.25" stroke="#38BDF8" stroke-dasharray="2,2"/>
+                            <text x="110" y="223" fill="#38BDF8" font-size="8" text-anchor="middle">Drop Zone</text>
+                        </svg>
+                    </div>
+
+                    <div class="md:col-span-5 space-y-4 text-xs">
+                        <div class="bg-beige-muted p-4 rounded-xl border border-beige-border space-y-2">
+                            <h4 class="font-bold text-navy-deep text-sm flex items-center gap-1.5">
+                                <i data-lucide="eye" class="w-4 h-4 text-sage-primary"></i>
+                                Visual Cues of Disguised Drop Shots
+                            </h4>
+                            <p class="text-navy-slate leading-relaxed"><strong>1. Racquet Deceleration:</strong> Swing speed accelerates initially, then suddenly slows right before contact.</p>
+                            <p class="text-navy-slate leading-relaxed"><strong>2. Open Racquet Face & Chest:</strong> Shoulder rotation halts; racquet face opens flat or upward.</p>
+                            <p class="text-navy-slate leading-relaxed"><strong>3. Off-Hand Drop:</strong> Non-dominant hand drops off racquet throat early to establish slice posture.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-navy-deep border-t border-navy-slate text-navy-muted py-5 text-xs mt-8">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-2 text-beige-card">
+                <span class="w-2 h-2 rounded-full bg-sage-accent"></span>
+                <span class="font-semibold">Singles Match Ready • Tactical & Fitness Dashboard</span>
+            </div>
+            <div class="text-beige-muted/70">Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs</div>
+        </div>
+    </footer>
+
+
+    <!-- MODALS SECTION -->
+
+    <!-- Modal 1: Target Matchday Manager Modal -->
+    <div id="matchday-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
+                <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
+                    <i data-lucide="calendar" class="w-5 h-5 text-sage-primary"></i>
+                    Dynamic Matchday Manager
+                </h3>
+                <button onclick="closeModal('matchday-modal')" class="text-navy-muted hover:text-navy-deep">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <label class="block text-xs font-semibold text-navy-deep">Select Target Match Date</label>
+                <input type="date" id="input-target-matchday" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="text-[10px] text-navy-muted block w-full">Quick Presets:</span>
+                    <button onclick="document.getElementById('input-target-matchday').value = '2026-11-15'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Nov 15, 2026</button>
+                    <button onclick="document.getElementById('input-target-matchday').value = '2026-11-22'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Nov 22, 2026</button>
+                    <button onclick="document.getElementById('input-target-matchday').value = '2026-12-05'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Dec 05, 2026</button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t border-beige-border">
+                <button onclick="clearTargetMatchday()" class="px-3 py-2 bg-red-100/70 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl transition-colors">
+                    Clear / Off-Season Mode
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="closeModal('matchday-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
+                    <button onclick="saveMatchdayFromInput()" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Target</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal 2: Sync & Data Manager Modal -->
+    <div id="sync-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
+                <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
+                    <i data-lucide="refresh-cw" class="w-5 h-5 text-sage-primary"></i>
+                    Sync & Data Manager
+                </h3>
+                <button onclick="closeModal('sync-modal')" class="text-navy-muted hover:text-navy-deep">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- File Backup -->
+            <div class="space-y-2">
+                <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Local Backup</h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="exportJSON()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
+                        <i data-lucide="download" class="w-4 h-4 text-sage-primary"></i>
+                        <span>Export JSON</span>
+                    </button>
+                    <label class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1 cursor-pointer">
+                        <i data-lucide="upload" class="w-4 h-4 text-sage-primary"></i>
+                        <span>Import JSON</span>
+                        <input type="file" accept=".json" onchange="importJSON(event)" class="hidden">
+                    </label>
+                    <button onclick="exportCSV()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4 text-sage-primary"></i>
+                        <span>Export CSV</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cloud Webhook Sync -->
+            <div class="space-y-3 pt-3 border-t border-beige-border">
+                <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Google Sheets Cloud Webhook</h4>
+                <input type="url" id="webhook-url-input" placeholder="https://script.google.com/macros/s/.../exec" 
+                       class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                <div class="flex gap-2">
+                    <button onclick="syncToCloud()" class="flex-1 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+                        <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+                        <span>Push to Cloud</span>
+                    </button>
+                    <button onclick="pullFromCloud()" class="flex-1 py-2 bg-navy-deep text-beige-card text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+                        <i data-lucide="cloud-download" class="w-4 h-4 text-sage-accent"></i>
+                        <span>Pull from Cloud</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-beige-border flex justify-between items-center text-xs">
+                <span class="text-navy-muted">Reset local storage</span>
+                <button onclick="confirmResetData()" class="text-red-600 hover:underline font-semibold">Reset Application</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal 3: Quick Log Selector Modal -->
+    <div id="quick-log-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
+                <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
+                    <i data-lucide="zap" class="w-5 h-5 text-sage-primary"></i>
+                    Quick Action Logger
+                </h3>
+                <button onclick="closeModal('quick-log-modal')" class="text-navy-muted hover:text-navy-deep">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-2.5">
+                <button onclick="closeModal('quick-log-modal'); openModal('gym-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                    <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
+                        <i data-lucide="dumbbell" class="w-5 h-5"></i>
+                    </span>
+                    <div>
+                        <div class="text-sm font-bold text-navy-deep">Log Gym Workout Session</div>
+                        <div class="text-xs text-navy-muted">Record Bulgarian split squats, RDLs, face pulls</div>
+                    </div>
+                </button>
+
+                <button onclick="closeModal('quick-log-modal'); openModal('match-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                    <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
+                        <i data-lucide="activity" class="w-5 h-5"></i>
+                    </span>
+                    <div>
+                        <div class="text-sm font-bold text-navy-deep">Audit Group / Match Session</div>
+                        <div class="text-xs text-navy-muted">Rate drop-shot reaction & backhand depth control</div>
+                    </div>
+                </button>
+
+                <button onclick="closeModal('quick-log-modal'); switchTab('dashboard'); document.getElementById('eval-session-notes').focus();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                    <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
+                        <i data-lucide="bot" class="w-5 h-5"></i>
+                    </span>
+                    <div>
+                        <div class="text-sm font-bold text-navy-deep">Evaluate Session with AI</div>
+                        <div class="text-xs text-navy-muted">Open side-by-side AI session evaluator</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal 4: Add Custom Task Modal -->
+    <div id="add-task-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
+                <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5 text-sage-primary"></i>
+                    Add Custom Objective
+                </h3>
+                <button onclick="closeModal('add-task-modal')" class="text-navy-muted hover:text-navy-deep">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <form id="add-task-form" onsubmit="handleAddTask(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Task Title</label>
+                    <input type="text" id="task-title-input" required placeholder="e.g. 20 min crosscourt backhand drill" 
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Category</label>
+                    <select id="task-category-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                        <option value="Gym Conditioning">Gym Conditioning</option>
+                        <option value="Group Play Micro-Goals">Group Play Micro-Goals</option>
+                        <option value="Recovery & Matchday">Recovery & Matchday</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Notes / Tactical Details</label>
+                    <textarea id="task-subtext-input" rows="2" placeholder="Specific technical focus" 
+                              class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('add-task-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Add Objective</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal 5: Log Gym Modal -->
+    <div id="gym-log-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
+                <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
+                    <i data-lucide="dumbbell" class="w-5 h-5 text-sage-primary"></i>
+                    Log Gym Workout Session
+                </h3>
+                <button onclick="closeModal('gym-log-modal')" class="text-navy-muted hover:text-navy-deep">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <form id="gym-log-form" onsubmit="handleLogGym(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">Date</label>
+                        <input type="date" id="gym-date-input" required class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">Focus Routine</label>
+                        <select id="gym-routine-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                            <option value="Deceleration & Braking (Legs/Core)">Deceleration & Braking (Legs)</option>
+                            <option value="Shoulder & Rotator Protection">Shoulder & Rotator Protection</option>
+                            <option value="Full Conditioning Combo">Full Conditioning Combo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Exercises & Loads</label>
+                    <input type="text" id="gym-exercises-input" required placeholder="e.g. Bulgarian Split Squats 3x8 (20kg), Face Pulls 3x15" 
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">RPE Strain (1-10)</label>
+                        <input type="number" min="1" max="10" id="gym-rpe-input" value="7" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">Leg Braking Feeling</label>
+                        <select id="gym-feeling-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                            <option value="Strong & Explosive">Strong & Explosive</option>
+                            <option value="Moderate Quad Fatigue">Moderate Quad Fatigue</option>
+                            <option value="Heavy / Sore">Heavy / Sore</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Notes</label>
+                    <textarea id="gym-notes-input" rows="2" placeholder="Rotator cuff felt great on face pulls..." class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('gym-log-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Workout</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal 6: Match Audit Log Modal -->
+    <div id="match-log-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
+                <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
+                    <i data-lucide="activity" class="w-5 h-5 text-sage-primary"></i>
+                    Log Match / Session Audit
+                </h3>
+                <button onclick="closeModal('match-log-modal')" class="text-navy-muted hover:text-navy-deep">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <form id="match-log-form" onsubmit="handleLogMatch(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">Date</label>
+                        <input type="date" id="match-date-input" required class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">Session Type</label>
+                        <select id="match-type-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                            <option value="Group Doubles Play">Group Doubles Play</option>
+                            <option value="Singles Practice Match">Singles Practice Match</option>
+                            <option value="Baseline Rally Session">Baseline Rally Session</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Opponent Style</label>
+                    <input type="text" id="match-opponent-input" placeholder="e.g. Moonballer / Drop-shotter" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                </div>
+
+                <div class="space-y-3 bg-beige-muted p-4 rounded-xl border border-beige-border">
+                    <div class="text-xs font-bold text-navy-deep uppercase tracking-wider mb-1">Tactical Performance Ratings (1 to 5)</div>
+
+                    <div>
+                        <div class="flex justify-between text-xs text-navy-deep mb-1">
+                            <span>Drop-Shot Reaction & Braking:</span>
+                            <span id="rate-val-dropshot" class="font-bold text-sage-primary">4 / 5</span>
+                        </div>
+                        <input type="range" min="1" max="5" value="4" id="rate-input-dropshot" oninput="document.getElementById('rate-val-dropshot').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs text-navy-deep mb-1">
+                            <span>Baseline Depth (&lt;1m line):</span>
+                            <span id="rate-val-positioning" class="font-bold text-sage-primary">4 / 5</span>
+                        </div>
+                        <input type="range" min="1" max="5" value="4" id="rate-input-positioning" oninput="document.getElementById('rate-val-positioning').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs text-navy-deep mb-1">
+                            <span>2HB Depth (No long error):</span>
+                            <span id="rate-val-backhand" class="font-bold text-sage-primary">3 / 5</span>
+                        </div>
+                        <input type="range" min="1" max="5" value="3" id="rate-input-backhand" oninput="document.getElementById('rate-val-backhand').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs text-navy-deep mb-1">
+                            <span>2nd Serve Quality & Shoulder Comfort:</span>
+                            <span id="rate-val-serve" class="font-bold text-sage-primary">4 / 5</span>
+                        </div>
+                        <input type="range" min="1" max="5" value="4" id="rate-input-serve" oninput="document.getElementById('rate-val-serve').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Observations</label>
+                    <textarea id="match-notes-input" rows="2" placeholder="e.g. Read 3 drop shots early. Backhand missed long twice..." class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('match-log-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Audit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- APPLICATION JAVASCRIPT LOGIC -->
+    <script>
+        const STORAGE_KEY = 'singles_match_ready_v3_state';
+
+        const DEFAULT_CHECKLIST = [
+            { id: 'task-1', title: 'Eccentric Leg Deceleration Workout', subtext: 'Bulgarian split squats (3x8 slow lower phase) & RDLs at gym.', category: 'Gym Conditioning', completed: false },
+            { id: 'task-2', title: 'First-Step Acceleration Sled Pushes', subtext: '4 sets × 15 seconds max effort sled pushes.', category: 'Gym Conditioning', completed: false },
+            { id: 'task-3', title: 'Rotator Cuff & Shoulder Protection', subtext: 'Cable face pulls (3x15) & Y-T-W scapular raises (2x12).', category: 'Gym Conditioning', completed: false },
+            { id: 'task-4', title: 'Hold Baseline Position (< 1m line)', subtext: 'Stay within 1m of baseline. Take moonballs on the rise.', category: 'Group Play Micro-Goals', completed: false },
+            { id: 'task-5', title: 'Drop Shot Cue Detection Focus', subtext: 'Scan opponent racquet deceleration & open face posture.', category: 'Group Play Micro-Goals', completed: false },
+            { id: 'task-6', title: 'Proactive 2nd Serve Return Attack', subtext: 'Step 1-2 feet inside baseline on weak serves to drive deep crosscourt.', category: 'Group Play Micro-Goals', completed: false },
+            { id: 'task-7', title: 'Equipment & String Check', subtext: 'Verify Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs string tension.', category: 'Recovery & Matchday', completed: false },
+            { id: 'task-8', title: '10-Min Dynamic Hip & Shoulder Warmup', subtext: 'Thoracic rotations & leg swings prior to playing.', category: 'Recovery & Matchday', completed: false }
+        ];
+
+        const STEALTH_GOALS = [
+            { title: "Hold Baseline Position (<1m line)", desc: "Refuse to yield ground to moonballers. Take high-bouncing balls on the rise at shoulder height.", icon: "crosshair" },
+            { title: "Scan Racquet Deceleration Cues", desc: "Watch the opponent's racquet face. When swing speed slows, execute 2 aggressive split steps forward.", icon: "eye" },
+            { title: "Proactive 2nd Serve Return Drive", desc: "Step 1-2 feet inside baseline on weak 2nd serves and target deep crosscourt backhand corner.", icon: "zap" },
+            { title: "2HB Quiet Chin & Left-Hand Lead", desc: "Drive backhands with left hand while keeping chin anchored on front shoulder through ball strike.", icon: "corner-up-right" },
+            { title: "12:30 Toss Topspin-Slice Serve", desc: "Toss 2nd serves slightly in front & right (12:30/1:00). Brush from 7 to 1 o'clock with wrist snap.", icon: "sparkles" }
+        ];
+
+        let currentStealthIndex = 0;
+
+        let appState = {
+            targetMatchday: "2026-11-15", // Default target ISO date string
+            checklist: [...DEFAULT_CHECKLIST],
+            gymLogs: [],
+            matchLogs: [],
+            evalLogs: [],
+            stealthCompletedToday: false,
+            webhookUrl: "",
+            lastSynced: null
+        };
+
+        // DOM Loaded Init
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            initCountdown();
+            renderAll();
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            const evalDateInput = document.getElementById('eval-date-input');
+            const gymDateInput = document.getElementById('gym-date-input');
+            const matchDateInput = document.getElementById('match-date-input');
+
+            if (evalDateInput) evalDateInput.value = todayStr;
+            if (gymDateInput) gymDateInput.value = todayStr;
+            if (matchDateInput) matchDateInput.value = todayStr;
+        });
+
+        // Local Storage Methods
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    appState = { ...appState, ...parsed };
+                }
+            } catch (e) {
+                console.error("Failed to load local state", e);
+            }
+            if (appState.webhookUrl) {
+                const wh = document.getElementById('webhook-url-input');
+                if (wh) wh.value = appState.webhookUrl;
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+            } catch (e) {
+                console.error("Failed to save local state", e);
+            }
+            renderAll();
+        }
+
+        // Custom Toast Notifications (Replaces alert)
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-sage-dark text-white' : type === 'error' ? 'bg-red-700 text-white' : 'bg-navy-deep text-beige-card';
+            
+            toast.className = `p-3 rounded-xl shadow-lg border border-navy-slate/40 text-xs font-semibold flex items-center justify-between gap-3 pointer-events-auto transition-all transform translate-y-2 opacity-0 ${bgClass}`;
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-4 h-4"></i>
+                    <span>${message}</span>
+                </div>
+                <button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+            `;
+
+            container.appendChild(toast);
+            if (window.lucide) lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.classList.add('opacity-0');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        // Custom Confirmation Modal (Replaces confirm)
+        function showConfirmModal(title, msg, onConfirm) {
+            const modal = document.getElementById('confirm-modal');
+            const titleEl = document.getElementById('confirm-modal-title');
+            const msgEl = document.getElementById('confirm-modal-msg');
+            const okBtn = document.getElementById('confirm-modal-ok');
+            const cancelBtn = document.getElementById('confirm-modal-cancel');
+
+            if (!modal) return;
+            titleEl.innerText = title;
+            msgEl.innerText = msg;
+
+            modal.classList.remove('hidden');
+
+            const handleOk = () => {
+                modal.classList.add('hidden');
+                cleanup();
+                onConfirm();
+            };
+
+            const handleCancel = () => {
+                modal.classList.add('hidden');
+                cleanup();
+            };
+
+            function cleanup() {
+                okBtn.removeEventListener('click', handleOk);
+                cancelBtn.removeEventListener('click', handleCancel);
+            }
+
+            okBtn.addEventListener('click', handleOk);
+            cancelBtn.addEventListener('click', handleCancel);
+        }
+
+        // DYNAMIC MATCHDAY MANAGEMENT LOGIC
+        function initCountdown() {
+            function updateTimer() {
+                const topCountdown = document.getElementById('top-countdown');
+                const topDisplay = document.getElementById('top-matchday-display');
+                const cardDate = document.getElementById('card-matchday-date');
+                const cardDays = document.getElementById('card-matchday-days');
+                const cardBadge = document.getElementById('matchday-card-badge');
+
+                if (!appState.targetMatchday) {
+                    if (topCountdown) topCountdown.innerText = "Off-Season / General Prep";
+                    if (topDisplay) topDisplay.innerText = "No active target set";
+                    if (cardDate) cardDate.innerText = "Off-Season Mode";
+                    if (cardDays) cardDays.innerText = "Focus on baseline consistency";
+                    if (cardBadge) {
+                        cardBadge.innerText = "Off-Season";
+                        cardBadge.className = "text-xs px-2.5 py-1 rounded-full font-semibold bg-beige-muted text-navy-muted border border-beige-border";
+                    }
+                    return;
+                }
+
+                const parts = appState.targetMatchday.split('-');
+                const targetDate = new Date(parts[0], parts[1] - 1, parts[2], 9, 0, 0);
+                const now = new Date();
+                const diff = targetDate - now;
+
+                const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+                const dateStr = targetDate.toLocaleDateString('en-US', options);
+
+                if (topDisplay) topDisplay.innerText = dateStr;
+                if (cardDate) cardDate.innerText = dateStr;
+                if (cardBadge) {
+                    cardBadge.innerText = "Active Schedule";
+                    cardBadge.className = "text-xs px-2.5 py-1 rounded-full font-semibold bg-sage-light text-sage-dark border border-sage-primary/20";
+                }
+
+                if (diff <= 0) {
+                    if (topCountdown) topCountdown.innerText = "🔥 MATCHDAY IS TODAY!";
+                    if (cardDays) cardDays.innerText = "Matchday Active!";
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const mins = Math.floor((diff / 1000 / 60) % 60);
+
+                const countdownText = `${days}d ${hours}h ${mins}m to Matchday`;
+                if (topCountdown) topCountdown.innerText = countdownText;
+                if (cardDays) cardDays.innerText = `${days} days remaining for prep`;
+            }
+            updateTimer();
+            setInterval(updateTimer, 60000);
+        }
+
+        function setPresetMatchday(isoDateStr) {
+            appState.targetMatchday = isoDateStr;
+            saveState();
+            initCountdown();
+            showToast(isoDateStr ? `Matchday updated to ${isoDateStr}` : "Target matchday cleared (Off-season mode)", 'success');
+            if (appState.webhookUrl) syncToCloud();
+        }
+
+        function saveMatchdayFromInput() {
+            const val = document.getElementById('input-target-matchday').value;
+            if (!val) {
+                clearTargetMatchday();
+                return;
+            }
+            setPresetMatchday(val);
+            closeModal('matchday-modal');
+        }
+
+        function clearTargetMatchday() {
+            appState.targetMatchday = null;
+            saveState();
+            initCountdown();
+            closeModal('matchday-modal');
+            showToast("Cleared target matchday. Switched to general off-season prep.", 'info');
+            if (appState.webhookUrl) syncToCloud();
+        }
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            const tabs = ['dashboard', 'checklist', 'gym', 'match', 'playbook'];
+            tabs.forEach(t => {
+                const section = document.getElementById(`tab-${t}`);
+                const navBtn = document.getElementById(`nav-${t}`);
+                const mobileNavBtn = document.getElementById(`mobile-nav-${t}`);
+
+                if (t === tabId) {
+                    section?.classList.remove('hidden');
+                    navBtn?.classList.add('bg-navy-deep', 'text-white');
+                    navBtn?.classList.remove('text-navy-slate');
+                    mobileNavBtn?.classList.add('bg-navy-deep', 'text-white');
+                    mobileNavBtn?.classList.remove('text-navy-muted');
+                } else {
+                    section?.classList.add('hidden');
+                    navBtn?.classList.remove('bg-navy-deep', 'text-white');
+                    navBtn?.classList.add('text-navy-slate');
+                    mobileNavBtn?.classList.remove('bg-navy-deep', 'text-white');
+                    mobileNavBtn?.classList.add('text-navy-muted');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Master Render Function
+        function renderAll() {
+            renderDashboard();
+            renderChecklist();
+            renderGymLogs();
+            renderMatchLogs();
+            renderEvaluationsStream();
+            updateSyncBadge();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // Render Dashboard Stats & Readiness Ring
+        function renderDashboard() {
+            const totalTasks = appState.checklist.length;
+            const completedTasks = appState.checklist.filter(t => t.completed).length;
+            const taskPct = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+            const gymScore = Math.min(appState.gymLogs.length * 25, 100);
+            const readinessPct = Math.round((taskPct * 0.7) + (gymScore * 0.3));
+
+            const ring = document.getElementById('readiness-ring');
+            if (ring) {
+                const radius = ring.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference - (readinessPct / 100) * circumference;
+                ring.style.strokeDashoffset = offset;
+            }
+
+            const rPercent = document.getElementById('readiness-percent');
+            const tasksDone = document.getElementById('stat-tasks-done');
+            const gymDone = document.getElementById('stat-gym-done');
+            const matchAvg = document.getElementById('stat-match-avg');
+            const navBadge = document.getElementById('nav-badge-tasks');
+
+            if (rPercent) rPercent.innerText = `${readinessPct}%`;
+            if (tasksDone) tasksDone.innerText = `${completedTasks}/${totalTasks}`;
+            if (gymDone) gymDone.innerText = appState.gymLogs.length;
+            if (navBadge) navBadge.innerText = `${completedTasks}/${totalTasks}`;
+
+            let avgRating = 0;
+            if (appState.matchLogs.length > 0) {
+                const sum = appState.matchLogs.reduce((acc, l) => {
+                    return acc + (Number(l.ratings.dropshot) + Number(l.ratings.positioning) + Number(l.ratings.backhand) + Number(l.ratings.serve)) / 4;
+                }, 0);
+                avgRating = (sum / appState.matchLogs.length).toFixed(1);
+            }
+            if (matchAvg) matchAvg.innerText = avgRating > 0 ? `${avgRating}` : '0.0';
+
+            // Stealth Objective Display
+            const stealth = STEALTH_GOALS[currentStealthIndex];
+            const sTitle = document.getElementById('stealth-title');
+            const sDesc = document.getElementById('stealth-desc');
+            const sIcon = document.getElementById('stealth-icon');
+
+            if (sTitle) sTitle.innerText = stealth.title;
+            if (sDesc) sDesc.innerText = stealth.desc;
+            if (sIcon) sIcon.setAttribute('data-lucide', stealth.icon);
+
+            const completeBtn = document.getElementById('btn-stealth-complete');
+            if (completeBtn) {
+                if (appState.stealthCompletedToday) {
+                    completeBtn.className = "px-3 py-1.5 bg-sage-primary text-white text-xs font-semibold rounded-lg shadow-sm flex items-center gap-1";
+                    completeBtn.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-white"></i><span>Done</span>`;
+                } else {
+                    completeBtn.className = "px-3 py-1.5 bg-navy-slate hover:bg-navy-muted/30 text-beige-card text-xs font-semibold rounded-lg border border-navy-muted/40 transition-all flex items-center gap-1";
+                    completeBtn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-sage-accent"></i><span>Mark Done</span>`;
+                }
+            }
+        }
+
+        function cycleStealthObjective() {
+            currentStealthIndex = (currentStealthIndex + 1) % STEALTH_GOALS.length;
+            renderDashboard();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function markStealthCompleted() {
+            appState.stealthCompletedToday = !appState.stealthCompletedToday;
+            saveState();
+        }
+
+        // SIDEBAR SESSION EVALUATOR & GEMINI API CALL
+        function fillPresetPrompt(num) {
+            const textarea = document.getElementById('eval-session-notes');
+            if (!textarea) return;
+            if (num === 1) {
+                textarea.value = "Played 3 sets of doubles today. Opponent kept hitting deep moonballs to my backhand followed by disguised drop shots. At 100kg, sprinting forward 14m repeatedly burned out my legs by set 2. Missed 3 backhands long when rushed.";
+            } else if (num === 2) {
+                textarea.value = "Baseline practice session. Forehands felt great with Wilson RF01 Pro, but my 2-handed backhand kept sailing long whenever the ball bounced above shoulder height. Worked on topspin 2nd serve with 12:30 toss, shoulder felt fine.";
+            }
+        }
+
+        async function evaluateSessionWithAI() {
+            const notesEl = document.getElementById('eval-session-notes');
+            const typeEl = document.getElementById('eval-type-input');
+            const dateEl = document.getElementById('eval-date-input');
+
+            if (!notesEl || !notesEl.value.trim()) {
+                showToast("Please enter session notes before evaluating.", "error");
+                return;
+            }
+
+            const sessionNotes = notesEl.value.trim();
+            const sessionType = typeEl.value;
+            const sessionDate = dateEl.value || new Date().toISOString().split('T')[0];
+
+            const btn = document.getElementById('btn-eval-ai');
+            const badge = document.getElementById('eval-status-badge');
+            const body = document.getElementById('eval-output-body');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing with Gemini AI...</span>`;
+            if (badge) {
+                badge.innerText = "Evaluating...";
+                badge.className = "text-[10px] bg-sage-primary/20 text-sage-accent px-2 py-0.5 rounded font-mono animate-pulse";
+            }
+            if (body) {
+                body.innerHTML = `
+                    <div class="py-6 text-center space-y-2">
+                        <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        <p class="text-xs text-sage-accent font-semibold">Analyzing footwork, 2HB mechanics & drop-shot reaction...</p>
+                    </div>
+                `;
+            }
+            if (window.lucide) lucide.createIcons();
+
+            const systemPrompt = `You are an elite tennis coach specializing in NTRP 4.0 intermediate singles strategy.
+Player Profile: 29yo, 100kg, 175cm athletic build, playing with Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs. Playstyle: Counterpuncher / Aggressive Baseliner.
+Analyze the provided user training session description. Return a valid JSON object matching this schema:
+{
+  "summary": "Concise 2-sentence tactical summary",
+  "areasOfImprovement": ["Point 1 (e.g. Hug baseline <1m to cut drop shot sprint)", "Point 2 (e.g. Quiet chin & left-hand drive on 2HB)", "Point 3 (e.g. Bulgarian split squat eccentric quad braking)"],
+  "technicalTakeaways": "Detailed technical and biomechanical diagnosis tailored for a 100kg player...",
+  "recommendedDrill": "Specific 15-minute targeted drill"
+}`;
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: `Session Type: ${sessionType}\nSession Notes:\n"${sessionNotes}"` }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "summary": { "type": "STRING" },
+                            "areasOfImprovement": { 
+                                "type": "ARRAY", 
+                                "items": { "type": "STRING" } 
+                            },
+                            "technicalTakeaways": { "type": "STRING" },
+                            "recommendedDrill": { "type": "STRING" }
+                        },
+                        "required": ["summary", "areasOfImprovement", "technicalTakeaways", "recommendedDrill"]
+                    }
+                }
+            };
+
+            let evalResult = null;
+            let delay = 1000;
+            for (let attempt = 0; attempt < 3; attempt++) {
+                try {
+                    const res = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        const jsonRes = await res.json();
+                        const jsonText = jsonRes.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (jsonText) {
+                            evalResult = JSON.parse(jsonText);
+                            break;
+                        }
+                    }
+                } catch (err) {
+                    console.debug(`Gemini retry attempt ${attempt + 1}`);
+                }
+                await new Promise(r => setTimeout(r, delay));
+                delay *= 2;
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="bot" class="w-4 h-4"></i><span>Evaluate Session with AI</span>`;
+
+            if (evalResult) {
+                if (badge) {
+                    badge.innerText = "Complete";
+                    badge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono";
+                }
+
+                // Render Result Card
+                if (body) {
+                    body.className = "text-xs text-beige-muted space-y-3";
+                    body.innerHTML = `
+                        <div>
+                            <p class="text-sage-accent font-semibold leading-relaxed">${evalResult.summary}</p>
+                        </div>
+                        <div class="space-y-1.5 pt-1 border-t border-navy-slate">
+                            <span class="text-[10px] uppercase font-bold text-navy-muted tracking-wider block">Areas of Improvement:</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                ${evalResult.areasOfImprovement.map(area => `<span class="px-2 py-0.5 bg-sage-primary/20 text-sage-accent border border-sage-primary/30 rounded text-[10px] font-medium">• ${area}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="pt-1 border-t border-navy-slate space-y-1 text-[11px] leading-relaxed">
+                            <strong class="text-white block">Biomechanical Analysis:</strong>
+                            <p class="text-beige-muted/90">${evalResult.technicalTakeaways}</p>
+                        </div>
+                        <div class="bg-navy-slate p-2.5 rounded-lg border border-navy-muted/30 text-[11px]">
+                            <strong class="text-sage-accent">Recommended Drill:</strong> ${evalResult.recommendedDrill}
+                        </div>
+                    `;
+                }
+
+                // Save to Evaluation Stream
+                const logItem = {
+                    id: 'eval-' + Date.now(),
+                    date: sessionDate,
+                    type: sessionType,
+                    notes: sessionNotes,
+                    result: evalResult
+                };
+
+                appState.evalLogs.unshift(logItem);
+                saveState();
+                showToast("AI Session Evaluation generated & saved to log stream!", "success");
+                if (appState.webhookUrl) syncToCloud();
+
+            } else {
+                if (badge) {
+                    badge.innerText = "Error";
+                    badge.className = "text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded font-mono";
+                }
+                if (body) {
+                    body.innerHTML = `<div class="text-center py-4 text-xs text-red-400">Failed to evaluate session. Please check your network and try again.</div>`;
+                }
+                showToast("AI Evaluation failed. Please try again.", "error");
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // Render Recent Evaluations Stream
+        function renderEvaluationsStream() {
+            const container = document.getElementById('evaluations-stream-container');
+            const countEl = document.getElementById('eval-stream-count');
+            if (!container) return;
+
+            if (countEl) countEl.innerText = `${appState.evalLogs.length} logs`;
+
+            if (appState.evalLogs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-6 bg-beige-muted border border-beige-border rounded-xl text-navy-muted text-xs">
+                        No evaluated sessions yet. Use the AI Session Evaluator above to analyze your hits!
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = appState.evalLogs.map((item, idx) => `
+                <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 space-y-2 text-xs">
+                    <div class="flex justify-between items-center pb-1 border-b border-beige-border">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sage-primary font-mono">${item.date}</span>
+                            <span class="font-bold text-navy-deep">• ${item.type}</span>
+                        </div>
+                        <button onclick="deleteEvalLog(${idx})" class="text-navy-muted hover:text-red-600 p-1">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                    <div class="text-navy-slate italic text-[11px] line-clamp-2">"${item.notes}"</div>
+                    ${item.result && item.result.areasOfImprovement ? `
+                        <div class="flex flex-wrap gap-1 pt-1">
+                            ${item.result.areasOfImprovement.map(a => `<span class="px-2 py-0.5 bg-beige-card text-navy-deep border border-beige-border rounded text-[9px] font-semibold">${a}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function deleteEvalLog(idx) {
+            showConfirmModal("Delete Session Log", "Are you sure you want to remove this evaluation from your history?", () => {
+                appState.evalLogs.splice(idx, 1);
+                saveState();
+                showToast("Session log removed.", "info");
+            });
+        }
+
+        // Checklist Operations
+        function renderChecklist() {
+            const container = document.getElementById('checklist-items-container');
+            if (!container) return;
+
+            if (appState.checklist.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 bg-beige-card border border-beige-border rounded-2xl text-navy-muted text-xs">No objectives found. Add your first task!</div>`;
+                return;
+            }
+
+            container.innerHTML = appState.checklist.map(task => `
+                <div class="bg-beige-card border border-beige-border hover:border-sage-primary/40 transition-colors rounded-2xl p-4 flex items-start justify-between gap-4 shadow-sm">
+                    <div class="flex items-start gap-3 cursor-pointer" onclick="toggleTask('${task.id}')">
+                        <div class="w-6 h-6 rounded-lg border mt-0.5 ${task.completed ? 'bg-sage-primary border-sage-primary text-white' : 'border-beige-border bg-beige-muted'} flex items-center justify-center flex-shrink-0 transition-colors">
+                            ${task.completed ? '<i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>' : ''}
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-sm font-bold ${task.completed ? 'line-through text-navy-muted' : 'text-navy-deep'}">${task.title}</h4>
+                                <span class="text-[10px] bg-beige-muted text-navy-muted border border-beige-border px-2 py-0.5 rounded font-mono">${task.category}</span>
+                            </div>
+                            <p class="text-xs text-navy-slate leading-relaxed">${task.subtext}</p>
+                        </div>
+                    </div>
+                    <button onclick="deleteTask('${task.id}')" class="text-navy-muted hover:text-red-600 p-1.5 rounded-lg hover:bg-beige-muted transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function toggleTask(id) {
+            appState.checklist = appState.checklist.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+            saveState();
+        }
+
+        function deleteTask(id) {
+            appState.checklist = appState.checklist.filter(t => t.id !== id);
+            saveState();
+        }
+
+        function handleAddTask(e) {
+            e.preventDefault();
+            const title = document.getElementById('task-title-input').value.trim();
+            const category = document.getElementById('task-category-input').value;
+            const subtext = document.getElementById('task-subtext-input').value.trim();
+            if (!title) return;
+
+            appState.checklist.push({
+                id: 'task-' + Date.now(),
+                title, category, subtext: subtext || 'Custom singles preparation task.', completed: false
+            });
+            saveState();
+            closeModal('add-task-modal');
+            document.getElementById('add-task-form').reset();
+            showToast("Objective added to checklist!", "success");
+        }
+
+        // Gym Log Operations
+        function renderGymLogs() {
+            const container = document.getElementById('gym-logs-container');
+            if (!container) return;
+
+            if (appState.gymLogs.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 bg-beige-muted border border-beige-border rounded-xl text-navy-muted text-xs">No gym workouts logged yet. Perform your first braking routine!</div>`;
+                return;
+            }
+
+            container.innerHTML = appState.gymLogs.map((log, idx) => `
+                <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 flex justify-between items-center text-xs">
+                    <div>
+                        <div class="font-bold text-navy-deep">${log.date} • ${log.routine}</div>
+                        <div class="text-navy-slate">${log.exercises}</div>
+                    </div>
+                    <button onclick="deleteGymLog(${idx})" class="text-navy-muted hover:text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function handleLogGym(e) {
+            e.preventDefault();
+            const date = document.getElementById('gym-date-input').value;
+            const routine = document.getElementById('gym-routine-input').value;
+            const exercises = document.getElementById('gym-exercises-input').value.trim();
+            const rpe = document.getElementById('gym-rpe-input').value;
+            const feeling = document.getElementById('gym-feeling-input').value;
+            const notes = document.getElementById('gym-notes-input').value.trim();
+
+            if (!exercises) return;
+            appState.gymLogs.unshift({ date, routine, exercises, rpe, feeling, notes });
+            saveState();
+            closeModal('gym-log-modal');
+            document.getElementById('gym-log-form').reset();
+            showToast("Gym workout logged!", "success");
+        }
+
+        function deleteGymLog(idx) {
+            appState.gymLogs.splice(idx, 1);
+            saveState();
+        }
+
+        // Match Log Operations
+        function renderMatchLogs() {
+            const container = document.getElementById('match-logs-container');
+            if (!container) return;
+
+            if (appState.matchLogs.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 bg-beige-card border border-beige-border rounded-2xl text-navy-muted text-xs">No match audits recorded. Audit your performance after your next hitting session!</div>`;
+                return;
+            }
+
+            container.innerHTML = appState.matchLogs.map((log, idx) => `
+                <div class="bg-beige-card border border-beige-border rounded-2xl p-4 space-y-2 text-xs">
+                    <div class="flex justify-between items-center pb-2 border-b border-beige-border">
+                        <span class="font-bold text-navy-deep">${log.date} • ${log.type} ${log.opponentStyle ? `(vs ${log.opponentStyle})` : ''}</span>
+                        <button onclick="deleteMatchLog(${idx})" class="text-navy-muted hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 text-[11px] text-center font-mono">
+                        <div class="bg-beige-muted p-1.5 rounded">Drop: ${log.ratings.dropshot}/5</div>
+                        <div class="bg-beige-muted p-1.5 rounded">Depth: ${log.ratings.positioning}/5</div>
+                        <div class="bg-beige-muted p-1.5 rounded">2HB: ${log.ratings.backhand}/5</div>
+                        <div class="bg-beige-muted p-1.5 rounded">Serve: ${log.ratings.serve}/5</div>
+                    </div>
+                    ${log.notes ? `<div class="text-navy-slate italic">"${log.notes}"</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function handleLogMatch(e) {
+            e.preventDefault();
+            const date = document.getElementById('match-date-input').value;
+            const type = document.getElementById('match-type-input').value;
+            const opponentStyle = document.getElementById('match-opponent-input').value.trim();
+            const dropshot = document.getElementById('rate-input-dropshot').value;
+            const positioning = document.getElementById('rate-input-positioning').value;
+            const backhand = document.getElementById('rate-input-backhand').value;
+            const serve = document.getElementById('rate-input-serve').value;
+            const notes = document.getElementById('match-notes-input').value.trim();
+
+            appState.matchLogs.unshift({ date, type, opponentStyle, ratings: { dropshot, positioning, backhand, serve }, notes });
+            saveState();
+            closeModal('match-log-modal');
+            document.getElementById('match-log-form').reset();
+            showToast("Match audit logged!", "success");
+        }
+
+        function deleteMatchLog(idx) {
+            appState.matchLogs.splice(idx, 1);
+            saveState();
+        }
+
+        // Data Sync & Export Logic
+        function updateSyncBadge() {
+            const badgeText = document.getElementById('sync-status-text');
+            const badgeIcon = document.getElementById('sync-status-badge');
+            if (!badgeText || !badgeIcon) return;
+
+            if (appState.lastSynced) {
+                badgeText.innerText = `Synced (${appState.lastSynced})`;
+                badgeIcon.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5";
+            } else {
+                badgeText.innerText = "Local Only";
+                badgeIcon.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-sage-primary/20 text-sage-accent border border-sage-primary/30 flex items-center gap-1.5";
+            }
+        }
+
+        function exportJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+            const anchor = document.createElement('a');
+            anchor.setAttribute("href", dataStr);
+            anchor.setAttribute("download", `singles_match_ready_backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            showToast("Exported JSON state backup!", "success");
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported && Array.isArray(imported.checklist)) {
+                        appState = { ...appState, ...imported };
+                        saveState();
+                        showToast("Data imported from JSON file!", "success");
+                        closeModal('sync-modal');
+                    }
+                } catch (err) {
+                    showToast("Failed to parse JSON file.", "error");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportCSV() {
+            let csv = "data:text/csv;charset=utf-8,";
+            csv += "--- AI SESSION EVALUATIONS ---\nDate,Type,Notes,Summary\n";
+            appState.evalLogs.forEach(e => {
+                csv += `"${e.date}","${e.type}","${e.notes.replace(/"/g, '""')}","${(e.result?.summary||'').replace(/"/g, '""')}"\n`;
+            });
+            csv += "\n--- GYM LOGS ---\nDate,Routine,Exercises,RPE\n";
+            appState.gymLogs.forEach(g => {
+                csv += `"${g.date}","${g.routine}","${g.exercises.replace(/"/g, '""')}","${g.rpe}"\n`;
+            });
+
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csv));
+            link.setAttribute("download", `singles_match_ready_logs_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Exported CSV logs!", "success");
+        }
+
+        async function syncToCloud() {
+            const url = document.getElementById('webhook-url-input').value.trim();
+            if (!url) {
+                showToast("Please enter a Google Apps Script Webhook URL.", "error");
+                return;
+            }
+            appState.webhookUrl = url;
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(appState)
+                });
+                appState.lastSynced = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                saveState();
+                showToast("Data pushed to Google Sheets!", "success");
+            } catch (err) {
+                showToast("Cloud sync failed. Check URL.", "error");
+            }
+        }
+
+        async function pullFromCloud() {
+            const url = document.getElementById('webhook-url-input').value.trim();
+            if (!url) {
+                showToast("Please enter a Google Apps Script Webhook URL.", "error");
+                return;
+            }
+            appState.webhookUrl = url;
+            try {
+                const res = await fetch(url);
+                const cloudData = await res.json();
+                if (cloudData && Array.isArray(cloudData.checklist)) {
+                    appState = { ...appState, ...cloudData, webhookUrl: url };
+                    appState.lastSynced = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    saveState();
+                    showToast("Pulled latest state from Google Sheets!", "success");
+                    closeModal('sync-modal');
+                }
+            } catch (err) {
+                showToast("Failed to pull from Cloud.", "error");
+            }
+        }
+
+        function confirmResetData() {
+            showConfirmModal("Reset Application Data", "This will wipe all custom logs and task progress back to defaults. Continue?", () => {
+                localStorage.removeItem(STORAGE_KEY);
+                appState = {
+                    targetMatchday: "2026-11-15",
+                    checklist: [...DEFAULT_CHECKLIST],
+                    gymLogs: [],
+                    matchLogs: [],
+                    evalLogs: [],
+                    stealthCompletedToday: false,
+                    webhookUrl: "",
+                    lastSynced: null
+                };
+                saveState();
+                closeModal('sync-modal');
+                showToast("Application reset to default state.", "info");
+            });
+        }
+
+        // Modal Helpers
+        function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+    </script>
+</body>
+</html>
