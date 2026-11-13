@@ -65,6 +65,9 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-sage-primary selection:text-white">
+    <!-- Shared Autocomplete Datalist for Repeat Opponents -->
+    <datalist id="opponents-datalist"></datalist>
+
     <!-- Toast Notification Overlay Container -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-2"></div>
 
@@ -149,16 +152,17 @@
                     </button>
                     <button onclick="switchTab('checklist')" id="nav-checklist" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="check-square" class="w-4 h-4"></i>
-                        <span>Readiness Checklist</span>
+                        <span>Checklist</span>
                         <span id="nav-badge-tasks" class="bg-sage-primary text-white text-xs px-2 py-0.5 rounded-full font-mono">0/8</span>
                     </button>
                     <button onclick="switchTab('gym')" id="nav-gym" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="dumbbell" class="w-4 h-4"></i>
-                        <span>Gym Workout</span>
+                        <span>Gym</span>
                     </button>
                     <button onclick="switchTab('match')" id="nav-match" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
-                        <i data-lucide="activity" class="w-4 h-4"></i>
-                        <span>Match Audit</span>
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Opponents & Audits</span>
+                        <span id="nav-badge-opponents" class="bg-navy-slate text-beige-card text-xs px-2 py-0.5 rounded-full font-mono">0</span>
                     </button>
                     <button onclick="switchTab('playbook')" id="nav-playbook" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="book-open" class="w-4 h-4"></i>
@@ -195,8 +199,8 @@
                 <span>Gym</span>
             </button>
             <button onclick="switchTab('match')" id="mobile-nav-match" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
-                <i data-lucide="activity" class="w-3.5 h-3.5"></i>
-                <span>Match Log</span>
+                <i data-lucide="users" class="w-3.5 h-3.5"></i>
+                <span>Opponents & Audits</span>
             </button>
             <button onclick="switchTab('playbook')" id="mobile-nav-playbook" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
                 <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
@@ -209,7 +213,6 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
         <!-- TAB 1: MAIN SPLIT DASHBOARD + SIDE EVALUATION PANEL -->
         <section id="tab-dashboard" class="space-y-6">
-            <!-- Split Layout: Left Main Workspace (7 Cols) + Right Session Evaluation Panel (5 Cols) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <!-- LEFT COLUMN: Workspace, Readiness & Stealth Goals (7 Cols) -->
                 <div class="lg:col-span-7 space-y-6">
@@ -324,6 +327,28 @@
                         </div>
                     </div>
 
+                    <!-- Repeat Opponents Quick-Scouting Snapshot -->
+                    <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between pb-2 border-b border-beige-border">
+                            <div class="flex items-center gap-2">
+                                <span class="p-1.5 bg-sage-light text-sage-dark rounded-lg">
+                                    <i data-lucide="users" class="w-4 h-4"></i>
+                                </span>
+                                <div>
+                                    <h3 class="text-xs font-extrabold text-navy-deep uppercase tracking-wider">Repeat Opponent Matchup Tracker</h3>
+                                    <p class="text-[11px] text-navy-muted">Click an opponent to inspect scouting notes &amp; tested tactical ideas</p>
+                                </div>
+                            </div>
+                            <button onclick="switchTab('match')" class="text-xs font-bold text-sage-primary hover:text-sage-dark flex items-center gap-1">
+                                <span>Scouting Lab</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <div id="dashboard-opponents-preview" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                            <!-- Dynamic Opponent Pills -->
+                        </div>
+                    </div>
+
                     <!-- Profile & Racquet Spec Snapshot -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="bg-beige-card border border-beige-border rounded-2xl p-4 shadow-sm space-y-2">
@@ -366,7 +391,7 @@
                             </span>
                             <div>
                                 <h3 class="text-sm font-extrabold text-navy-deep">Session Evaluation &amp; AI Coach</h3>
-                                <p class="text-[11px] text-navy-muted">Real-time analysis &amp; areas of improvement</p>
+                                <p class="text-[11px] text-navy-muted">Log opponent matchup, test ideas &amp; analyze</p>
                             </div>
                         </div>
                         <span id="ai-engine-badge" class="text-[10px] bg-sage-primary/20 text-sage-dark px-2 py-0.5 rounded font-mono font-bold">Coach AI</span>
@@ -389,9 +414,24 @@
                                 <input type="date" id="eval-date-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
                             </div>
                         </div>
+
+                        <!-- Opponent Name & Tactical Idea Inputs -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-bold text-navy-deep mb-1">Opponent Name</label>
+                                <input type="text" id="eval-opponent-name" list="opponents-datalist" placeholder="e.g. Budi / Andi"
+                                       class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-navy-deep mb-1">Tactical Idea Tested</label>
+                                <input type="text" id="eval-tactical-idea" placeholder="e.g. Heavy loop to BH"
+                                       class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block text-[11px] font-bold text-navy-deep mb-1">Raw Session Description</label>
-                            <textarea id="eval-session-notes" rows="4" placeholder="Describe rallies, physical fatigue, drop shots encountered, or backhand errors..."
+                            <textarea id="eval-session-notes" rows="4" placeholder="Describe rallies, how the tactical idea worked against this opponent, drop shots, or backhand errors..."
                                       class="w-full bg-beige-muted border border-beige-border rounded-xl p-3 text-xs text-navy-deep focus:outline-none focus:border-sage-primary leading-relaxed resize-none"></textarea>
                         </div>
                         <div class="flex gap-1.5 flex-wrap">
@@ -421,7 +461,7 @@
                             <div class="space-y-1 p-2">
                                 <i data-lucide="file-text" class="w-6 h-6 mx-auto text-navy-muted"></i>
                                 <p>Enter your session notes above and click <strong>"Evaluate Session with AI"</strong>.</p>
-                                <p class="text-[10px] text-navy-muted">Tailored technical diagnosis &amp; areas of improvement will render here.</p>
+                                <p class="text-[10px] text-navy-muted">Opponent matchup notes &amp; tactical adjustments will render here.</p>
                             </div>
                         </div>
                     </div>
@@ -558,25 +598,63 @@
             </div>
         </section>
 
-        <!-- TAB 4: MATCH AUDIT LOG -->
+        <!-- TAB 4: OPPONENT SCOUTING & MATCH AUDIT LOG -->
         <section id="tab-match" class="space-y-6 hidden">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-beige-card border border-beige-border p-6 rounded-2xl shadow-sm">
                 <div>
                     <h2 class="text-xl font-extrabold text-navy-deep flex items-center gap-2">
-                        <i data-lucide="activity" class="w-6 h-6 text-sage-primary"></i>
-                        Match &amp; Group Play Tactical Audit
+                        <i data-lucide="users" class="w-6 h-6 text-sage-primary"></i>
+                        Opponent Scouting Lab &amp; Match Audit Log
                     </h2>
                     <p class="text-xs sm:text-sm text-navy-muted mt-1">
-                        Rate drop-shot reaction speed, baseline positioning, 2HB control, and 2nd serve consistency.
+                        Track repeat opponents, store scouting notes, and log which tactical ideas worked or need adjustment.
                     </p>
                 </div>
-                <button onclick="openModal('match-log-modal')" class="px-4 py-2.5 bg-sage-primary text-white hover:bg-sage-dark font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center gap-2">
-                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                    <span>Log Match Audit</span>
-                </button>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="openOpponentProfileModal()" class="px-4 py-2.5 bg-navy-deep text-beige-card hover:bg-navy-slate font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-4 h-4 text-sage-accent"></i>
+                        <span>Add / Edit Opponent</span>
+                    </button>
+                    <button onclick="openModal('match-log-modal')" class="px-4 py-2.5 bg-sage-primary text-white hover:bg-sage-dark font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Log Match Audit</span>
+                    </button>
+                </div>
             </div>
-            <div id="match-logs-container" class="space-y-4">
-                <!-- Dynamic insertion -->
+
+            <!-- Opponent Scouting Cards Grid -->
+            <div class="bg-beige-card border border-beige-border rounded-2xl p-6 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-beige-border">
+                    <div>
+                        <h3 class="text-base font-extrabold text-navy-deep flex items-center gap-2">
+                            <i data-lucide="crosshair" class="w-4 h-4 text-sage-primary"></i>
+                            Tracked Opponents &amp; Tactical Experiments
+                        </h3>
+                        <p class="text-xs text-navy-muted">Click any opponent card to filter your match &amp; AI logs below</p>
+                    </div>
+                    <button id="btn-clear-opponent-filter" onclick="setOpponentFilter('ALL')" class="hidden px-3 py-1 bg-sage-light text-sage-dark border border-sage-primary/30 rounded-lg text-xs font-bold">
+                        Show All Opponents
+                    </button>
+                </div>
+                <div id="opponent-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamic Opponent Cards -->
+                </div>
+            </div>
+
+            <!-- Filter Bar & Match Audit History -->
+            <div class="space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <h3 class="text-base font-extrabold text-navy-deep flex items-center gap-2">
+                        <i data-lucide="activity" class="w-5 h-5 text-sage-primary"></i>
+                        <span id="match-audits-heading">Match Audit History</span>
+                    </h3>
+                    <div id="opponent-filter-pills" class="flex flex-wrap gap-1.5">
+                        <!-- Dynamic Filter Pills -->
+                    </div>
+                </div>
+                <div id="match-logs-container" class="space-y-4">
+                    <!-- Dynamic insertion -->
+                </div>
             </div>
         </section>
 
@@ -777,6 +855,24 @@
                 </button>
             </div>
             <div class="space-y-2.5">
+                <button onclick="closeModal('quick-log-modal'); openModal('match-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                    <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
+                        <i data-lucide="users" class="w-5 h-5"></i>
+                    </span>
+                    <div>
+                        <div class="text-sm font-bold text-navy-deep">Log Match Audit &amp; Tactical Experiment</div>
+                        <div class="text-xs text-navy-muted">Record opponent name, ratings &amp; whether your tactical idea worked</div>
+                    </div>
+                </button>
+                <button onclick="closeModal('quick-log-modal'); openOpponentProfileModal();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                    <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
+                        <i data-lucide="user-plus" class="w-5 h-5"></i>
+                    </span>
+                    <div>
+                        <div class="text-sm font-bold text-navy-deep">Add / Edit Opponent Scouting Card</div>
+                        <div class="text-xs text-navy-muted">Save tendencies, weaknesses &amp; next-match gameplan idea</div>
+                    </div>
+                </button>
                 <button onclick="closeModal('quick-log-modal'); openModal('gym-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
                         <i data-lucide="dumbbell" class="w-5 h-5"></i>
@@ -786,22 +882,13 @@
                         <div class="text-xs text-navy-muted">Record Bulgarian split squats, RDLs, face pulls</div>
                     </div>
                 </button>
-                <button onclick="closeModal('quick-log-modal'); openModal('match-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
-                    <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
-                        <i data-lucide="activity" class="w-5 h-5"></i>
-                    </span>
-                    <div>
-                        <div class="text-sm font-bold text-navy-deep">Audit Group / Match Session</div>
-                        <div class="text-xs text-navy-muted">Rate drop-shot reaction &amp; backhand depth control</div>
-                    </div>
-                </button>
                 <button onclick="closeModal('quick-log-modal'); switchTab('dashboard'); document.getElementById('eval-session-notes').focus();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
                         <i data-lucide="bot" class="w-5 h-5"></i>
                     </span>
                     <div>
                         <div class="text-sm font-bold text-navy-deep">Evaluate Session with AI</div>
-                        <div class="text-xs text-navy-muted">Open side-by-side AI session evaluator</div>
+                        <div class="text-xs text-navy-muted">Open side-by-side AI session &amp; matchup evaluator</div>
                     </div>
                 </button>
             </div>
@@ -905,13 +992,13 @@
         </div>
     </div>
 
-    <!-- Modal 6: Match Audit Log Modal -->
+    <!-- Modal 6: Match Audit Log Modal (With Opponent Name & Tactical Idea Testing) -->
     <div id="match-log-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-3 border-b border-beige-border">
                 <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
                     <i data-lucide="activity" class="w-5 h-5 text-sage-primary"></i>
-                    Log Match / Session Audit
+                    Log Match / Opponent Tactical Audit
                 </h3>
                 <button onclick="closeModal('match-log-modal')" class="text-navy-muted hover:text-navy-deep">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -926,16 +1013,47 @@
                     <div>
                         <label class="block text-xs font-semibold text-navy-deep mb-1">Session Type</label>
                         <select id="match-type-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
-                            <option value="Group Doubles Play">Group Doubles Play</option>
                             <option value="Singles Practice Match">Singles Practice Match</option>
+                            <option value="Group Doubles Play">Group Doubles Play</option>
                             <option value="Baseline Rally Session">Baseline Rally Session</option>
                         </select>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-navy-deep mb-1">Opponent Style</label>
-                    <input type="text" id="match-opponent-input" placeholder="e.g. Moonballer / Drop-shotter" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">Opponent Name</label>
+                        <input type="text" id="match-opponent-name-input" list="opponents-datalist" oninput="autoFillOpponentStyle(this.value)" placeholder="e.g. Budi / Hendra"
+                               class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">Opponent Style</label>
+                        <input type="text" id="match-opponent-input" placeholder="e.g. Moonballer / Drop-shotter"
+                               class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                    </div>
                 </div>
+
+                <!-- Tactical Idea Experiment Box -->
+                <div class="bg-sage-light/70 border border-sage-primary/30 rounded-xl p-3.5 space-y-2.5">
+                    <div class="text-xs font-bold text-sage-dark flex items-center gap-1.5">
+                        <i data-lucide="flask-conical" class="w-4 h-4"></i>
+                        <span>Tactical Idea Tested Against Opponent</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div class="sm:col-span-2">
+                            <input type="text" id="match-tactical-idea-input" placeholder="e.g. Heavy loop to BH + step inside on 2nd serve"
+                                   class="w-full bg-beige-card border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                        </div>
+                        <div>
+                            <select id="match-idea-outcome-input" class="w-full bg-beige-card border border-beige-border rounded-xl px-2.5 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                                <option value="Worked Well">Worked Well</option>
+                                <option value="Mixed / Needs Tweak">Mixed / Tweak</option>
+                                <option value="Didn't Work">Didn't Work</option>
+                                <option value="No Experiment">No Experiment</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="space-y-3 bg-beige-muted p-4 rounded-xl border border-beige-border">
                     <div class="text-xs font-bold text-navy-deep uppercase tracking-wider mb-1">Tactical Performance Ratings (1 to 5)</div>
                     <div>
@@ -968,12 +1086,53 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-navy-deep mb-1">Observations</label>
-                    <textarea id="match-notes-input" rows="2" placeholder="e.g. Read 3 drop shots early. Backhand missed long twice..." class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Observations &amp; Scoreline</label>
+                    <textarea id="match-notes-input" rows="2" placeholder="e.g. Won 6-4. Read 3 drop shots early. Heavy loop to his backhand drew short balls..." class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('match-log-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Audit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 7: Add / Edit Opponent Scouting Profile Modal -->
+    <div id="opponent-profile-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
+                <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
+                    <i data-lucide="user-check" class="w-5 h-5 text-sage-primary"></i>
+                    Opponent Scouting Card
+                </h3>
+                <button onclick="closeModal('opponent-profile-modal')" class="text-navy-muted hover:text-navy-deep">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="opponent-profile-form" onsubmit="handleSaveOpponentProfile(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Opponent Name</label>
+                    <input type="text" id="opp-profile-name" required placeholder="e.g. Budi Santoso"
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Playstyle &amp; Weapons</label>
+                    <input type="text" id="opp-profile-style" placeholder="e.g. Left-handed Counterpuncher / Drop-shotter"
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Next Tactical Idea to Test</label>
+                    <input type="text" id="opp-profile-next-idea" placeholder="e.g. Serve body on ad-side, hug <1m baseline"
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Scouting Notes &amp; Tendencies</label>
+                    <textarea id="opp-profile-notes" rows="3" placeholder="e.g. Disguises drop shots off forehand slice when pushed wide; struggles with high topspin to 1-handed backhand."
+                              class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('opponent-profile-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Scouting Card</button>
                 </div>
             </form>
         </div>
@@ -996,7 +1155,7 @@
         ];
 
         const STEALTH_GOALS = [
-            { title: "Hold Baseline Position (<1m line)", desc: "Refuse to yield ground to moonballers. Take high-bouncing balls on the rise at shoulder height.", icon: "crosshair" },
+            { title: "Hold Baseline Position (<1m line)", desc: "Refuse to yield ground to moonballers. Take high-bouncing balls on the rise at shoulder height to cut forward sprint distance to drop shots.", icon: "crosshair" },
             { title: "Scan Racquet Deceleration Cues", desc: "Watch the opponent's racquet face. When swing speed slows, execute 2 aggressive split steps forward.", icon: "eye" },
             { title: "Proactive 2nd Serve Return Drive", desc: "Step 1-2 feet inside baseline on weak 2nd serves and target deep crosscourt backhand corner.", icon: "zap" },
             { title: "2HB Quiet Chin & Left-Hand Lead", desc: "Drive backhands with left hand while keeping chin anchored on front shoulder through ball strike.", icon: "corner-up-right" },
@@ -1005,6 +1164,7 @@
 
         let currentStealthIndex = 0;
         let countdownInterval = null;
+        let activeOpponentFilter = 'ALL';
 
         let appState = {
             targetMatchday: "2026-11-15",
@@ -1012,12 +1172,24 @@
             gymLogs: [],
             matchLogs: [],
             evalLogs: [],
+            opponentProfiles: {},
             stealthCompletedToday: false,
             webhookUrl: DEFAULT_WEBHOOK_URL,
             autoSync: true,
             geminiApiKey: "",
             lastSynced: null
         };
+
+        // Safe HTML Escaping Utility
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
         // DOM Loaded Init
         window.addEventListener('DOMContentLoaded', () => {
@@ -1042,6 +1214,10 @@
                 }
             } catch (e) {
                 console.error("Failed to load local state", e);
+            }
+
+            if (!appState.opponentProfiles || typeof appState.opponentProfiles !== 'object') {
+                appState.opponentProfiles = {};
             }
 
             if (!appState.webhookUrl) {
@@ -1083,6 +1259,147 @@
             showToast(val ? "Gemini API key saved locally." : "Cleared Gemini API key (using built-in Coach AI).", "success");
         }
 
+        // Opponent Aggregation Helper
+        function getAggregatedOpponents() {
+            const map = {};
+
+            const ensure = (rawName) => {
+                const clean = (rawName || '').trim();
+                if (!clean) return null;
+                const key = clean.toLowerCase();
+                if (!map[key]) {
+                    const prof = appState.opponentProfiles[key] || {};
+                    map[key] = {
+                        key,
+                        name: prof.name || clean,
+                        style: prof.style || '',
+                        nextIdea: prof.nextIdea || '',
+                        scoutingNotes: prof.scoutingNotes || '',
+                        matchLogs: [],
+                        evalLogs: [],
+                        experiments: []
+                    };
+                }
+                return map[key];
+            };
+
+            Object.keys(appState.opponentProfiles || {}).forEach(k => {
+                const p = appState.opponentProfiles[k];
+                if (p && p.name) ensure(p.name);
+            });
+
+            (appState.matchLogs || []).forEach(m => {
+                const opp = ensure(m.opponentName);
+                if (!opp) return;
+                opp.matchLogs.push(m);
+                if (!opp.style && m.opponentStyle) opp.style = m.opponentStyle;
+                if (m.tacticalIdea) {
+                    opp.experiments.push({
+                        date: m.date,
+                        idea: m.tacticalIdea,
+                        outcome: m.ideaOutcome || 'Tested'
+                    });
+                }
+            });
+
+            (appState.evalLogs || []).forEach(ev => {
+                const opp = ensure(ev.opponentName);
+                if (!opp) return;
+                opp.evalLogs.push(ev);
+                if (ev.tacticalIdea) {
+                    opp.experiments.push({
+                        date: ev.date,
+                        idea: ev.tacticalIdea,
+                        outcome: 'AI Evaluated'
+                    });
+                }
+            });
+
+            return Object.values(map).sort((a, b) => (b.matchLogs.length + b.evalLogs.length) - (a.matchLogs.length + a.evalLogs.length));
+        }
+
+        function updateOpponentsDatalist() {
+            const dl = document.getElementById('opponents-datalist');
+            if (!dl) return;
+            const opponents = getAggregatedOpponents();
+            dl.innerHTML = opponents.map(o => `<option value="${escapeHtml(o.name)}">${escapeHtml(o.style)}</option>`).join('');
+        }
+
+        function autoFillOpponentStyle(nameVal) {
+            const clean = (nameVal || '').trim().toLowerCase();
+            if (!clean) return;
+            const opponents = getAggregatedOpponents();
+            const found = opponents.find(o => o.key === clean);
+            if (found) {
+                const styleInput = document.getElementById('match-opponent-input');
+                const ideaInput = document.getElementById('match-tactical-idea-input');
+                if (styleInput && !styleInput.value && found.style) {
+                    styleInput.value = found.style;
+                }
+                if (ideaInput && !ideaInput.value && found.nextIdea) {
+                    ideaInput.value = found.nextIdea;
+                }
+            }
+        }
+
+        function openOpponentProfileModal(opponentKey = '') {
+            const form = document.getElementById('opponent-profile-form');
+            if (form) form.reset();
+
+            if (opponentKey) {
+                const opponents = getAggregatedOpponents();
+                const opp = opponents.find(o => o.key === opponentKey);
+                if (opp) {
+                    document.getElementById('opp-profile-name').value = opp.name;
+                    document.getElementById('opp-profile-style').value = opp.style || '';
+                    document.getElementById('opp-profile-next-idea').value = opp.nextIdea || '';
+                    document.getElementById('opp-profile-notes').value = opp.scoutingNotes || '';
+                }
+            }
+            openModal('opponent-profile-modal');
+        }
+
+        function handleSaveOpponentProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById('opp-profile-name').value.trim();
+            if (!name) return;
+            const key = name.toLowerCase();
+            const style = document.getElementById('opp-profile-style').value.trim();
+            const nextIdea = document.getElementById('opp-profile-next-idea').value.trim();
+            const scoutingNotes = document.getElementById('opp-profile-notes').value.trim();
+
+            appState.opponentProfiles[key] = {
+                name,
+                style,
+                nextIdea,
+                scoutingNotes
+            };
+            saveState(true);
+            closeModal('opponent-profile-modal');
+            showToast(`Saved scouting card for ${name}!`, 'success');
+        }
+
+        function deleteOpponentProfile(key) {
+            showConfirmModal("Remove Scouting Card", "Remove this opponent's saved scouting profile? (Historical match logs will remain intact.)", () => {
+                delete appState.opponentProfiles[key];
+                if (activeOpponentFilter === key) activeOpponentFilter = 'ALL';
+                saveState(true);
+                showToast("Opponent scouting card removed.", "info");
+            });
+        }
+
+        function setOpponentFilter(key) {
+            activeOpponentFilter = key;
+            renderOpponentSection();
+            renderMatchLogs();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function jumpToOpponentScouting(key) {
+            activeOpponentFilter = key;
+            switchTab('match');
+        }
+
         // Custom Toast Notifications
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
@@ -1101,7 +1418,7 @@
             toast.innerHTML = `
                 <div class="flex items-center gap-2">
                     <i data-lucide="${iconName}" class="w-4 h-4 flex-shrink-0"></i>
-                    <span>${message}</span>
+                    <span>${escapeHtml(message)}</span>
                 </div>
                 <button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100">
                     <i data-lucide="x" class="w-3.5 h-3.5"></i>
@@ -1260,9 +1577,11 @@
 
         // Master Render Function
         function renderAll() {
+            updateOpponentsDatalist();
             renderDashboard();
             renderChecklist();
             renderGymLogs();
+            renderOpponentSection();
             renderMatchLogs();
             renderEvaluationsStream();
             updateSyncBadge();
@@ -1290,11 +1609,15 @@
             const gymDone = document.getElementById('stat-gym-done');
             const matchAvg = document.getElementById('stat-match-avg');
             const navBadge = document.getElementById('nav-badge-tasks');
+            const oppBadge = document.getElementById('nav-badge-opponents');
 
             if (rPercent) rPercent.innerText = `${readinessPct}%`;
             if (tasksDone) tasksDone.innerText = `${completedTasks}/${totalTasks}`;
             if (gymDone) gymDone.innerText = appState.gymLogs.length;
             if (navBadge) navBadge.innerText = `${completedTasks}/${totalTasks}`;
+
+            const opponents = getAggregatedOpponents();
+            if (oppBadge) oppBadge.innerText = opponents.length;
 
             let avgRating = 0;
             if (appState.matchLogs.length > 0) {
@@ -1304,6 +1627,33 @@
                 avgRating = (sum / appState.matchLogs.length).toFixed(1);
             }
             if (matchAvg) matchAvg.innerText = avgRating > 0 ? `${avgRating}` : '0.0';
+
+            // Dashboard Repeat Opponents Preview
+            const oppPreview = document.getElementById('dashboard-opponents-preview');
+            if (oppPreview) {
+                if (opponents.length === 0) {
+                    oppPreview.innerHTML = `
+                        <div class="col-span-full bg-beige-muted border border-beige-border rounded-xl p-3 text-navy-muted flex items-center justify-between">
+                            <span>No repeat opponents logged yet. Enter an opponent's name when logging a match or AI evaluation!</span>
+                            <button onclick="openOpponentProfileModal()" class="px-2.5 py-1 bg-sage-primary text-white rounded-lg text-[11px] font-bold flex-shrink-0 ml-2">+ Add Opponent</button>
+                        </div>
+                    `;
+                } else {
+                    oppPreview.innerHTML = opponents.slice(0, 4).map(o => {
+                        const latestExp = o.experiments[0];
+                        return `
+                            <div onclick="jumpToOpponentScouting('${escapeHtml(o.key)}')" class="bg-beige-muted hover:bg-beige-border/70 border border-beige-border rounded-xl p-3 cursor-pointer transition-colors space-y-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-navy-deep">${escapeHtml(o.name)}</span>
+                                    <span class="text-[10px] font-mono bg-beige-card px-2 py-0.5 rounded border border-beige-border text-sage-dark font-semibold">${o.matchLogs.length + o.evalLogs.length} logs</span>
+                                </div>
+                                ${o.style ? `<div class="text-[11px] text-navy-muted truncate">${escapeHtml(o.style)}</div>` : ''}
+                                ${latestExp ? `<div class="text-[10px] text-sage-primary font-semibold truncate">Idea: ${escapeHtml(latestExp.idea)}</div>` : (o.nextIdea ? `<div class="text-[10px] text-navy-slate truncate">Next Idea: ${escapeHtml(o.nextIdea)}</div>` : '')}
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
 
             // Stealth Objective Display
             const stealth = STEALTH_GOALS[currentStealthIndex];
@@ -1345,15 +1695,21 @@
         // SIDEBAR SESSION EVALUATOR & AI ENGINE
         function fillPresetPrompt(num) {
             const textarea = document.getElementById('eval-session-notes');
+            const oppInput = document.getElementById('eval-opponent-name');
+            const ideaInput = document.getElementById('eval-tactical-idea');
             if (!textarea) return;
             if (num === 1) {
+                if (oppInput && !oppInput.value) oppInput.value = "Budi";
+                if (ideaInput && !ideaInput.value) ideaInput.value = "Hold <1m baseline vs moonball + drop shot";
                 textarea.value = "Played 3 sets of doubles today. Opponent kept hitting deep moonballs to my backhand followed by disguised drop shots. At 100kg, sprinting forward 14m repeatedly burned out my legs by set 2. Missed 3 backhands long when rushed.";
             } else if (num === 2) {
+                if (oppInput && !oppInput.value) oppInput.value = "Hendra";
+                if (ideaInput && !ideaInput.value) ideaInput.value = "Left-hand lead on high 2HB + 12:30 kick serve";
                 textarea.value = "Baseline practice session. Forehands felt great with Wilson RF01 Pro, but my 2-handed backhand kept sailing long whenever the ball bounced above shoulder height. Worked on topspin 2nd serve with 12:30 toss, shoulder felt fine.";
             }
         }
 
-        function generateLocalCoachEvaluation(sessionType, notes) {
+        function generateLocalCoachEvaluation(sessionType, notes, opponentName, tacticalIdea) {
             const text = notes.toLowerCase();
             const areas = [];
             const takeaways = [];
@@ -1382,11 +1738,6 @@
                 }
             }
 
-            if (text.includes('return') || text.includes('middle')) {
-                areas.push("Step 2 steps inside baseline on weak 2nd serves");
-                takeaways.push("Returning passively to the middle gives counterpunchers easy angles. Step inside on weak 2nd serves and drive deep crosscourt.");
-            }
-
             if (areas.length === 0) {
                 areas.push("Maintain <1m baseline court positioning");
                 areas.push("Execute early split-step before opponent contact");
@@ -1394,8 +1745,11 @@
                 takeaways.push("For your 29yo/100kg aggressive counterpunching profile with the Wilson RF01 Pro + Tour Bite 17g @ 51 lbs, dictating tempo from inside 1m of the baseline maximizes your heavy forehand weapon while conserving leg stamina.");
             }
 
+            const oppContext = opponentName ? ` vs ${opponentName}` : '';
+            const ideaContext = tacticalIdea ? ` Testing "${tacticalIdea}" gives you a clear tactical benchmark—track whether it draws shorter replies in your next set.` : '';
+
             return {
-                summary: `Evaluated ${sessionType}: Strong foundation with your RF01 Pro setup; tightening baseline depth discipline and early cue recognition will preserve energy for late sets.`,
+                summary: `Evaluated ${sessionType}${oppContext}: Strong foundation with your RF01 Pro setup; tightening baseline depth discipline and early cue recognition will preserve energy.${ideaContext}`,
                 areasOfImprovement: areas.slice(0, 3),
                 technicalTakeaways: takeaways.join(" "),
                 recommendedDrill: drill
@@ -1406,6 +1760,8 @@
             const notesEl = document.getElementById('eval-session-notes');
             const typeEl = document.getElementById('eval-type-input');
             const dateEl = document.getElementById('eval-date-input');
+            const oppEl = document.getElementById('eval-opponent-name');
+            const ideaEl = document.getElementById('eval-tactical-idea');
 
             if (!notesEl || !notesEl.value.trim()) {
                 showToast("Please enter session notes before evaluating.", "error");
@@ -1415,6 +1771,8 @@
             const sessionNotes = notesEl.value.trim();
             const sessionType = typeEl.value;
             const sessionDate = dateEl.value || new Date().toISOString().split('T')[0];
+            const opponentName = oppEl ? oppEl.value.trim() : '';
+            const tacticalIdea = ideaEl ? ideaEl.value.trim() : '';
 
             const btn = document.getElementById('btn-eval-ai');
             const badge = document.getElementById('eval-status-badge');
@@ -1430,7 +1788,7 @@
                 body.innerHTML = `
                     <div class="py-6 text-center space-y-2">
                         <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p class="text-xs text-sage-accent font-semibold">Analyzing footwork, 2HB mechanics &amp; drop-shot reaction...</p>
+                        <p class="text-xs text-sage-accent font-semibold">Analyzing footwork, matchup dynamics &amp; tactical idea...</p>
                     </div>
                 `;
             }
@@ -1438,18 +1796,18 @@
 
             let evalResult = null;
 
-            // If user provided a Gemini API Key, call Gemini 3 Flash live
             if (appState.geminiApiKey) {
-                const systemPrompt = `You are an elite tennis coach specializing in NTRP 4.0 intermediate singles strategy. Player Profile: 29yo, 100kg, 175cm athletic build, playing with Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs. Playstyle: Counterpuncher / Aggressive Baseliner. Analyze the provided user training session description. Return a valid JSON object matching this schema:
+                const systemPrompt = `You are an elite tennis coach specializing in NTRP 4.0 intermediate singles strategy. Player Profile: 29yo, 100kg, 175cm athletic build, playing with Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs. Playstyle: Counterpuncher / Aggressive Baseliner. Analyze the provided user training session description, opponent matchup, and tactical idea tested. Return a valid JSON object matching this schema:
 {
   "summary": "Concise 2-sentence tactical summary",
   "areasOfImprovement": ["Point 1", "Point 2", "Point 3"],
   "technicalTakeaways": "Detailed technical and biomechanical diagnosis tailored for a 100kg player...",
   "recommendedDrill": "Specific 15-minute targeted drill"
 }`;
+                const promptText = `Session Type: ${sessionType}\nOpponent Name: ${opponentName || 'Unspecified'}\nTactical Idea Tested: ${tacticalIdea || 'None specified'}\nSession Notes:\n"${sessionNotes}"`;
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${encodeURIComponent(appState.geminiApiKey)}`;
                 const payload = {
-                    contents: [{ parts: [{ text: `Session Type: ${sessionType}\nSession Notes:\n"${sessionNotes}"` }] }],
+                    contents: [{ parts: [{ text: promptText }] }],
                     systemInstruction: { parts: [{ text: systemPrompt }] },
                     generationConfig: {
                         responseMimeType: "application/json",
@@ -1487,10 +1845,9 @@
                 }
             }
 
-            // Fallback to built-in biomechanics coach engine if no API key or network fallback
             if (!evalResult) {
                 await new Promise(r => setTimeout(r, 450));
-                evalResult = generateLocalCoachEvaluation(sessionType, sessionNotes);
+                evalResult = generateLocalCoachEvaluation(sessionType, sessionNotes, opponentName, tacticalIdea);
             }
 
             btn.disabled = false;
@@ -1505,20 +1862,20 @@
                 body.className = "text-xs text-beige-muted space-y-3 text-left";
                 body.innerHTML = `
                     <div>
-                        <p class="text-sage-accent font-semibold leading-relaxed">${evalResult.summary}</p>
+                        <p class="text-sage-accent font-semibold leading-relaxed">${escapeHtml(evalResult.summary)}</p>
                     </div>
                     <div class="space-y-1.5 pt-1 border-t border-navy-slate">
                         <span class="text-[10px] uppercase font-bold text-navy-muted tracking-wider block">Areas of Improvement:</span>
                         <div class="flex flex-wrap gap-1.5">
-                            ${evalResult.areasOfImprovement.map(area => `<span class="px-2 py-0.5 bg-sage-primary/20 text-sage-accent border border-sage-primary/30 rounded text-[10px] font-medium">• ${area}</span>`).join('')}
+                            ${evalResult.areasOfImprovement.map(area => `<span class="px-2 py-0.5 bg-sage-primary/20 text-sage-accent border border-sage-primary/30 rounded text-[10px] font-medium">• ${escapeHtml(area)}</span>`).join('')}
                         </div>
                     </div>
                     <div class="pt-1 border-t border-navy-slate space-y-1 text-[11px] leading-relaxed">
                         <strong class="text-white block">Biomechanical Analysis:</strong>
-                        <p class="text-beige-muted/90">${evalResult.technicalTakeaways}</p>
+                        <p class="text-beige-muted/90">${escapeHtml(evalResult.technicalTakeaways)}</p>
                     </div>
                     <div class="bg-navy-slate p-2.5 rounded-lg border border-navy-muted/30 text-[11px]">
-                        <strong class="text-sage-accent">Recommended Drill:</strong> ${evalResult.recommendedDrill}
+                        <strong class="text-sage-accent">Recommended Drill:</strong> ${escapeHtml(evalResult.recommendedDrill)}
                     </div>
                 `;
             }
@@ -1527,6 +1884,8 @@
                 id: 'eval-' + Date.now(),
                 date: sessionDate,
                 type: sessionType,
+                opponentName,
+                tacticalIdea,
                 notes: sessionNotes,
                 result: evalResult
             };
@@ -1556,18 +1915,20 @@
             container.innerHTML = appState.evalLogs.map((item, idx) => `
                 <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 space-y-2 text-xs">
                     <div class="flex justify-between items-center pb-1 border-b border-beige-border">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-sage-primary font-mono">${item.date}</span>
-                            <span class="font-bold text-navy-deep">• ${item.type}</span>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="font-bold text-sage-primary font-mono">${escapeHtml(item.date)}</span>
+                            <span class="font-bold text-navy-deep">• ${escapeHtml(item.type)}</span>
+                            ${item.opponentName ? `<span class="px-1.5 py-0.5 bg-navy-deep text-beige-card rounded text-[10px] font-semibold">vs ${escapeHtml(item.opponentName)}</span>` : ''}
                         </div>
                         <button onclick="deleteEvalLog(${idx})" class="text-navy-muted hover:text-red-600 p-1">
                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                         </button>
                     </div>
-                    <div class="text-navy-slate italic text-[11px] line-clamp-2">"${item.notes}"</div>
+                    ${item.tacticalIdea ? `<div class="text-[11px] font-semibold text-sage-dark bg-sage-light px-2 py-1 rounded border border-sage-primary/20">Idea Tested: ${escapeHtml(item.tacticalIdea)}</div>` : ''}
+                    <div class="text-navy-slate italic text-[11px] line-clamp-2">"${escapeHtml(item.notes)}"</div>
                     ${item.result && item.result.areasOfImprovement ? `
                         <div class="flex flex-wrap gap-1 pt-1">
-                            ${item.result.areasOfImprovement.map(a => `<span class="px-2 py-0.5 bg-beige-card text-navy-deep border border-beige-border rounded text-[9px] font-semibold">${a}</span>`).join('')}
+                            ${item.result.areasOfImprovement.map(a => `<span class="px-2 py-0.5 bg-beige-card text-navy-deep border border-beige-border rounded text-[9px] font-semibold">${escapeHtml(a)}</span>`).join('')}
                         </div>
                     ` : ''}
                 </div>
@@ -1594,19 +1955,19 @@
 
             container.innerHTML = appState.checklist.map(task => `
                 <div class="bg-beige-card border border-beige-border hover:border-sage-primary/40 transition-colors rounded-2xl p-4 flex items-start justify-between gap-4 shadow-sm">
-                    <div class="flex items-start gap-3 cursor-pointer" onclick="toggleTask('${task.id}')">
+                    <div class="flex items-start gap-3 cursor-pointer" onclick="toggleTask('${escapeHtml(task.id)}')">
                         <div class="w-6 h-6 rounded-lg border mt-0.5 ${task.completed ? 'bg-sage-primary border-sage-primary text-white' : 'border-beige-border bg-beige-muted'} flex items-center justify-center flex-shrink-0 transition-colors">
                             ${task.completed ? '<i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>' : ''}
                         </div>
                         <div class="space-y-1">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <h4 class="text-sm font-bold ${task.completed ? 'line-through text-navy-muted' : 'text-navy-deep'}">${task.title}</h4>
-                                <span class="text-[10px] bg-beige-muted text-navy-muted border border-beige-border px-2 py-0.5 rounded font-mono">${task.category}</span>
+                                <h4 class="text-sm font-bold ${task.completed ? 'line-through text-navy-muted' : 'text-navy-deep'}">${escapeHtml(task.title)}</h4>
+                                <span class="text-[10px] bg-beige-muted text-navy-muted border border-beige-border px-2 py-0.5 rounded font-mono">${escapeHtml(task.category)}</span>
                             </div>
-                            <p class="text-xs text-navy-slate leading-relaxed">${task.subtext}</p>
+                            <p class="text-xs text-navy-slate leading-relaxed">${escapeHtml(task.subtext)}</p>
                         </div>
                     </div>
-                    <button onclick="deleteTask('${task.id}')" class="text-navy-muted hover:text-red-600 p-1.5 rounded-lg hover:bg-beige-muted transition-colors">
+                    <button onclick="deleteTask('${escapeHtml(task.id)}')" class="text-navy-muted hover:text-red-600 p-1.5 rounded-lg hover:bg-beige-muted transition-colors">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -1656,9 +2017,9 @@
             container.innerHTML = appState.gymLogs.map((log, idx) => `
                 <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 flex justify-between items-center text-xs">
                     <div class="space-y-0.5">
-                        <div class="font-bold text-navy-deep">${log.date} • ${log.routine} <span class="text-sage-primary font-mono">(RPE ${log.rpe}/10)</span></div>
-                        <div class="text-navy-slate">${log.exercises}</div>
-                        ${log.notes ? `<div class="text-[11px] text-navy-muted italic">"${log.notes}"</div>` : ''}
+                        <div class="font-bold text-navy-deep">${escapeHtml(log.date)} • ${escapeHtml(log.routine)} <span class="text-sage-primary font-mono">(RPE ${escapeHtml(log.rpe)}/10)</span></div>
+                        <div class="text-navy-slate">${escapeHtml(log.exercises)}</div>
+                        ${log.notes ? `<div class="text-[11px] text-navy-muted italic">"${escapeHtml(log.notes)}"</div>` : ''}
                     </div>
                     <button onclick="deleteGymLog(${idx})" class="text-navy-muted hover:text-red-600 p-1">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -1690,31 +2051,168 @@
             saveState(true);
         }
 
-        // Match Log Operations
-        function renderMatchLogs() {
-            const container = document.getElementById('match-logs-container');
+        // Opponent Scouting Section & Match Log Operations
+        function getOutcomeBadgeClass(outcome) {
+            if (!outcome) return 'bg-beige-muted text-navy-slate border-beige-border';
+            if (outcome.includes('Worked')) return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+            if (outcome.includes('Mixed')) return 'bg-amber-100 text-amber-800 border-amber-200';
+            if (outcome.includes("Didn't")) return 'bg-red-100 text-red-800 border-red-200';
+            return 'bg-sage-light text-sage-dark border-sage-primary/20';
+        }
+
+        function renderOpponentSection() {
+            const container = document.getElementById('opponent-cards-container');
+            const pillsContainer = document.getElementById('opponent-filter-pills');
+            const clearBtn = document.getElementById('btn-clear-opponent-filter');
             if (!container) return;
 
-            if (appState.matchLogs.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 bg-beige-card border border-beige-border rounded-2xl text-navy-muted text-xs">No match audits recorded. Audit your performance after your next hitting session!</div>`;
+            const opponents = getAggregatedOpponents();
+
+            if (clearBtn) {
+                if (activeOpponentFilter !== 'ALL') clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+
+            if (pillsContainer) {
+                const allBtnClass = activeOpponentFilter === 'ALL'
+                    ? 'bg-navy-deep text-white'
+                    : 'bg-beige-card text-navy-slate border border-beige-border hover:bg-beige-muted';
+                let pillsHtml = `<button onclick="setOpponentFilter('ALL')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${allBtnClass}">All (${appState.matchLogs.length})</button>`;
+
+                opponents.forEach(o => {
+                    const isSelected = activeOpponentFilter === o.key;
+                    const cls = isSelected
+                        ? 'bg-sage-primary text-white'
+                        : 'bg-beige-card text-navy-slate border border-beige-border hover:bg-beige-muted';
+                    pillsHtml += `<button onclick="setOpponentFilter('${escapeHtml(o.key)}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${cls}">${escapeHtml(o.name)} (${o.matchLogs.length})</button>`;
+                });
+                pillsContainer.innerHTML = pillsHtml;
+            }
+
+            if (opponents.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-6 bg-beige-muted border border-beige-border rounded-xl text-navy-muted text-xs space-y-2">
+                        <p>No opponents tracked yet. Add a scouting card or enter an opponent's name when logging a match audit.</p>
+                        <button onclick="openOpponentProfileModal()" class="px-3 py-1.5 bg-sage-primary text-white font-bold rounded-lg text-xs">+ Create First Opponent Card</button>
+                    </div>
+                `;
                 return;
             }
 
-            container.innerHTML = appState.matchLogs.map((log, idx) => `
-                <div class="bg-beige-card border border-beige-border rounded-2xl p-4 space-y-2 text-xs">
-                    <div class="flex justify-between items-center pb-2 border-b border-beige-border">
-                        <span class="font-bold text-navy-deep">${log.date} • ${log.type} ${log.opponentStyle ? `(vs ${log.opponentStyle})` : ''}</span>
-                        <button onclick="deleteMatchLog(${idx})" class="text-navy-muted hover:text-red-600">
+            container.innerHTML = opponents.map(o => {
+                const mc = o.matchLogs.length;
+                const avgDrop = mc > 0 ? (o.matchLogs.reduce((s, m) => s + Number(m.ratings.dropshot || 0), 0) / mc).toFixed(1) : '-';
+                const avgDepth = mc > 0 ? (o.matchLogs.reduce((s, m) => s + Number(m.ratings.positioning || 0), 0) / mc).toFixed(1) : '-';
+                const avgBh = mc > 0 ? (o.matchLogs.reduce((s, m) => s + Number(m.ratings.backhand || 0), 0) / mc).toFixed(1) : '-';
+                const avgServe = mc > 0 ? (o.matchLogs.reduce((s, m) => s + Number(m.ratings.serve || 0), 0) / mc).toFixed(1) : '-';
+                const isSelected = activeOpponentFilter === o.key;
+
+                return `
+                    <div onclick="setOpponentFilter('${escapeHtml(o.key)}')" class="bg-beige-muted border ${isSelected ? 'border-sage-primary ring-2 ring-sage-primary/30' : 'border-beige-border hover:border-sage-primary/50'} rounded-xl p-4 space-y-3 cursor-pointer transition-all flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <div class="font-extrabold text-sm text-navy-deep flex items-center gap-1.5">
+                                        <span>${escapeHtml(o.name)}</span>
+                                        <span class="text-[10px] font-mono bg-navy-deep text-beige-card px-1.5 py-0.5 rounded">${mc} audits</span>
+                                    </div>
+                                    <div class="text-[11px] text-navy-muted">${escapeHtml(o.style || 'Playstyle not set')}</div>
+                                </div>
+                                <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+                                    <button onclick="openOpponentProfileModal('${escapeHtml(o.key)}')" title="Edit Scouting Card" class="p-1 text-navy-muted hover:text-navy-deep rounded">
+                                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                    <button onclick="deleteOpponentProfile('${escapeHtml(o.key)}')" title="Remove Scouting Card" class="p-1 text-navy-muted hover:text-red-600 rounded">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            ${mc > 0 ? `
+                                <div class="grid grid-cols-4 gap-1 text-[10px] text-center font-mono">
+                                    <div class="bg-beige-card py-1 rounded border border-beige-border">Drop: <strong>${avgDrop}</strong></div>
+                                    <div class="bg-beige-card py-1 rounded border border-beige-border">Depth: <strong>${avgDepth}</strong></div>
+                                    <div class="bg-beige-card py-1 rounded border border-beige-border">2HB: <strong>${avgBh}</strong></div>
+                                    <div class="bg-beige-card py-1 rounded border border-beige-border">2nd: <strong>${avgServe}</strong></div>
+                                </div>
+                            ` : ''}
+
+                            ${o.experiments.length > 0 ? `
+                                <div class="space-y-1 pt-1">
+                                    <div class="text-[10px] font-bold uppercase tracking-wider text-navy-muted">Tested Tactical Ideas:</div>
+                                    ${o.experiments.slice(0, 2).map(exp => `
+                                        <div class="flex items-center justify-between gap-1.5 bg-beige-card px-2 py-1 rounded border border-beige-border text-[11px]">
+                                            <span class="truncate text-navy-deep font-medium">${escapeHtml(exp.idea)}</span>
+                                            <span class="px-1.5 py-0.5 rounded border text-[9px] font-bold flex-shrink-0 ${getOutcomeBadgeClass(exp.outcome)}">${escapeHtml(exp.outcome)}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+
+                            ${o.nextIdea ? `
+                                <div class="bg-sage-light/80 border border-sage-primary/20 rounded-lg px-2.5 py-1.5 text-[11px] text-sage-dark">
+                                    <strong>Next Idea:</strong> ${escapeHtml(o.nextIdea)}
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        ${o.scoutingNotes ? `<div class="text-[11px] text-navy-slate italic border-t border-beige-border pt-2 line-clamp-2">"${escapeHtml(o.scoutingNotes)}"</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderMatchLogs() {
+            const container = document.getElementById('match-logs-container');
+            const heading = document.getElementById('match-audits-heading');
+            if (!container) return;
+
+            const filtered = appState.matchLogs
+                .map((log, originalIdx) => ({ log, originalIdx }))
+                .filter(({ log }) => {
+                    if (activeOpponentFilter === 'ALL') return true;
+                    return (log.opponentName || '').trim().toLowerCase() === activeOpponentFilter;
+                });
+
+            if (heading) {
+                heading.innerText = activeOpponentFilter === 'ALL'
+                    ? `Match Audit History (${filtered.length})`
+                    : `Match Audits vs ${filtered[0]?.log?.opponentName || activeOpponentFilter} (${filtered.length})`;
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 bg-beige-card border border-beige-border rounded-2xl text-navy-muted text-xs">No match audits recorded for this filter. Log a match audit to track tactical ideas!</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(({ log, originalIdx }) => `
+                <div class="bg-beige-card border border-beige-border rounded-2xl p-4 space-y-2.5 text-xs shadow-xs">
+                    <div class="flex justify-between items-center pb-2 border-b border-beige-border flex-wrap gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-bold text-navy-deep">${escapeHtml(log.date)} • ${escapeHtml(log.type)}</span>
+                            ${log.opponentName ? `<span class="px-2 py-0.5 bg-navy-deep text-beige-card rounded-md text-[11px] font-bold">vs ${escapeHtml(log.opponentName)}</span>` : ''}
+                            ${log.opponentStyle ? `<span class="text-navy-muted">(${escapeHtml(log.opponentStyle)})</span>` : ''}
+                        </div>
+                        <button onclick="deleteMatchLog(${originalIdx})" class="text-navy-muted hover:text-red-600 p-1">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>
+                    ${log.tacticalIdea ? `
+                        <div class="flex items-center justify-between gap-2 bg-beige-muted px-3 py-2 rounded-xl border border-beige-border">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase text-navy-muted block">Tactical Idea Tested</span>
+                                <span class="font-semibold text-navy-deep">${escapeHtml(log.tacticalIdea)}</span>
+                            </div>
+                            ${log.ideaOutcome && log.ideaOutcome !== 'No Experiment' ? `<span class="px-2 py-0.5 rounded-md border text-[10px] font-bold ${getOutcomeBadgeClass(log.ideaOutcome)}">${escapeHtml(log.ideaOutcome)}</span>` : ''}
+                        </div>
+                    ` : ''}
                     <div class="grid grid-cols-4 gap-2 text-[11px] text-center font-mono">
-                        <div class="bg-beige-muted p-1.5 rounded">Drop: ${log.ratings.dropshot}/5</div>
-                        <div class="bg-beige-muted p-1.5 rounded">Depth: ${log.ratings.positioning}/5</div>
-                        <div class="bg-beige-muted p-1.5 rounded">2HB: ${log.ratings.backhand}/5</div>
-                        <div class="bg-beige-muted p-1.5 rounded">Serve: ${log.ratings.serve}/5</div>
+                        <div class="bg-beige-muted p-1.5 rounded">Drop: ${escapeHtml(log.ratings.dropshot)}/5</div>
+                        <div class="bg-beige-muted p-1.5 rounded">Depth: ${escapeHtml(log.ratings.positioning)}/5</div>
+                        <div class="bg-beige-muted p-1.5 rounded">2HB: ${escapeHtml(log.ratings.backhand)}/5</div>
+                        <div class="bg-beige-muted p-1.5 rounded">Serve: ${escapeHtml(log.ratings.serve)}/5</div>
                     </div>
-                    ${log.notes ? `<div class="text-navy-slate italic">"${log.notes}"</div>` : ''}
+                    ${log.notes ? `<div class="text-navy-slate italic">"${escapeHtml(log.notes)}"</div>` : ''}
                 </div>
             `).join('');
         }
@@ -1723,17 +2221,37 @@
             e.preventDefault();
             const date = document.getElementById('match-date-input').value;
             const type = document.getElementById('match-type-input').value;
+            const opponentName = document.getElementById('match-opponent-name-input').value.trim();
             const opponentStyle = document.getElementById('match-opponent-input').value.trim();
+            const tacticalIdea = document.getElementById('match-tactical-idea-input').value.trim();
+            const ideaOutcome = document.getElementById('match-idea-outcome-input').value;
             const dropshot = document.getElementById('rate-input-dropshot').value;
             const positioning = document.getElementById('rate-input-positioning').value;
             const backhand = document.getElementById('rate-input-backhand').value;
             const serve = document.getElementById('rate-input-serve').value;
             const notes = document.getElementById('match-notes-input').value.trim();
 
+            if (opponentName) {
+                const key = opponentName.toLowerCase();
+                if (!appState.opponentProfiles[key]) {
+                    appState.opponentProfiles[key] = {
+                        name: opponentName,
+                        style: opponentStyle,
+                        nextIdea: '',
+                        scoutingNotes: ''
+                    };
+                } else if (opponentStyle && !appState.opponentProfiles[key].style) {
+                    appState.opponentProfiles[key].style = opponentStyle;
+                }
+            }
+
             appState.matchLogs.unshift({
                 date,
                 type,
+                opponentName,
                 opponentStyle,
+                tacticalIdea,
+                ideaOutcome,
                 ratings: { dropshot, positioning, backhand, serve },
                 notes
             });
@@ -1741,7 +2259,11 @@
             closeModal('match-log-modal');
             document.getElementById('match-log-form').reset();
             document.getElementById('match-date-input').value = new Date().toISOString().split('T')[0];
-            showToast("Match audit logged!", "success");
+            document.getElementById('rate-val-dropshot').innerText = '4 / 5';
+            document.getElementById('rate-val-positioning').innerText = '4 / 5';
+            document.getElementById('rate-val-backhand').innerText = '3 / 5';
+            document.getElementById('rate-val-serve').innerText = '4 / 5';
+            showToast(opponentName ? `Match audit vs ${opponentName} logged!` : "Match audit logged!", "success");
         }
 
         function deleteMatchLog(idx) {
@@ -1769,7 +2291,7 @@
 
         function exportJSON() {
             const exportObj = { ...appState };
-            delete exportObj.geminiApiKey; // Keep API key private on local device
+            delete exportObj.geminiApiKey;
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
             const anchor = document.createElement('a');
             anchor.setAttribute("href", dataStr);
@@ -1805,9 +2327,14 @@
 
         function exportCSV() {
             let csv = "data:text/csv;charset=utf-8,";
-            csv += "--- AI SESSION EVALUATIONS ---\nDate,Type,Notes,Summary\n";
+            csv += "--- MATCH AUDITS & TACTICAL EXPERIMENTS ---\nDate,Type,Opponent,Style,Tactical Idea,Outcome,Drop,Depth,2HB,2nd Serve,Notes\n";
+            appState.matchLogs.forEach(m => {
+                const r = m.ratings || {};
+                csv += `"${m.date}","${m.type}","${(m.opponentName || '').replace(/"/g, '""')}","${(m.opponentStyle || '').replace(/"/g, '""')}","${(m.tacticalIdea || '').replace(/"/g, '""')}","${(m.ideaOutcome || '').replace(/"/g, '""')}",${r.dropshot || ''},${r.positioning || ''},${r.backhand || ''},${r.serve || ''},"${(m.notes || '').replace(/"/g, '""')}"\n`;
+            });
+            csv += "\n--- AI SESSION EVALUATIONS ---\nDate,Type,Opponent,Tactical Idea,Notes,Summary\n";
             appState.evalLogs.forEach(e => {
-                csv += `"${e.date}","${e.type}","${(e.notes || '').replace(/"/g, '""')}","${(e.result?.summary || '').replace(/"/g, '""')}"\n`;
+                csv += `"${e.date}","${e.type}","${(e.opponentName || '').replace(/"/g, '""')}","${(e.tacticalIdea || '').replace(/"/g, '""')}","${(e.notes || '').replace(/"/g, '""')}","${(e.result?.summary || '').replace(/"/g, '""')}"\n`;
             });
             csv += "\n--- GYM LOGS ---\nDate,Routine,Exercises,RPE\n";
             appState.gymLogs.forEach(g => {
@@ -1835,17 +2362,16 @@
             if (pushBtn) pushBtn.disabled = true;
 
             try {
-                // Omit sensitive local-only geminiApiKey from cloud payload
                 const payloadToSync = {
                     targetMatchday: appState.targetMatchday,
                     checklist: appState.checklist,
                     gymLogs: appState.gymLogs,
                     matchLogs: appState.matchLogs,
                     evalLogs: appState.evalLogs,
+                    opponentProfiles: appState.opponentProfiles,
                     stealthCompletedToday: appState.stealthCompletedToday
                 };
 
-                // Use text/plain;charset=utf-8 to avoid Google Apps Script CORS OPTIONS preflight failure
                 const res = await fetch(url, {
                     method: 'POST',
                     redirect: 'follow',
@@ -1857,7 +2383,7 @@
                 if (result && result.status === 'success') {
                     appState.lastSynced = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     saveState(false);
-                    if (!silent) showToast("Data pushed & synced to Google Sheets!", "success");
+                    if (!silent) showToast("Data & Opponents synced to Google Sheets!", "success");
                 } else {
                     throw new Error(result?.message || "Unexpected Apps Script response");
                 }
@@ -1911,13 +2437,14 @@
                         gymLogs: Array.isArray(cloudData.gymLogs) ? cloudData.gymLogs : appState.gymLogs,
                         matchLogs: Array.isArray(cloudData.matchLogs) ? cloudData.matchLogs : appState.matchLogs,
                         evalLogs: Array.isArray(cloudData.evalLogs) ? cloudData.evalLogs : appState.evalLogs,
+                        opponentProfiles: (cloudData.opponentProfiles && typeof cloudData.opponentProfiles === 'object') ? cloudData.opponentProfiles : appState.opponentProfiles,
                         stealthCompletedToday: cloudData.stealthCompletedToday !== undefined ? cloudData.stealthCompletedToday : appState.stealthCompletedToday,
                         webhookUrl: url,
                         lastSynced: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     };
                     saveState(false);
                     initCountdown();
-                    showToast("Pulled latest state from Google Sheets!", "success");
+                    showToast("Pulled latest state & opponents from Google Sheets!", "success");
                     closeModal('sync-modal');
                 } else {
                     throw new Error("Unrecognized cloud payload format. Ensure updated Code.gs is deployed.");
@@ -1931,7 +2458,7 @@
         }
 
         function confirmResetData() {
-            showConfirmModal("Reset Application Data", "This will wipe all custom logs and task progress back to defaults. Continue?", () => {
+            showConfirmModal("Reset Application Data", "This will wipe all custom logs, opponents, and task progress back to defaults. Continue?", () => {
                 localStorage.removeItem(STORAGE_KEY);
                 appState = {
                     targetMatchday: "2026-11-15",
@@ -1939,12 +2466,14 @@
                     gymLogs: [],
                     matchLogs: [],
                     evalLogs: [],
+                    opponentProfiles: {},
                     stealthCompletedToday: false,
                     webhookUrl: DEFAULT_WEBHOOK_URL,
                     autoSync: true,
                     geminiApiKey: "",
                     lastSynced: null
                 };
+                activeOpponentFilter = 'ALL';
                 saveState(false);
                 initCountdown();
                 closeModal('sync-modal');
