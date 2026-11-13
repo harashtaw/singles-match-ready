@@ -148,7 +148,7 @@
                 <nav class="hidden md:flex items-center gap-1 bg-beige-muted p-1.5 rounded-xl border border-beige-border">
                     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn bg-navy-deep text-white flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                        <span>Dashboard & Evaluator</span>
+                        <span>Dashboard &amp; AI Log</span>
                     </button>
                     <button onclick="switchTab('checklist')" id="nav-checklist" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="check-square" class="w-4 h-4"></i>
@@ -161,8 +161,8 @@
                     </button>
                     <button onclick="switchTab('match')" id="nav-match" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="users" class="w-4 h-4"></i>
-                        <span>Opponents & Audits</span>
-                        <span id="nav-badge-opponents" class="bg-navy-slate text-beige-card text-xs px-2 py-0.5 rounded-full font-mono">0</span>
+                        <span>Opponents &amp; Logs</span>
+                        <span id="nav-badge-sessions" class="bg-navy-slate text-beige-card text-xs px-2 py-0.5 rounded-full font-mono">0</span>
                     </button>
                     <button onclick="switchTab('playbook')" id="nav-playbook" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="book-open" class="w-4 h-4"></i>
@@ -172,9 +172,9 @@
 
                 <!-- Action Controls -->
                 <div class="flex items-center gap-2">
-                    <button onclick="openModal('sync-modal')" title="Data Management & Sync Center" class="bg-beige-muted hover:bg-beige-border text-navy-deep font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl border border-beige-border transition-all flex items-center gap-1.5">
+                    <button onclick="openModal('sync-modal')" title="Data Management & Google Sheets Setup" class="bg-beige-muted hover:bg-beige-border text-navy-deep font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl border border-beige-border transition-all flex items-center gap-1.5">
                         <i data-lucide="refresh-cw" class="w-4 h-4 text-sage-primary"></i>
-                        <span class="hidden sm:inline">Sync & Data</span>
+                        <span class="hidden sm:inline">Sync &amp; Setup</span>
                     </button>
                     <button onclick="openModal('quick-log-modal')" class="bg-sage-primary text-white hover:bg-sage-dark font-bold text-xs sm:text-sm px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-md shadow-sage-primary/20">
                         <i data-lucide="plus-circle" class="w-4 h-4"></i>
@@ -200,7 +200,7 @@
             </button>
             <button onclick="switchTab('match')" id="mobile-nav-match" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
                 <i data-lucide="users" class="w-3.5 h-3.5"></i>
-                <span>Opponents & Audits</span>
+                <span>Opponents &amp; Logs</span>
             </button>
             <button onclick="switchTab('playbook')" id="mobile-nav-playbook" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
                 <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
@@ -211,7 +211,7 @@
 
     <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
-        <!-- TAB 1: MAIN SPLIT DASHBOARD + SIDE EVALUATION PANEL -->
+        <!-- TAB 1: MAIN SPLIT DASHBOARD + UNIFIED SESSION LOG & AI COACH -->
         <section id="tab-dashboard" class="space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <!-- LEFT COLUMN: Workspace, Readiness & Stealth Goals (7 Cols) -->
@@ -336,11 +336,11 @@
                                 </span>
                                 <div>
                                     <h3 class="text-xs font-extrabold text-navy-deep uppercase tracking-wider">Repeat Opponent Matchup Tracker</h3>
-                                    <p class="text-[11px] text-navy-muted">Click an opponent to inspect scouting notes &amp; tested tactical ideas</p>
+                                    <p class="text-[11px] text-navy-muted">Click an opponent to inspect scouting notes &amp; unified AI logs</p>
                                 </div>
                             </div>
                             <button onclick="switchTab('match')" class="text-xs font-bold text-sage-primary hover:text-sage-dark flex items-center gap-1">
-                                <span>Scouting Lab</span>
+                                <span>Full Logbook</span>
                                 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
@@ -382,7 +382,7 @@
                     </div>
                 </div>
 
-                <!-- RIGHT COLUMN: SIDEBAR SESSION LOGGING & AI EVALUATION (5 Cols) -->
+                <!-- RIGHT COLUMN: UNIFIED SESSION LOG & AI COACH (5 Cols) -->
                 <div class="lg:col-span-5 bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-5">
                     <div class="flex items-center justify-between pb-3 border-b border-beige-border">
                         <div class="flex items-center gap-2">
@@ -390,14 +390,14 @@
                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
                             </span>
                             <div>
-                                <h3 class="text-sm font-extrabold text-navy-deep">Session Evaluation &amp; AI Coach</h3>
-                                <p class="text-[11px] text-navy-muted">Log opponent matchup, test ideas &amp; analyze</p>
+                                <h3 class="text-sm font-extrabold text-navy-deep">Unified Session Log &amp; AI Coach</h3>
+                                <p class="text-[11px] text-navy-muted">One synchronized log with built-in AI tactical coaching</p>
                             </div>
                         </div>
                         <span id="ai-engine-badge" class="text-[10px] bg-sage-primary/20 text-sage-dark px-2 py-0.5 rounded font-mono font-bold">Coach AI</span>
                     </div>
 
-                    <!-- Quick Session Logger Input Form -->
+                    <!-- Unified Session Logger Form -->
                     <div class="space-y-3">
                         <!-- AI Analysis Model Selector & Live Availability Check -->
                         <div class="bg-beige-muted border border-beige-border rounded-xl p-3 space-y-2">
@@ -435,84 +435,161 @@
                             </div>
                         </div>
 
+                        <!-- Row 1: Session Type & Date -->
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-[11px] font-bold text-navy-deep mb-1">Session Type</label>
-                                <select id="eval-type-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
-                                    <option value="Group Play / Doubles">Group Play / Doubles</option>
+                                <select id="session-type-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
                                     <option value="Singles Practice Match">Singles Practice Match</option>
+                                    <option value="Group Play / Doubles">Group Play / Doubles</option>
                                     <option value="Baseline Hitting Drill">Baseline Hitting Drill</option>
-                                    <option value="Gym Workout Session">Gym Workout Session</option>
+                                    <option value="Serve & Return Session">Serve &amp; Return Session</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-navy-deep mb-1">Date</label>
-                                <input type="date" id="eval-date-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                                <input type="date" id="session-date-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
                             </div>
                         </div>
 
-                        <!-- Opponent Name & Tactical Idea Inputs -->
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="block text-[11px] font-bold text-navy-deep mb-1">Opponent Name</label>
-                                <input type="text" id="eval-opponent-name" list="opponents-datalist" placeholder="e.g. Budi / Andi"
+                        <!-- Row 2: Opponent Name & Style / Scoreline -->
+                        <div class="grid grid-cols-12 gap-2">
+                            <div class="col-span-5">
+                                <label class="block text-[11px] font-bold text-navy-deep mb-1">Opponent</label>
+                                <input type="text" id="session-opponent-name" list="opponents-datalist" oninput="autoFillSidebarOpponent(this.value)" placeholder="e.g. Budi"
                                        class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
                             </div>
-                            <div>
+                            <div class="col-span-4">
+                                <label class="block text-[11px] font-bold text-navy-deep mb-1">Style</label>
+                                <input type="text" id="session-opponent-style" placeholder="e.g. Drop-shotter"
+                                       class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                            </div>
+                            <div class="col-span-3">
+                                <label class="block text-[11px] font-bold text-navy-deep mb-1">Score</label>
+                                <input type="text" id="session-scoreline" placeholder="6-4, 4-6"
+                                       class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Tactical Idea Tested & Outcome -->
+                        <div class="grid grid-cols-12 gap-2">
+                            <div class="col-span-8">
                                 <label class="block text-[11px] font-bold text-navy-deep mb-1">Tactical Idea Tested</label>
-                                <input type="text" id="eval-tactical-idea" placeholder="e.g. Heavy loop to BH"
+                                <input type="text" id="session-tactical-idea" placeholder="e.g. Heavy loop to BH + <1m line"
                                        class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                            </div>
+                            <div class="col-span-4">
+                                <label class="block text-[11px] font-bold text-navy-deep mb-1">Outcome</label>
+                                <select id="session-idea-outcome" class="w-full bg-beige-muted border border-beige-border rounded-xl px-2 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                                    <option value="Worked Well">Worked Well</option>
+                                    <option value="Mixed / Needs Tweak">Needs Tweak</option>
+                                    <option value="Didn't Work">Didn't Work</option>
+                                    <option value="Testing / Baseline">Baseline</option>
+                                </select>
                             </div>
                         </div>
 
+                        <!-- Collapsible Compact Tactical Ratings (1-5) -->
+                        <details class="bg-beige-muted border border-beige-border rounded-xl p-2.5 group" open>
+                            <summary class="text-[11px] font-bold text-navy-deep cursor-pointer flex items-center justify-between select-none">
+                                <span class="flex items-center gap-1.5">
+                                    <i data-lucide="sliders" class="w-3.5 h-3.5 text-sage-primary"></i>
+                                    <span>Tactical Execution Ratings (1–5)</span>
+                                </span>
+                                <span id="sidebar-ratings-summary" class="font-mono text-[10px] text-sage-dark bg-sage-light px-2 py-0.5 rounded">Avg 3.8/5</span>
+                            </summary>
+                            <div class="grid grid-cols-2 gap-x-3 gap-y-2 pt-2.5 mt-2 border-t border-beige-border/80 text-[11px]">
+                                <div>
+                                    <div class="flex justify-between text-navy-slate mb-0.5">
+                                        <span>Drop-Shot Brake</span>
+                                        <span id="sb-val-dropshot" class="font-bold text-sage-primary">4/5</span>
+                                    </div>
+                                    <input type="range" min="1" max="5" value="4" id="sb-rate-dropshot" oninput="updateSidebarRatingLabels()" class="w-full accent-sage-primary h-1.5">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-navy-slate mb-0.5">
+                                        <span>Baseline &lt;1m</span>
+                                        <span id="sb-val-positioning" class="font-bold text-sage-primary">4/5</span>
+                                    </div>
+                                    <input type="range" min="1" max="5" value="4" id="sb-rate-positioning" oninput="updateSidebarRatingLabels()" class="w-full accent-sage-primary h-1.5">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-navy-slate mb-0.5">
+                                        <span>2HB Depth</span>
+                                        <span id="sb-val-backhand" class="font-bold text-sage-primary">3/5</span>
+                                    </div>
+                                    <input type="range" min="1" max="5" value="3" id="sb-rate-backhand" oninput="updateSidebarRatingLabels()" class="w-full accent-sage-primary h-1.5">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-navy-slate mb-0.5">
+                                        <span>2nd Serve / Cuff</span>
+                                        <span id="sb-val-serve" class="font-bold text-sage-primary">4/5</span>
+                                    </div>
+                                    <input type="range" min="1" max="5" value="4" id="sb-rate-serve" oninput="updateSidebarRatingLabels()" class="w-full accent-sage-primary h-1.5">
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Session Notes -->
                         <div>
-                            <label class="block text-[11px] font-bold text-navy-deep mb-1">Raw Session Description</label>
-                            <textarea id="eval-session-notes" rows="4" placeholder="Describe rallies, how the tactical idea worked against this opponent, drop shots, or backhand errors..."
+                            <label class="block text-[11px] font-bold text-navy-deep mb-1">Session Notes &amp; Rally Observations</label>
+                            <textarea id="session-notes-input" rows="3" placeholder="Describe rallies, how the tactical idea worked, drop-shot sprints, or 2HB depth..."
                                       class="w-full bg-beige-muted border border-beige-border rounded-xl p-3 text-xs text-navy-deep focus:outline-none focus:border-sage-primary leading-relaxed resize-none"></textarea>
                         </div>
+
                         <div class="flex gap-1.5 flex-wrap">
                             <button type="button" onclick="fillPresetPrompt(1)" class="px-2 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-[10px] rounded border border-beige-border">
-                                🎾 Drop Shot Sprint Fatigue
+                                🎾 Sample: Budi Drop-Shot Test
                             </button>
                             <button type="button" onclick="fillPresetPrompt(2)" class="px-2 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-[10px] rounded border border-beige-border">
-                                🎾 2HB Flying Long Fix
+                                🎾 Sample: Andi 2HB Loop Fix
                             </button>
                         </div>
-                        <button type="button" onclick="evaluateSessionWithAI()" id="btn-eval-ai" class="w-full py-2.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center justify-center gap-2">
-                            <i data-lucide="bot" class="w-4 h-4"></i>
-                            <span>Evaluate Session with AI</span>
-                        </button>
+
+                        <!-- Unified Save & Analyze Buttons -->
+                        <div class="grid grid-cols-12 gap-2 pt-0.5">
+                            <button type="button" onclick="submitUnifiedSession(true)" id="btn-save-analyze" class="col-span-8 py-2.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center justify-center gap-1.5">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                <span>Save &amp; Analyze with AI</span>
+                            </button>
+                            <button type="button" onclick="submitUnifiedSession(false)" id="btn-save-only" class="col-span-4 py-2.5 bg-navy-deep hover:bg-navy-slate text-beige-card font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-1">
+                                <i data-lucide="save" class="w-3.5 h-3.5 text-sage-accent"></i>
+                                <span>Save Only</span>
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Instant AI Evaluation Output Card -->
+                    <!-- Parsed AI Coaching Breakdown Card -->
                     <div id="ai-evaluation-output" class="bg-navy-deep text-beige-card border border-navy-slate rounded-xl p-4 shadow-md space-y-3">
                         <div class="flex items-center justify-between pb-2 border-b border-navy-slate">
                             <span class="text-xs font-bold text-sage-accent flex items-center gap-1.5">
                                 <i data-lucide="award" class="w-4 h-4"></i>
-                                Instant AI Evaluation Result
+                                Parsed AI Coaching Breakdown
                             </span>
                             <span id="eval-status-badge" class="text-[10px] bg-navy-slate text-navy-muted px-2 py-0.5 rounded font-mono">Ready</span>
                         </div>
-                        <div id="eval-output-body" class="text-xs text-beige-muted space-y-2 min-h-[120px] flex items-center justify-center text-center">
+                        <div id="eval-output-body" class="text-xs text-beige-muted space-y-2 min-h-[110px] flex items-center justify-center text-center">
                             <div class="space-y-1 p-2">
                                 <i data-lucide="file-text" class="w-6 h-6 mx-auto text-navy-muted"></i>
-                                <p>Enter your session notes above and click <strong>"Evaluate Session with AI"</strong>.</p>
-                                <p class="text-[10px] text-navy-muted">Opponent matchup notes &amp; tactical adjustments will render here.</p>
+                                <p>Log your session above and click <strong>"Save &amp; Analyze with AI"</strong>.</p>
+                                <p class="text-[10px] text-navy-muted">Your ratings, opponent scouting &amp; parsed AI coaching save together in one entry.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Recent Evaluations Stream -->
-                    <div class="space-y-3 pt-2">
+                    <!-- Unified Recent Sessions Stream -->
+                    <div class="space-y-2.5 pt-1">
                         <div class="flex justify-between items-center">
                             <h4 class="text-xs font-extrabold text-navy-deep flex items-center gap-1.5">
                                 <i data-lucide="history" class="w-3.5 h-3.5 text-sage-primary"></i>
-                                Recent Evaluated Sessions Stream
+                                Recent Synchronized Sessions
                             </h4>
-                            <span id="eval-stream-count" class="text-[10px] font-mono text-navy-muted">0 logs</span>
+                            <button type="button" onclick="switchTab('match')" class="text-[10px] font-bold text-sage-primary hover:underline">
+                                View All (<span id="eval-stream-count">0</span>) →
+                            </button>
                         </div>
-                        <div id="evaluations-stream-container" class="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
-                            <!-- Dynamic Stream Items -->
+                        <div id="evaluations-stream-container" class="space-y-2.5 max-h-[340px] overflow-y-auto pr-1">
+                            <!-- Dynamic Unified Stream Items -->
                         </div>
                     </div>
                 </div>
@@ -634,16 +711,16 @@
             </div>
         </section>
 
-        <!-- TAB 4: OPPONENT SCOUTING & MATCH AUDIT LOG -->
+        <!-- TAB 4: OPPONENT SCOUTING & UNIFIED SESSION LOGBOOK -->
         <section id="tab-match" class="space-y-6 hidden">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-beige-card border border-beige-border p-6 rounded-2xl shadow-sm">
                 <div>
                     <h2 class="text-xl font-extrabold text-navy-deep flex items-center gap-2">
                         <i data-lucide="users" class="w-6 h-6 text-sage-primary"></i>
-                        Opponent Scouting Lab &amp; Match Audit Log
+                        Opponent Scouting &amp; Unified Session Logbook
                     </h2>
                     <p class="text-xs sm:text-sm text-navy-muted mt-1">
-                        Track repeat opponents, store scouting notes, and log which tactical ideas worked or need adjustment.
+                        Every match &amp; practice session synchronized in one place with tactical ratings, experiment outcomes, and parsed AI coaching.
                     </p>
                 </div>
                 <div class="flex flex-wrap gap-2">
@@ -651,9 +728,9 @@
                         <i data-lucide="user-plus" class="w-4 h-4 text-sage-accent"></i>
                         <span>Add / Edit Opponent</span>
                     </button>
-                    <button onclick="openModal('match-log-modal')" class="px-4 py-2.5 bg-sage-primary text-white hover:bg-sage-dark font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center gap-2">
+                    <button onclick="switchTab('dashboard'); document.getElementById('session-notes-input').focus();" class="px-4 py-2.5 bg-sage-primary text-white hover:bg-sage-dark font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center gap-2">
                         <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                        <span>Log Match Audit</span>
+                        <span>New Session Log</span>
                     </button>
                 </div>
             </div>
@@ -666,7 +743,7 @@
                             <i data-lucide="crosshair" class="w-4 h-4 text-sage-primary"></i>
                             Tracked Opponents &amp; Tactical Experiments
                         </h3>
-                        <p class="text-xs text-navy-muted">Click any opponent card to filter your match &amp; AI logs below</p>
+                        <p class="text-xs text-navy-muted">Click any opponent card to filter your synchronized session logs below</p>
                     </div>
                     <button id="btn-clear-opponent-filter" onclick="setOpponentFilter('ALL')" class="hidden px-3 py-1 bg-sage-light text-sage-dark border border-sage-primary/30 rounded-lg text-xs font-bold">
                         Show All Opponents
@@ -677,19 +754,19 @@
                 </div>
             </div>
 
-            <!-- Filter Bar & Match Audit History -->
+            <!-- Filter Bar & Unified Session Logs History -->
             <div class="space-y-4">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <h3 class="text-base font-extrabold text-navy-deep flex items-center gap-2">
                         <i data-lucide="activity" class="w-5 h-5 text-sage-primary"></i>
-                        <span id="match-audits-heading">Match Audit History</span>
+                        <span id="match-audits-heading">Synchronized Session &amp; AI Analysis History</span>
                     </h3>
                     <div id="opponent-filter-pills" class="flex flex-wrap gap-1.5">
                         <!-- Dynamic Filter Pills -->
                     </div>
                 </div>
                 <div id="match-logs-container" class="space-y-4">
-                    <!-- Dynamic insertion -->
+                    <!-- Dynamic Unified Cards -->
                 </div>
             </div>
         </section>
@@ -804,41 +881,34 @@
         </div>
     </div>
 
-    <!-- Modal 2: Sync & Data Manager Modal -->
+    <!-- Modal 2: Sync, Google Sheets Setup & Data Manager Modal -->
     <div id="sync-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-3 border-b border-beige-border">
                 <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
                     <i data-lucide="refresh-cw" class="w-5 h-5 text-sage-primary"></i>
-                    Sync &amp; Data Manager
+                    Sync, Google Sheets Setup &amp; Data
                 </h3>
                 <button onclick="closeModal('sync-modal')" class="text-navy-muted hover:text-navy-deep">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <!-- File Backup -->
-            <div class="space-y-2">
-                <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Local Backup</h4>
-                <div class="grid grid-cols-3 gap-2">
-                    <button type="button" onclick="exportJSON()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
-                        <i data-lucide="download" class="w-4 h-4 text-sage-primary"></i>
-                        <span>Export JSON</span>
-                    </button>
-                    <label class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1 cursor-pointer">
-                        <i data-lucide="upload" class="w-4 h-4 text-sage-primary"></i>
-                        <span>Import JSON</span>
-                        <input type="file" accept=".json" onchange="importJSON(event)" class="hidden">
-                    </label>
-                    <button type="button" onclick="exportCSV()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
-                        <i data-lucide="file-spreadsheet" class="w-4 h-4 text-sage-primary"></i>
-                        <span>Export CSV</span>
-                    </button>
+            <!-- Google Sheets Setup Guide -->
+            <div class="bg-sage-light/70 border border-sage-primary/30 rounded-xl p-3.5 space-y-2 text-xs">
+                <div class="font-bold text-sage-dark flex items-center gap-1.5">
+                    <i data-lucide="table" class="w-4 h-4"></i>
+                    <span>Google Sheets Setup Checklist (Code.gs v5)</span>
                 </div>
+                <ol class="list-decimal list-inside text-[11px] text-navy-slate space-y-1 leading-relaxed">
+                    <li>Open your Google Sheet → <strong>Extensions → Apps Script</strong> and paste the updated <code>Code.gs</code>.</li>
+                    <li>Select <strong><code>setupSpreadsheet</code></strong> in the top toolbar dropdown and click <strong>Run</strong> to build &amp; format all 5 sheet tabs (<code>Summary</code>, <code>Session Logs</code>, <code>Opponents</code>, <code>Gym Logs</code>, <code>Checklist</code>).</li>
+                    <li>Click <strong>Deploy → Manage deployments → Edit → New version → Deploy</strong>, then click <strong>Push to Cloud</strong> below.</li>
+                </ol>
             </div>
 
             <!-- Cloud Webhook Sync -->
-            <div class="space-y-3 pt-3 border-t border-beige-border">
+            <div class="space-y-3 pt-1">
                 <div class="flex items-center justify-between">
                     <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Google Sheets Cloud Webhook</h4>
                     <label class="flex items-center gap-1.5 text-[11px] font-semibold text-navy-slate cursor-pointer">
@@ -856,6 +926,26 @@
                     <button type="button" onclick="pullFromCloud()" id="btn-pull-cloud" class="flex-1 py-2.5 bg-navy-deep hover:bg-navy-slate text-beige-card text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors">
                         <i data-lucide="cloud-download" class="w-4 h-4 text-sage-accent"></i>
                         <span>Pull from Cloud</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- File Backup -->
+            <div class="space-y-2 pt-3 border-t border-beige-border">
+                <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Local Backup</h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" onclick="exportJSON()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
+                        <i data-lucide="download" class="w-4 h-4 text-sage-primary"></i>
+                        <span>Export JSON</span>
+                    </button>
+                    <label class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1 cursor-pointer">
+                        <i data-lucide="upload" class="w-4 h-4 text-sage-primary"></i>
+                        <span>Import JSON</span>
+                        <input type="file" accept=".json" onchange="importJSON(event)" class="hidden">
+                    </label>
+                    <button type="button" onclick="exportCSV()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4 text-sage-primary"></i>
+                        <span>Export CSV</span>
                     </button>
                 </div>
             </div>
@@ -891,13 +981,13 @@
                 </button>
             </div>
             <div class="space-y-2.5">
-                <button type="button" onclick="closeModal('quick-log-modal'); openModal('match-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                <button type="button" onclick="closeModal('quick-log-modal'); switchTab('dashboard'); document.getElementById('session-notes-input').focus();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
-                        <i data-lucide="users" class="w-5 h-5"></i>
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
                     </span>
                     <div>
-                        <div class="text-sm font-bold text-navy-deep">Log Match Audit &amp; Tactical Experiment</div>
-                        <div class="text-xs text-navy-muted">Record opponent name, ratings &amp; whether your tactical idea worked</div>
+                        <div class="text-sm font-bold text-navy-deep">Log Session &amp; Run AI Analysis</div>
+                        <div class="text-xs text-navy-muted">Record opponent, ratings, tactical idea &amp; parsed AI coaching in one log</div>
                     </div>
                 </button>
                 <button type="button" onclick="closeModal('quick-log-modal'); openOpponentProfileModal();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
@@ -916,15 +1006,6 @@
                     <div>
                         <div class="text-sm font-bold text-navy-deep">Log Gym Workout Session</div>
                         <div class="text-xs text-navy-muted">Record Bulgarian split squats, RDLs, face pulls</div>
-                    </div>
-                </button>
-                <button type="button" onclick="closeModal('quick-log-modal'); switchTab('dashboard'); document.getElementById('eval-session-notes').focus();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
-                    <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
-                        <i data-lucide="bot" class="w-5 h-5"></i>
-                    </span>
-                    <div>
-                        <div class="text-sm font-bold text-navy-deep">Evaluate Session with AI</div>
-                        <div class="text-xs text-navy-muted">Open side-by-side AI session &amp; matchup evaluator</div>
                     </div>
                 </button>
             </div>
@@ -1028,112 +1109,7 @@
         </div>
     </div>
 
-    <!-- Modal 6: Match Audit Log Modal (With Opponent Name & Tactical Idea Testing) -->
-    <div id="match-log-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
-                <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
-                    <i data-lucide="activity" class="w-5 h-5 text-sage-primary"></i>
-                    Log Match / Opponent Tactical Audit
-                </h3>
-                <button onclick="closeModal('match-log-modal')" class="text-navy-muted hover:text-navy-deep">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-            <form id="match-log-form" onsubmit="handleLogMatch(event)" class="space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-navy-deep mb-1">Date</label>
-                        <input type="date" id="match-date-input" required class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-navy-deep mb-1">Session Type</label>
-                        <select id="match-type-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
-                            <option value="Singles Practice Match">Singles Practice Match</option>
-                            <option value="Group Doubles Play">Group Doubles Play</option>
-                            <option value="Baseline Rally Session">Baseline Rally Session</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-navy-deep mb-1">Opponent Name</label>
-                        <input type="text" id="match-opponent-name-input" list="opponents-datalist" oninput="autoFillOpponentStyle(this.value)" placeholder="e.g. Budi / Hendra"
-                               class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-navy-deep mb-1">Opponent Style</label>
-                        <input type="text" id="match-opponent-input" placeholder="e.g. Moonballer / Drop-shotter"
-                               class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
-                    </div>
-                </div>
-
-                <!-- Tactical Idea Experiment Box -->
-                <div class="bg-sage-light/70 border border-sage-primary/30 rounded-xl p-3.5 space-y-2.5">
-                    <div class="text-xs font-bold text-sage-dark flex items-center gap-1.5">
-                        <i data-lucide="flask-conical" class="w-4 h-4"></i>
-                        <span>Tactical Idea Tested Against Opponent</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <div class="sm:col-span-2">
-                            <input type="text" id="match-tactical-idea-input" placeholder="e.g. Heavy loop to BH + step inside on 2nd serve"
-                                   class="w-full bg-beige-card border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
-                        </div>
-                        <div>
-                            <select id="match-idea-outcome-input" class="w-full bg-beige-card border border-beige-border rounded-xl px-2.5 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
-                                <option value="Worked Well">Worked Well</option>
-                                <option value="Mixed / Needs Tweak">Mixed / Tweak</option>
-                                <option value="Didn't Work">Didn't Work</option>
-                                <option value="No Experiment">No Experiment</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-3 bg-beige-muted p-4 rounded-xl border border-beige-border">
-                    <div class="text-xs font-bold text-navy-deep uppercase tracking-wider mb-1">Tactical Performance Ratings (1 to 5)</div>
-                    <div>
-                        <div class="flex justify-between text-xs text-navy-deep mb-1">
-                            <span>Drop-Shot Reaction &amp; Braking:</span>
-                            <span id="rate-val-dropshot" class="font-bold text-sage-primary">4 / 5</span>
-                        </div>
-                        <input type="range" min="1" max="5" value="4" id="rate-input-dropshot" oninput="document.getElementById('rate-val-dropshot').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs text-navy-deep mb-1">
-                            <span>Baseline Depth (&lt;1m line):</span>
-                            <span id="rate-val-positioning" class="font-bold text-sage-primary">4 / 5</span>
-                        </div>
-                        <input type="range" min="1" max="5" value="4" id="rate-input-positioning" oninput="document.getElementById('rate-val-positioning').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs text-navy-deep mb-1">
-                            <span>2HB Depth (No long error):</span>
-                            <span id="rate-val-backhand" class="font-bold text-sage-primary">3 / 5</span>
-                        </div>
-                        <input type="range" min="1" max="5" value="3" id="rate-input-backhand" oninput="document.getElementById('rate-val-backhand').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs text-navy-deep mb-1">
-                            <span>2nd Serve Quality &amp; Shoulder Comfort:</span>
-                            <span id="rate-val-serve" class="font-bold text-sage-primary">4 / 5</span>
-                        </div>
-                        <input type="range" min="1" max="5" value="4" id="rate-input-serve" oninput="document.getElementById('rate-val-serve').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-navy-deep mb-1">Observations &amp; Scoreline</label>
-                    <textarea id="match-notes-input" rows="2" placeholder="e.g. Won 6-4. Read 3 drop shots early. Heavy loop to his backhand drew short balls..." class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
-                </div>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('match-log-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Audit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal 7: Add / Edit Opponent Scouting Profile Modal -->
+    <!-- Modal 6: Add / Edit Opponent Scouting Profile Modal -->
     <div id="opponent-profile-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center pb-3 border-b border-beige-border">
@@ -1176,7 +1152,8 @@
 
     <!-- APPLICATION JAVASCRIPT LOGIC -->
     <script>
-        const STORAGE_KEY = 'singles_match_ready_v3_state';
+        const STORAGE_KEY = 'singles_match_ready_v5_state';
+        const LEGACY_STORAGE_KEY_V3 = 'singles_match_ready_v3_state';
         const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwNKHkbe745Z0P5AGl_m-MMbeGV_zHE3vSa9so1ECSt5MhIn0OcuxLMgPsvX3Bcljkm/exec';
 
         const DEFAULT_CHECKLIST = [
@@ -1218,8 +1195,7 @@
             targetMatchday: "2026-11-15",
             checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
             gymLogs: [],
-            matchLogs: [],
-            evalLogs: [],
+            sessionLogs: [],
             opponentProfiles: {},
             stealthCompletedToday: false,
             webhookUrl: DEFAULT_WEBHOOK_URL,
@@ -1240,6 +1216,15 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+        }
+
+        function cleanMarkdownText(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/\*\*(.*?)\*\*/g, '$1')
+                .replace(/__(.*?)__/g, '$1')
+                .replace(/^#+\s*/gm, '')
+                .trim();
         }
 
         function showToast(message, type = 'info') {
@@ -1299,25 +1284,81 @@
         }
 
         // ==========================================
-        // STATE PERSISTENCE & NAVIGATION
+        // UNIFIED DATA NORMALIZATION & MIGRATION
         // ==========================================
+        function normalizeStatePayload(raw) {
+            const merged = Object.assign({}, appState, raw || {});
+            if (!Array.isArray(merged.checklist) || merged.checklist.length === 0) {
+                merged.checklist = JSON.parse(JSON.stringify(DEFAULT_CHECKLIST));
+            }
+            if (!Array.isArray(merged.gymLogs)) merged.gymLogs = [];
+            if (!Array.isArray(merged.sessionLogs)) merged.sessionLogs = [];
+            if (!merged.opponentProfiles || typeof merged.opponentProfiles !== 'object') {
+                merged.opponentProfiles = {};
+            }
+
+            // Migrate legacy separate matchLogs & evalLogs if encountered
+            if (Array.isArray(raw?.matchLogs) && raw.matchLogs.length > 0 && merged.sessionLogs.length === 0) {
+                raw.matchLogs.forEach(m => {
+                    merged.sessionLogs.push({
+                        id: m.id || ('session-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6)),
+                        date: m.date || '',
+                        type: m.type || 'Singles Practice Match',
+                        opponentName: m.opponentName || '',
+                        opponentStyle: m.opponentStyle || '',
+                        scoreline: m.scoreline || '',
+                        tacticalIdea: m.tacticalIdea || '',
+                        ideaOutcome: m.ideaOutcome || 'Testing / Baseline',
+                        ratings: m.ratings || { dropshot: 3, positioning: 3, backhand: 3, serve: 3 },
+                        notes: m.notes || '',
+                        aiAnalysis: m.aiAnalysis || null
+                    });
+                });
+            }
+            if (Array.isArray(raw?.evalLogs) && raw.evalLogs.length > 0 && (!raw?.sessionLogs || raw.sessionLogs.length === 0)) {
+                raw.evalLogs.forEach(ev => {
+                    const res = ev.result || {};
+                    merged.sessionLogs.push({
+                        id: ev.id || ('session-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6)),
+                        date: ev.date || '',
+                        type: ev.type || 'Group Play / Doubles',
+                        opponentName: ev.opponentName || '',
+                        opponentStyle: '',
+                        scoreline: '',
+                        tacticalIdea: ev.tacticalIdea || '',
+                        ideaOutcome: ev.tacticalIdea ? 'Worked Well' : 'Testing / Baseline',
+                        ratings: null,
+                        notes: ev.notes || '',
+                        aiAnalysis: {
+                            verdict: cleanMarkdownText(res.summary || ''),
+                            focusTags: Array.isArray(res.areasOfImprovement) ? res.areasOfImprovement.map(cleanMarkdownText) : [],
+                            opponentAdjustment: '',
+                            biomechanicalCue: cleanMarkdownText(res.technicalTakeaways || ''),
+                            recommendedDrill: cleanMarkdownText(res.recommendedDrill || ''),
+                            modelUsed: ev.modelUsed || 'local-coach-ai'
+                        }
+                    });
+                });
+            }
+
+            delete merged.matchLogs;
+            delete merged.evalLogs;
+            return merged;
+        }
+
         function loadState() {
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    appState = Object.assign({}, appState, parsed);
-                    if (!Array.isArray(appState.checklist) || appState.checklist.length === 0) {
-                        appState.checklist = JSON.parse(JSON.stringify(DEFAULT_CHECKLIST));
-                    }
-                    if (!Array.isArray(appState.gymLogs)) appState.gymLogs = [];
-                    if (!Array.isArray(appState.matchLogs)) appState.matchLogs = [];
-                    if (!Array.isArray(appState.evalLogs)) appState.evalLogs = [];
-                    if (!appState.opponentProfiles || typeof appState.opponentProfiles !== 'object') {
-                        appState.opponentProfiles = {};
-                    }
+                const rawV5 = localStorage.getItem(STORAGE_KEY);
+                const rawV3 = localStorage.getItem(LEGACY_STORAGE_KEY_V3);
+                const parsed = rawV5 ? JSON.parse(rawV5) : (rawV3 ? JSON.parse(rawV3) : null);
+
+                if (parsed) {
+                    appState = normalizeStatePayload(parsed);
                     if (!appState.webhookUrl) appState.webhookUrl = DEFAULT_WEBHOOK_URL;
                     if (!appState.selectedAiModel) appState.selectedAiModel = "gemini-3.8-flash";
+                    if (!rawV5 && rawV3) {
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+                    }
                 }
             } catch (err) {
                 console.warn("Failed to parse saved state:", err);
@@ -1332,11 +1373,12 @@
             const apiKeyInput = document.getElementById('gemini-apikey-input');
             if (apiKeyInput && appState.geminiApiKey) apiKeyInput.value = appState.geminiApiKey;
 
-            const evalDateInput = document.getElementById('eval-date-input');
-            if (evalDateInput && !evalDateInput.value) {
-                evalDateInput.value = new Date().toISOString().split('T')[0];
+            const sessionDateInput = document.getElementById('session-date-input');
+            if (sessionDateInput && !sessionDateInput.value) {
+                sessionDateInput.value = new Date().toISOString().split('T')[0];
             }
 
+            updateSidebarRatingLabels();
             syncModelDropdownSelection();
             if (appState.selectedAiModel === 'local-coach-ai') {
                 updateModelAvailabilityUI('available', 'Built-in Offline Coach AI • Ready (Local)');
@@ -1397,9 +1439,6 @@
             } else if (modalId === 'gym-log-modal') {
                 const input = document.getElementById('gym-date-input');
                 if (input && !input.value) input.value = todayStr;
-            } else if (modalId === 'match-log-modal') {
-                const input = document.getElementById('match-date-input');
-                if (input && !input.value) input.value = todayStr;
             } else if (modalId === 'sync-modal') {
                 const webhookInput = document.getElementById('webhook-url-input');
                 if (webhookInput) webhookInput.value = appState.webhookUrl || DEFAULT_WEBHOOK_URL;
@@ -1456,8 +1495,7 @@
                 targetMatchday: appState.targetMatchday,
                 checklist: appState.checklist,
                 gymLogs: appState.gymLogs,
-                matchLogs: appState.matchLogs,
-                evalLogs: appState.evalLogs,
+                sessionLogs: appState.sessionLogs,
                 opponentProfiles: appState.opponentProfiles,
                 stealthCompletedToday: appState.stealthCompletedToday
             };
@@ -1474,7 +1512,7 @@
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
                     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     updateSyncStatusBadge('ready', `Synced ${timeStr}`);
-                    if (!isSilent) showToast("Pushed all logs, opponents & experiments to Google Sheets!", "success");
+                    if (!isSilent) showToast("Pushed unified session logs & AI coaching to Google Sheets!", "success");
                 } else {
                     throw new Error(result.message || "Unknown server error");
                 }
@@ -1508,23 +1546,18 @@
                         updateSyncStatusBadge('ready', 'Cloud Empty');
                         if (!isSilent) showToast("Cloud sheet is initialized but empty. Click 'Push' to upload your local logs.", "info");
                     } else {
-                        if (data.targetMatchday !== undefined) appState.targetMatchday = data.targetMatchday;
-                        if (Array.isArray(data.checklist) && data.checklist.length > 0) appState.checklist = data.checklist;
-                        if (Array.isArray(data.gymLogs)) appState.gymLogs = data.gymLogs;
-                        if (Array.isArray(data.matchLogs)) appState.matchLogs = data.matchLogs;
-                        if (Array.isArray(data.evalLogs)) appState.evalLogs = data.evalLogs;
-                        if (data.opponentProfiles && typeof data.opponentProfiles === 'object') {
-                            appState.opponentProfiles = data.opponentProfiles;
-                        }
-                        if (typeof data.stealthCompletedToday === 'boolean') {
-                            appState.stealthCompletedToday = data.stealthCompletedToday;
-                        }
+                        const preservedApiKey = appState.geminiApiKey;
+                        const preservedModel = appState.selectedAiModel;
+                        appState = normalizeStatePayload(data);
+                        appState.geminiApiKey = preservedApiKey;
+                        appState.selectedAiModel = preservedModel;
+                        appState.webhookUrl = url;
                         appState.lastSynced = data.lastSynced || new Date().toISOString();
                         saveState(false);
 
                         const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                         updateSyncStatusBadge('ready', `Pulled ${timeStr}`);
-                        if (!isSilent) showToast("Pulled latest state from Google Sheets!", "success");
+                        if (!isSilent) showToast("Pulled latest unified state from Google Sheets!", "success");
                     }
                 } else {
                     throw new Error(data.message || "Invalid cloud payload");
@@ -1706,7 +1739,7 @@
                     `<button type="button" onclick="openApiKeySettings()" class="underline font-bold text-navy-deep">Add Key</button>`
                 );
                 if (manualTrigger) {
-                    showToast('Add a Gemini API key in Sync & Data to verify cloud models, or select Built-in Offline Coach AI.', 'info');
+                    showToast('Add a Gemini API key in Sync & Setup to verify cloud models, or select Built-in Offline Coach AI.', 'info');
                 }
                 return { available: false, modelId: selectedModel, fallbackModel: 'local-coach-ai', reason: 'missing_key' };
             }
@@ -1741,12 +1774,16 @@
             }
         }
 
-        function switchToModelAndExecute(modelId, autoRun = true) {
+        function switchToModelAndExecute(modelId, autoRun = true, existingLogId = null) {
             appState.selectedAiModel = modelId;
             syncModelDropdownSelection(lastDiscoveredLiveModels);
             saveState(false);
             if (autoRun) {
-                evaluateSessionWithAI();
+                if (existingLogId) {
+                    analyzeExistingSessionLog(existingLogId);
+                } else {
+                    submitUnifiedSession(true);
+                }
             } else {
                 verifySelectedModelAvailability(true);
             }
@@ -1889,19 +1926,20 @@
             const doneTasks = appState.checklist.filter(t => t.completed).length;
             const gymCount = appState.gymLogs.length;
 
-            // Compute average rating across match logs (1 to 5 scale)
+            // Compute average rating across rated unified session logs (1 to 5 scale)
             let matchAvg = 0;
-            if (appState.matchLogs.length > 0) {
-                let sum = 0;
-                appState.matchLogs.forEach(m => {
-                    const r = m.ratings || {};
-                    const avg = ((Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4);
-                    sum += avg;
-                });
-                matchAvg = sum / appState.matchLogs.length;
-            }
+            let ratedCount = 0;
+            appState.sessionLogs.forEach(s => {
+                const r = s.ratings || {};
+                if (s.ratings && (r.dropshot || r.positioning || r.backhand || r.serve)) {
+                    const avg = (Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4;
+                    matchAvg += avg;
+                    ratedCount += 1;
+                }
+            });
+            if (ratedCount > 0) matchAvg = matchAvg / ratedCount;
 
-            // Weighted score: 50% checklist, 25% gym logs (up to 4), 25% match rating
+            // Weighted score: 50% checklist, 25% gym logs (up to 4), 25% session rating
             const taskScore = totalTasks > 0 ? (doneTasks / totalTasks) * 50 : 0;
             const gymScore = Math.min(gymCount / 4, 1) * 25;
             const matchScore = matchAvg > 0 ? (matchAvg / 5) * 25 : 0;
@@ -1911,7 +1949,7 @@
             const pctEl = document.getElementById('readiness-percent');
             const badgeEl = document.getElementById('readiness-status-badge');
 
-            const circumference = 2 * Math.PI * 56; // ~351.858
+            const circumference = 2 * Math.PI * 56;
             const offset = circumference - (totalPercent / 100) * circumference;
 
             if (ring) ring.style.strokeDashoffset = offset.toFixed(1);
@@ -2086,7 +2124,7 @@
         }
 
         // ==========================================
-        // REPEAT OPPONENT SCOUTING & TACTICAL EXPERIMENTS
+        // REPEAT OPPONENT SCOUTING AGGREGATION
         // ==========================================
         function getAggregatedOpponents() {
             const map = {};
@@ -2103,8 +2141,9 @@
                         style: saved.style || '',
                         nextIdea: saved.nextIdea || '',
                         scoutingNotes: saved.scoutingNotes || '',
-                        matchCount: 0,
-                        evalCount: 0,
+                        sessionCount: 0,
+                        ratedCount: 0,
+                        aiCount: 0,
                         ratingSum: 0,
                         experiments: []
                     };
@@ -2117,37 +2156,29 @@
                 if (p && p.name) ensureEntry(p.name);
             });
 
-            appState.matchLogs.forEach(m => {
-                const entry = ensureEntry(m.opponentName);
+            appState.sessionLogs.forEach(s => {
+                const entry = ensureEntry(s.opponentName);
                 if (!entry) return;
-                entry.matchCount += 1;
-                if (!entry.style && m.opponentStyle) entry.style = m.opponentStyle;
-                const r = m.ratings || {};
-                const avg = (Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4;
-                entry.ratingSum += avg;
-                if (m.tacticalIdea) {
+                entry.sessionCount += 1;
+                if (!entry.style && s.opponentStyle) entry.style = s.opponentStyle;
+                if (s.aiAnalysis && s.aiAnalysis.verdict) entry.aiCount += 1;
+
+                const r = s.ratings || {};
+                if (s.ratings && (r.dropshot || r.positioning || r.backhand || r.serve)) {
+                    const avg = (Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4;
+                    entry.ratedCount += 1;
+                    entry.ratingSum += avg;
+                }
+                if (s.tacticalIdea) {
                     entry.experiments.push({
-                        date: m.date,
-                        idea: m.tacticalIdea,
-                        outcome: m.ideaOutcome || 'Tested'
+                        date: s.date,
+                        idea: s.tacticalIdea,
+                        outcome: s.ideaOutcome || 'Tested'
                     });
                 }
             });
 
-            appState.evalLogs.forEach(ev => {
-                const entry = ensureEntry(ev.opponentName);
-                if (!entry) return;
-                entry.evalCount += 1;
-                if (ev.tacticalIdea) {
-                    entry.experiments.push({
-                        date: ev.date,
-                        idea: ev.tacticalIdea,
-                        outcome: 'AI Evaluated'
-                    });
-                }
-            });
-
-            return Object.values(map).sort((a, b) => (b.matchCount + b.evalCount) - (a.matchCount + a.evalCount));
+            return Object.values(map).sort((a, b) => b.sessionCount - a.sessionCount);
         }
 
         function updateOpponentDatalist() {
@@ -2157,15 +2188,14 @@
             dl.innerHTML = opponents.map(o => `<option value="${escapeHtml(o.name)}">${escapeHtml(o.style || 'Tracked Opponent')}</option>`).join('');
         }
 
-        function autoFillOpponentStyle(nameVal) {
+        function autoFillSidebarOpponent(nameVal) {
             const key = (nameVal || '').trim().toLowerCase();
             if (!key) return;
-            const opponents = getAggregatedOpponents();
-            const match = opponents.find(o => o.key === key);
+            const match = getAggregatedOpponents().find(o => o.key === key);
             if (!match) return;
 
-            const styleInput = document.getElementById('match-opponent-input');
-            const ideaInput = document.getElementById('match-tactical-idea-input');
+            const styleInput = document.getElementById('session-opponent-style');
+            const ideaInput = document.getElementById('session-tactical-idea');
             if (styleInput && !styleInput.value && match.style) {
                 styleInput.value = match.style;
             }
@@ -2217,28 +2247,28 @@
         function setOpponentFilter(opponentKey) {
             activeOpponentFilter = opponentKey || 'ALL';
             renderOpponentsSection();
-            renderMatchLogs();
+            renderUnifiedSessionLogs();
         }
 
         function renderOpponentsSection() {
             const opponents = getAggregatedOpponents();
-            const navBadge = document.getElementById('nav-badge-opponents');
-            if (navBadge) navBadge.innerText = `${opponents.length}`;
+            const navBadge = document.getElementById('nav-badge-sessions');
+            if (navBadge) navBadge.innerText = `${appState.sessionLogs.length}`;
 
             // 1. Dashboard Preview Cards
             const dashPreview = document.getElementById('dashboard-opponents-preview');
             if (dashPreview) {
                 if (opponents.length === 0) {
-                    dashPreview.innerHTML = `<div class="sm:col-span-2 bg-beige-muted border border-beige-border rounded-xl p-3 text-navy-muted text-center">No repeat opponents tracked yet. Enter an <strong>Opponent Name</strong> in the AI Coach sidebar or Match Audit modal to start building scouting cards.</div>`;
+                    dashPreview.innerHTML = `<div class="sm:col-span-2 bg-beige-muted border border-beige-border rounded-xl p-3 text-navy-muted text-center">No repeat opponents tracked yet. Enter an <strong>Opponent</strong> in the Unified Session Log on the right to start building scouting cards.</div>`;
                 } else {
                     dashPreview.innerHTML = opponents.slice(0, 4).map(opp => {
-                        const avgScore = opp.matchCount > 0 ? (opp.ratingSum / opp.matchCount).toFixed(1) : '-';
+                        const avgScore = opp.ratedCount > 0 ? (opp.ratingSum / opp.ratedCount).toFixed(1) : '-';
                         const latestExp = opp.experiments[0];
                         return `
                             <div onclick="switchTab('match'); setOpponentFilter('${escapeHtml(opp.key)}');" class="cursor-pointer bg-beige-muted hover:bg-sage-light/60 border border-beige-border rounded-xl p-3 transition-all space-y-1">
                                 <div class="flex items-center justify-between">
                                     <span class="font-bold text-navy-deep">${escapeHtml(opp.name)}</span>
-                                    <span class="text-[10px] font-mono bg-navy-deep text-sage-accent px-2 py-0.5 rounded">${opp.matchCount}M • Avg ${avgScore}</span>
+                                    <span class="text-[10px] font-mono bg-navy-deep text-sage-accent px-2 py-0.5 rounded">${opp.sessionCount}S • Avg ${avgScore}</span>
                                 </div>
                                 <div class="text-[11px] text-navy-muted truncate">${escapeHtml(opp.style || 'Playstyle not set')}</div>
                                 ${latestExp ? `<div class="text-[10px] text-sage-dark font-semibold truncate">💡 ${escapeHtml(latestExp.idea)} (${escapeHtml(latestExp.outcome)})</div>` : ''}
@@ -2257,11 +2287,11 @@
 
             if (cardsContainer) {
                 if (opponents.length === 0) {
-                    cardsContainer.innerHTML = `<div class="md:col-span-2 lg:col-span-3 text-xs text-navy-muted bg-beige-muted p-6 rounded-xl border border-beige-border text-center">No opponents tracked yet. Click <strong>"Add / Edit Opponent"</strong> or log a match with an opponent name to start tracking repeat matchups and tactical experiments.</div>`;
+                    cardsContainer.innerHTML = `<div class="md:col-span-2 lg:col-span-3 text-xs text-navy-muted bg-beige-muted p-6 rounded-xl border border-beige-border text-center">No opponents tracked yet. Click <strong>"Add / Edit Opponent"</strong> or log a session on the Dashboard to start tracking repeat matchups and AI insights.</div>`;
                 } else {
                     cardsContainer.innerHTML = opponents.map(opp => {
                         const isSelected = activeOpponentFilter === opp.key;
-                        const avgScore = opp.matchCount > 0 ? (opp.ratingSum / opp.matchCount).toFixed(1) : 'N/A';
+                        const avgScore = opp.ratedCount > 0 ? (opp.ratingSum / opp.ratedCount).toFixed(1) : 'N/A';
                         const latestExp = opp.experiments[0];
                         return `
                             <div onclick="setOpponentFilter('${escapeHtml(opp.key)}')" class="cursor-pointer rounded-2xl p-4 border transition-all flex flex-col justify-between space-y-3 ${isSelected ? 'bg-sage-light border-sage-primary ring-2 ring-sage-primary/30' : 'bg-beige-muted border-beige-border hover:border-sage-primary/50'}">
@@ -2276,9 +2306,9 @@
                                         </button>
                                     </div>
                                     <div class="flex flex-wrap gap-1.5 pt-1">
-                                        <span class="text-[10px] font-mono bg-navy-deep text-beige-card px-2 py-0.5 rounded">${opp.matchCount} Audits</span>
+                                        <span class="text-[10px] font-mono bg-navy-deep text-beige-card px-2 py-0.5 rounded">${opp.sessionCount} Sessions</span>
                                         <span class="text-[10px] font-mono bg-sage-primary/20 text-sage-dark px-2 py-0.5 rounded font-bold">Avg ${avgScore}/5</span>
-                                        <span class="text-[10px] font-mono bg-beige-card text-navy-slate border border-beige-border px-2 py-0.5 rounded">${opp.evalCount} AI Evals</span>
+                                        <span class="text-[10px] font-mono bg-beige-card text-navy-slate border border-beige-border px-2 py-0.5 rounded">${opp.aiCount} AI Analyzed</span>
                                     </div>
                                     ${opp.scoutingNotes ? `<p class="text-[11px] text-navy-slate leading-relaxed pt-1">${escapeHtml(opp.scoutingNotes)}</p>` : ''}
                                 </div>
@@ -2296,10 +2326,10 @@
             const pillsContainer = document.getElementById('opponent-filter-pills');
             if (pillsContainer) {
                 const pills = [
-                    `<button type="button" onclick="setOpponentFilter('ALL')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${activeOpponentFilter === 'ALL' ? 'bg-navy-deep text-white' : 'bg-beige-muted text-navy-slate hover:bg-beige-border'}">All (${appState.matchLogs.length})</button>`
+                    `<button type="button" onclick="setOpponentFilter('ALL')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${activeOpponentFilter === 'ALL' ? 'bg-navy-deep text-white' : 'bg-beige-muted text-navy-slate hover:bg-beige-border'}">All (${appState.sessionLogs.length})</button>`
                 ];
                 opponents.forEach(opp => {
-                    pills.push(`<button type="button" onclick="setOpponentFilter('${escapeHtml(opp.key)}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${activeOpponentFilter === opp.key ? 'bg-sage-primary text-white' : 'bg-beige-muted text-navy-slate hover:bg-beige-border'}">${escapeHtml(opp.name)} (${opp.matchCount})</button>`);
+                    pills.push(`<button type="button" onclick="setOpponentFilter('${escapeHtml(opp.key)}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${activeOpponentFilter === opp.key ? 'bg-sage-primary text-white' : 'bg-beige-muted text-navy-slate hover:bg-beige-border'}">${escapeHtml(opp.name)} (${opp.sessionCount})</button>`);
                 });
                 pillsContainer.innerHTML = pills.join('');
             }
@@ -2308,38 +2338,420 @@
         }
 
         // ==========================================
-        // MATCH AUDIT LOGGING & RENDERING
+        // UNIFIED SESSION LOG + PARSED AI ANALYSIS
         // ==========================================
-        function handleLogMatch(event) {
-            event.preventDefault();
-            const date = document.getElementById('match-date-input').value;
-            const type = document.getElementById('match-type-input').value;
-            const opponentName = document.getElementById('match-opponent-name-input').value.trim();
-            const opponentStyle = document.getElementById('match-opponent-input').value.trim();
-            const tacticalIdea = document.getElementById('match-tactical-idea-input').value.trim();
-            const ideaOutcome = document.getElementById('match-idea-outcome-input').value;
-            const notes = document.getElementById('match-notes-input').value.trim();
+        function updateSidebarRatingLabels() {
+            const d = Number(document.getElementById('sb-rate-dropshot')?.value || 4);
+            const p = Number(document.getElementById('sb-rate-positioning')?.value || 4);
+            const b = Number(document.getElementById('sb-rate-backhand')?.value || 3);
+            const s = Number(document.getElementById('sb-rate-serve')?.value || 4);
+
+            const elD = document.getElementById('sb-val-dropshot');
+            const elP = document.getElementById('sb-val-positioning');
+            const elB = document.getElementById('sb-val-backhand');
+            const elS = document.getElementById('sb-val-serve');
+            const elAvg = document.getElementById('sidebar-ratings-summary');
+
+            if (elD) elD.innerText = `${d}/5`;
+            if (elP) elP.innerText = `${p}/5`;
+            if (elB) elB.innerText = `${b}/5`;
+            if (elS) elS.innerText = `${s}/5`;
+            if (elAvg) elAvg.innerText = `Avg ${((d + p + b + s) / 4).toFixed(1)}/5`;
+        }
+
+        function fillPresetPrompt(presetNum) {
+            const notesEl = document.getElementById('session-notes-input');
+            const oppEl = document.getElementById('session-opponent-name');
+            const styleEl = document.getElementById('session-opponent-style');
+            const scoreEl = document.getElementById('session-scoreline');
+            const ideaEl = document.getElementById('session-tactical-idea');
+            const outcomeEl = document.getElementById('session-idea-outcome');
+            if (!notesEl) return;
+
+            if (presetNum === 1) {
+                if (oppEl) oppEl.value = "Budi";
+                if (styleEl) styleEl.value = "Moonballer / Drop-shotter";
+                if (scoreEl) scoreEl.value = "6-4";
+                if (ideaEl) ideaEl.value = "Hold <1m inside baseline + early split step";
+                if (outcomeEl) outcomeEl.value = "Worked Well";
+                notesEl.value = "Played 2 sets against Budi. He hit heavy moonballs to push me 2m behind the baseline, then disguised a forehand drop shot. Holding inside <1m of the baseline cut down the sprint distance in set 2 and saved my quads.";
+            } else {
+                if (oppEl) oppEl.value = "Andi";
+                if (styleEl) styleEl.value = "Lefty Counterpuncher";
+                if (scoreEl) scoreEl.value = "5-7, 6-3";
+                if (ideaEl) ideaEl.value = "Heavy crosscourt loop to BH + quiet chin";
+                if (outcomeEl) outcomeEl.value = "Worked Well";
+                notesEl.value = "Tested heavy crosscourt loops to Andi's backhand. When I rushed my 2HB on high balls, 4 shots sailed 1 foot long. Keeping my chin quiet and leading with my left hand let Solinco Tour Bite 17g dip the ball right onto his baseline.";
+            }
+        }
+
+        function generateLocalCoachEvaluation(sessionCtx) {
+            const notes = sessionCtx.notes || '';
+            const lower = notes.toLowerCase();
+            const r = sessionCtx.ratings || {};
+
+            const isDropShot = lower.includes('drop') || lower.includes('sprint') || lower.includes('moonball') || Number(r.dropshot || 5) <= 3;
+            const isBackhand = lower.includes('backhand') || lower.includes('2hb') || lower.includes('long') || Number(r.backhand || 5) <= 3;
+            const isServe = lower.includes('serve') || lower.includes('shoulder') || lower.includes('toss') || Number(r.serve || 5) <= 3;
+
+            const focusTags = [];
+            if (isDropShot) focusTags.push("Early Split-Step on Racquet Deceleration");
+            if (isBackhand) focusTags.push("Left-Hand Lead & Quiet Chin on 2HB");
+            if (isServe) focusTags.push("12:30 Toss & 7-to-1 Topspin Brush");
+            if (focusTags.length < 3) {
+                focusTags.push("Hold <1m Baseline Recovery Line");
+                focusTags.push("Eccentric Quad Braking Stamina");
+            }
+
+            const oppName = sessionCtx.opponentName ? `vs. ${sessionCtx.opponentName}` : 'in this session';
+            const ideaSnippet = sessionCtx.tacticalIdea
+                ? `Your tactical test ("${sessionCtx.tacticalIdea}" — ${sessionCtx.ideaOutcome}) gave actionable baseline data.`
+                : 'Establishing a clear first-strike pattern early will dictate rally tempo.';
+
+            const opponentAdjustment = sessionCtx.opponentName
+                ? `Against ${sessionCtx.opponentName}${sessionCtx.opponentStyle ? ` (${sessionCtx.opponentStyle})` : ''}, hold <1m inside the baseline on neutral balls to take away their drop-shot angle, and redirect heavy topspin loops deep to their weaker wing before stepping in.`
+                : `Hold <1m inside the baseline on high balls so drop shots require only a 5–6m forward burst rather than a 15m sprint.`;
+
+            const biomechanicalCue = isBackhand
+                ? "With your Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs, lifting your head early on high two-handed backhands opens the chest and sends shots 1–2 feet long. Anchor your chin to your front shoulder through contact and drive upward with your non-dominant left hand."
+                : "For a 100 kg athletic build, load your outside leg before contact and execute a compact split-step the instant your opponent's swing speed decelerates—this converts emergency sprints into controlled two-step recoveries.";
+
+            const recommendedDrill = isDropShot
+                ? "15-Min Cue-Read & Brake Drill: Partner feeds 3 deep crosscourt balls followed by a random disguised drop shot; trigger a forward split-step the moment their racquet face opens."
+                : "15-Min Figure-8 Baseline Depth Drill: Alternate heavy crosscourt 2HB topspin and deep down-the-line drives aiming within 1m of the baseline with zero long misses.";
+
+            return {
+                verdict: `Strong ${sessionCtx.type.toLowerCase()} log ${oppName}. ${ideaSnippet}`,
+                focusTags: focusTags.slice(0, 3),
+                opponentAdjustment: cleanMarkdownText(opponentAdjustment),
+                biomechanicalCue: cleanMarkdownText(biomechanicalCue),
+                recommendedDrill: cleanMarkdownText(recommendedDrill),
+                modelUsed: 'local-coach-ai'
+            };
+        }
+
+        function parseAndNormalizeAiResponse(rawObj, sessionCtx, modelUsed) {
+            const fallback = generateLocalCoachEvaluation(sessionCtx);
+            if (!rawObj || typeof rawObj !== 'object') return fallback;
+
+            const verdict = cleanMarkdownText(rawObj.verdict || rawObj.summary || fallback.verdict);
+            const rawTags = Array.isArray(rawObj.focusTags)
+                ? rawObj.focusTags
+                : (Array.isArray(rawObj.areasOfImprovement) ? rawObj.areasOfImprovement : fallback.focusTags);
+            const focusTags = rawTags.map(cleanMarkdownText).filter(Boolean).slice(0, 4);
+
+            const opponentAdjustment = cleanMarkdownText(
+                rawObj.opponentAdjustment || rawObj.matchupStrategy || fallback.opponentAdjustment
+            );
+            const biomechanicalCue = cleanMarkdownText(
+                rawObj.biomechanicalCue || rawObj.technicalTakeaways || fallback.biomechanicalCue
+            );
+            const recommendedDrill = cleanMarkdownText(
+                rawObj.recommendedDrill || fallback.recommendedDrill
+            );
+
+            return {
+                verdict,
+                focusTags: focusTags.length > 0 ? focusTags : fallback.focusTags,
+                opponentAdjustment,
+                biomechanicalCue,
+                recommendedDrill,
+                modelUsed: modelUsed || 'local-coach-ai'
+            };
+        }
+
+        async function runAiCoachingEngine(sessionCtx, existingLogId = null) {
+            const selectedModel = appState.selectedAiModel || 'gemini-3.8-flash';
+            const badge = document.getElementById('eval-status-badge');
+            const body = document.getElementById('eval-output-body');
+
+            if (badge) {
+                badge.innerText = "Checking Model...";
+                badge.className = "text-[10px] bg-sage-primary/20 text-sage-accent px-2 py-0.5 rounded font-mono animate-pulse";
+            }
+            if (body) {
+                body.className = "text-xs text-beige-muted space-y-2 min-h-[110px] flex items-center justify-center text-center";
+                body.innerHTML = `
+                    <div class="py-5 text-center space-y-2">
+                        <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        <p class="text-xs text-sage-accent font-semibold">Searching live registry to verify "${escapeHtml(selectedModel)}"...</p>
+                    </div>
+                `;
+            }
+            if (window.lucide) lucide.createIcons();
+
+            const availability = await verifySelectedModelAvailability(false);
+
+            // If user picked a cloud model & has an API key, but model is unavailable:
+            if (selectedModel !== 'local-coach-ai' && appState.geminiApiKey && !availability.available) {
+                if (badge) {
+                    badge.innerText = "Model Unavailable";
+                    badge.className = "text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded font-mono";
+                }
+                const altModel = availability.fallbackModel || 'local-coach-ai';
+                const idArg = existingLogId ? `'${escapeHtml(existingLogId)}'` : 'null';
+                if (body) {
+                    body.className = "text-xs text-beige-muted space-y-3 text-left";
+                    body.innerHTML = `
+                        <div class="bg-red-950/60 border border-red-500/40 rounded-lg p-3 space-y-2">
+                            <div class="font-bold text-red-300 flex items-center gap-1.5">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                <span>Selected model "${escapeHtml(selectedModel)}" is unavailable</span>
+                            </div>
+                            <p class="text-[11px] text-beige-muted leading-relaxed">
+                                Your session was saved safely, but live registry check confirmed <strong>${escapeHtml(selectedModel)}</strong> is unavailable (${escapeHtml(availability.reason)}). Run analysis with an available model below:
+                            </p>
+                            <div class="flex flex-wrap gap-2 pt-1">
+                                <button type="button" onclick="switchToModelAndExecute('${escapeHtml(altModel)}', true, ${idArg})" class="px-3 py-1.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-[11px] rounded-lg transition-colors">
+                                    Use ${escapeHtml(altModel)} &amp; Analyze
+                                </button>
+                                <button type="button" onclick="switchToModelAndExecute('local-coach-ai', true, ${idArg})" class="px-3 py-1.5 bg-navy-slate hover:bg-navy-muted/40 text-beige-card font-semibold text-[11px] rounded-lg border border-navy-muted/40">
+                                    Use Offline Coach AI
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                if (window.lucide) lucide.createIcons();
+                showToast(`Session saved, but "${selectedModel}" is unavailable on your API key.`, "error");
+                return null;
+            }
+
+            if (badge) badge.innerText = "Analyzing...";
+            if (body) {
+                body.className = "text-xs text-beige-muted space-y-2 min-h-[110px] flex items-center justify-center text-center";
+                body.innerHTML = `
+                    <div class="py-5 text-center space-y-2">
+                        <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        <p class="text-xs text-sage-accent font-semibold">Generating structured coaching breakdown (${escapeHtml(selectedModel)})...</p>
+                    </div>
+                `;
+            }
+
+            let parsedResult = null;
+
+            if (selectedModel !== 'local-coach-ai' && appState.geminiApiKey && availability.available) {
+                const systemPrompt = `You are an elite NTRP 4.0 singles tennis coach. Player Profile: 29yo, 100kg, 175cm athletic build, Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs. Playstyle: Counterpuncher / Aggressive Baseliner.
+Analyze the unified session log (ratings 1-5, opponent matchup, tactical idea tested, and notes). Return clean plain-text JSON (no markdown asterisks) matching this exact schema:
+{
+  "verdict": "2-sentence tactical summary of the session",
+  "focusTags": ["Short focus tag 1", "Short focus tag 2", "Short focus tag 3"],
+  "opponentAdjustment": "Specific tactical adjustment against this opponent's style",
+  "biomechanicalCue": "Specific stroke/footwork cue tailored for 100kg build and RF01 Pro setup",
+  "recommendedDrill": "Specific 15-minute drill with clear target"
+}`;
+                const r = sessionCtx.ratings || {};
+                const promptText = `Session Type: ${sessionCtx.type}
+Date: ${sessionCtx.date}
+Opponent: ${sessionCtx.opponentName || 'Unspecified'} (${sessionCtx.opponentStyle || 'Style unspecified'})
+Scoreline: ${sessionCtx.scoreline || 'N/A'}
+Tactical Idea Tested: ${sessionCtx.tacticalIdea || 'None'} -> Outcome: ${sessionCtx.ideaOutcome || 'N/A'}
+Ratings (1-5): Drop-Shot Brake=${r.dropshot || '-'}/5, Baseline Depth=${r.positioning || '-'}/5, 2HB Control=${r.backhand || '-'}/5, 2nd Serve/Shoulder=${r.serve || '-'}/5
+Session Notes: "${sessionCtx.notes}"`;
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(selectedModel)}:generateContent?key=${encodeURIComponent(appState.geminiApiKey)}`;
+                const payload = {
+                    contents: [{ parts: [{ text: promptText }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                "verdict": { "type": "STRING" },
+                                "focusTags": { "type": "ARRAY", "items": { "type": "STRING" } },
+                                "opponentAdjustment": { "type": "STRING" },
+                                "biomechanicalCue": { "type": "STRING" },
+                                "recommendedDrill": { "type": "STRING" }
+                            },
+                            "required": ["verdict", "focusTags", "opponentAdjustment", "biomechanicalCue", "recommendedDrill"]
+                        }
+                    }
+                };
+
+                try {
+                    const res = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        const jsonRes = await res.json();
+                        let jsonText = jsonRes.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                        jsonText = jsonText.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
+                        if (jsonText) {
+                            const rawParsed = JSON.parse(jsonText);
+                            parsedResult = parseAndNormalizeAiResponse(rawParsed, sessionCtx, selectedModel);
+                        }
+                    } else {
+                        const errData = await res.json().catch(() => ({}));
+                        showToast(`Gemini error (${errData?.error?.message || res.status}) — using Offline Coach AI.`, "error");
+                    }
+                } catch (err) {
+                    console.warn("Live Gemini API fallback triggered:", err);
+                }
+            }
+
+            if (!parsedResult) {
+                await new Promise(r => setTimeout(r, 320));
+                parsedResult = generateLocalCoachEvaluation(sessionCtx);
+                if (selectedModel !== 'local-coach-ai' && !appState.geminiApiKey) {
+                    showToast("No API key set — analyzed with Built-in Offline Coach AI.", "info");
+                }
+            }
+
+            renderSidebarAiPreview(parsedResult);
+            return parsedResult;
+        }
+
+        function renderSidebarAiPreview(aiAnalysis) {
+            const badge = document.getElementById('eval-status-badge');
+            const body = document.getElementById('eval-output-body');
+            if (!aiAnalysis) return;
+
+            if (badge) {
+                badge.innerText = aiAnalysis.modelUsed === 'local-coach-ai' ? "Offline AI" : aiAnalysis.modelUsed;
+                badge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono";
+            }
+
+            if (body) {
+                body.className = "text-xs text-beige-muted space-y-2.5 text-left";
+                body.innerHTML = buildParsedAiHtml(aiAnalysis, true);
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        /**
+         * Builds clean, structured HTML for parsed AI Coaching Breakdown (used in both Dark Sidebar & Light Log Cards)
+         */
+        function buildParsedAiHtml(ai, isDarkTheme = false) {
+            const tags = Array.isArray(ai.focusTags) ? ai.focusTags : [];
+            if (isDarkTheme) {
+                return `
+                    <div class="bg-navy-slate/90 border border-sage-primary/30 rounded-lg p-2.5">
+                        <div class="text-[10px] uppercase font-bold text-sage-accent tracking-wider mb-0.5">Tactical Verdict</div>
+                        <p class="text-white font-medium leading-relaxed">${escapeHtml(ai.verdict)}</p>
+                    </div>
+                    ${tags.length > 0 ? `
+                        <div class="flex flex-wrap gap-1.5">
+                            ${tags.map(t => `<span class="px-2 py-0.5 bg-sage-primary/25 text-sage-accent border border-sage-primary/40 rounded-md text-[10px] font-semibold">• ${escapeHtml(t)}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    ${ai.opponentAdjustment ? `
+                        <div class="space-y-0.5 text-[11px] leading-relaxed">
+                            <span class="font-bold text-sage-accent flex items-center gap-1"><i data-lucide="crosshair" class="w-3 h-3"></i> Opponent Counter-Plan:</span>
+                            <p class="text-beige-muted/95">${escapeHtml(ai.opponentAdjustment)}</p>
+                        </div>
+                    ` : ''}
+                    ${ai.biomechanicalCue ? `
+                        <div class="space-y-0.5 text-[11px] leading-relaxed">
+                            <span class="font-bold text-white flex items-center gap-1"><i data-lucide="sliders" class="w-3 h-3 text-sage-accent"></i> Biomechanical &amp; Gear Cue:</span>
+                            <p class="text-beige-muted/90">${escapeHtml(ai.biomechanicalCue)}</p>
+                        </div>
+                    ` : ''}
+                    ${ai.recommendedDrill ? `
+                        <div class="bg-navy-slate p-2.5 rounded-lg border border-navy-muted/30 text-[11px] leading-relaxed">
+                            <span class="font-bold text-sage-accent flex items-center gap-1 mb-0.5"><i data-lucide="zap" class="w-3 h-3"></i> 15-Min Drill Prescription:</span>
+                            <p class="text-beige-card">${escapeHtml(ai.recommendedDrill)}</p>
+                        </div>
+                    ` : ''}
+                `;
+            }
+
+            // Light Beige Card theme for the Unified Logbook
+            return `
+                <div class="bg-navy-deep text-beige-card rounded-xl p-4 space-y-3 border border-navy-slate">
+                    <div class="flex items-center justify-between pb-2 border-b border-navy-slate">
+                        <span class="text-xs font-extrabold text-sage-accent flex items-center gap-1.5">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            AI Coaching Breakdown
+                        </span>
+                        <span class="text-[10px] font-mono bg-navy-slate text-sage-accent px-2 py-0.5 rounded">${escapeHtml(ai.modelUsed || 'Coach AI')}</span>
+                    </div>
+
+                    <div class="bg-navy-slate/80 border border-sage-primary/30 rounded-lg p-3">
+                        <div class="text-[10px] uppercase font-bold text-sage-accent tracking-wider mb-0.5">Tactical Verdict</div>
+                        <p class="text-xs text-white font-medium leading-relaxed">${escapeHtml(ai.verdict)}</p>
+                    </div>
+
+                    ${tags.length > 0 ? `
+                        <div class="flex flex-wrap gap-1.5">
+                            ${tags.map(t => `<span class="px-2.5 py-0.5 bg-sage-primary/25 text-sage-accent border border-sage-primary/40 rounded-full text-[11px] font-semibold">• ${escapeHtml(t)}</span>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        ${ai.opponentAdjustment ? `
+                            <div class="bg-navy-slate/60 border border-navy-muted/30 rounded-lg p-3 space-y-1">
+                                <div class="text-[11px] font-bold text-sage-accent flex items-center gap-1.5">
+                                    <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
+                                    <span>Opponent Counter-Adjustment</span>
+                                </div>
+                                <p class="text-beige-muted leading-relaxed text-[11px]">${escapeHtml(ai.opponentAdjustment)}</p>
+                            </div>
+                        ` : ''}
+                        ${ai.biomechanicalCue ? `
+                            <div class="bg-navy-slate/60 border border-navy-muted/30 rounded-lg p-3 space-y-1">
+                                <div class="text-[11px] font-bold text-white flex items-center gap-1.5">
+                                    <i data-lucide="sliders" class="w-3.5 h-3.5 text-sage-accent"></i>
+                                    <span>Biomechanical &amp; Gear Cue</span>
+                                </div>
+                                <p class="text-beige-muted leading-relaxed text-[11px]">${escapeHtml(ai.biomechanicalCue)}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    ${ai.recommendedDrill ? `
+                        <div class="bg-sage-primary/20 border border-sage-primary/40 rounded-lg p-3 text-xs">
+                            <div class="text-[11px] font-bold text-sage-accent flex items-center gap-1.5 mb-0.5">
+                                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                                <span>15-Min Prescription Drill</span>
+                            </div>
+                            <p class="text-beige-card leading-relaxed text-[11px]">${escapeHtml(ai.recommendedDrill)}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        async function submitUnifiedSession(runAi = true) {
+            const notesEl = document.getElementById('session-notes-input');
+            const notes = notesEl ? notesEl.value.trim() : '';
+            if (!notes) {
+                showToast("Please enter session notes before saving.", "error");
+                return;
+            }
+
+            const type = document.getElementById('session-type-input')?.value || 'Singles Practice Match';
+            const date = document.getElementById('session-date-input')?.value || new Date().toISOString().split('T')[0];
+            const opponentName = document.getElementById('session-opponent-name')?.value.trim() || '';
+            const opponentStyle = document.getElementById('session-opponent-style')?.value.trim() || '';
+            const scoreline = document.getElementById('session-scoreline')?.value.trim() || '';
+            const tacticalIdea = document.getElementById('session-tactical-idea')?.value.trim() || '';
+            const ideaOutcome = document.getElementById('session-idea-outcome')?.value || 'Testing / Baseline';
 
             const ratings = {
-                dropshot: Number(document.getElementById('rate-input-dropshot').value),
-                positioning: Number(document.getElementById('rate-input-positioning').value),
-                backhand: Number(document.getElementById('rate-input-backhand').value),
-                serve: Number(document.getElementById('rate-input-serve').value)
+                dropshot: Number(document.getElementById('sb-rate-dropshot')?.value || 4),
+                positioning: Number(document.getElementById('sb-rate-positioning')?.value || 4),
+                backhand: Number(document.getElementById('sb-rate-backhand')?.value || 3),
+                serve: Number(document.getElementById('sb-rate-serve')?.value || 4)
             };
 
-            appState.matchLogs.unshift({
-                id: 'match-' + Date.now(),
+            const newLog = {
+                id: 'session-' + Date.now(),
                 date,
                 type,
                 opponentName,
                 opponentStyle,
+                scoreline,
                 tacticalIdea,
                 ideaOutcome,
                 ratings,
-                notes
-            });
+                notes,
+                aiAnalysis: null
+            };
 
-            // Auto-create opponent profile entry if new name entered
+            // Auto-register opponent profile if new name entered
             if (opponentName) {
                 const key = opponentName.toLowerCase();
                 if (!appState.opponentProfiles[key]) {
@@ -2355,101 +2767,115 @@
                 }
             }
 
-            document.getElementById('match-log-form').reset();
-            document.getElementById('rate-val-dropshot').innerText = '4 / 5';
-            document.getElementById('rate-val-positioning').innerText = '4 / 5';
-            document.getElementById('rate-val-backhand').innerText = '3 / 5';
-            document.getElementById('rate-val-serve').innerText = '4 / 5';
-            closeModal('match-log-modal');
-            saveState(true);
-            showToast("Match audit & tactical experiment logged!", "success");
-        }
+            // Save log immediately so data is never lost
+            appState.sessionLogs.unshift(newLog);
+            saveState(!runAi);
 
-        function deleteMatchLog(logId) {
-            appState.matchLogs = appState.matchLogs.filter(m => m.id !== logId);
-            saveState(true);
-            showToast("Match audit deleted.", "info");
-        }
+            if (runAi) {
+                const btnAnalyze = document.getElementById('btn-save-analyze');
+                if (btnAnalyze) {
+                    btnAnalyze.disabled = true;
+                    btnAnalyze.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing...</span>`;
+                }
 
-        function renderMatchLogs() {
-            const container = document.getElementById('match-logs-container');
-            const heading = document.getElementById('match-audits-heading');
-            if (!container) return;
+                const aiResult = await runAiCoachingEngine(newLog, newLog.id);
 
-            const filtered = activeOpponentFilter === 'ALL'
-                ? appState.matchLogs
-                : appState.matchLogs.filter(m => (m.opponentName || '').trim().toLowerCase() === activeOpponentFilter);
+                if (btnAnalyze) {
+                    btnAnalyze.disabled = false;
+                    btnAnalyze.innerHTML = `<i data-lucide="sparkles" class="w-4 h-4"></i><span>Save &amp; Analyze with AI</span>`;
+                }
 
-            if (heading) {
-                heading.innerText = activeOpponentFilter === 'ALL'
-                    ? `Match Audit History (${filtered.length})`
-                    : `Match Audits vs. ${filtered[0]?.opponentName || activeOpponentFilter} (${filtered.length})`;
+                if (aiResult) {
+                    newLog.aiAnalysis = aiResult;
+                    saveState(true);
+                    showToast(`Unified session saved & analyzed (${aiResult.modelUsed})!`, "success");
+                }
+            } else {
+                showToast("Unified session saved! You can run AI analysis anytime.", "success");
             }
 
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-xs text-navy-muted bg-beige-card p-6 rounded-2xl border border-beige-border text-center">No match audits found for this filter. Click <strong>"Log Match Audit"</strong> to record opponent ratings and tactical experiments.</div>`;
+            if (notesEl) notesEl.value = '';
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function analyzeExistingSessionLog(logId) {
+            const log = appState.sessionLogs.find(s => s.id === logId);
+            if (!log) return;
+
+            showToast(`Running AI analysis on ${log.date} session...`, "info");
+            const aiResult = await runAiCoachingEngine(log, log.id);
+            if (aiResult) {
+                log.aiAnalysis = aiResult;
+                saveState(true);
+                showToast("Session updated with parsed AI coaching!", "success");
+            }
+        }
+
+        function deleteUnifiedSessionLog(logId) {
+            appState.sessionLogs = appState.sessionLogs.filter(s => s.id !== logId);
+            saveState(true);
+            showToast("Session log deleted.", "info");
+        }
+
+        function renderUnifiedSessionStream() {
+            const container = document.getElementById('evaluations-stream-container');
+            const countBadge = document.getElementById('eval-stream-count');
+            if (countBadge) countBadge.innerText = `${appState.sessionLogs.length}`;
+            if (!container) return;
+
+            if (appState.sessionLogs.length === 0) {
+                container.innerHTML = `<div class="text-[11px] text-navy-muted bg-beige-muted p-4 rounded-xl border border-beige-border text-center">No synchronized sessions yet. Log a match or practice session above to combine ratings &amp; AI coaching in one place.</div>`;
                 return;
             }
 
-            const outcomeColors = {
-                'Worked Well': 'bg-emerald-100 text-emerald-800 border-emerald-300',
-                'Mixed / Needs Tweak': 'bg-amber-100 text-amber-800 border-amber-300',
-                "Didn't Work": 'bg-red-100 text-red-800 border-red-300',
-                'No Experiment': 'bg-beige-muted text-navy-muted border-beige-border'
-            };
-
-            container.innerHTML = filtered.map(m => {
-                const r = m.ratings || {};
-                const avg = ((Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4).toFixed(1);
-                const badgeCls = outcomeColors[m.ideaOutcome] || outcomeColors['No Experiment'];
+            container.innerHTML = appState.sessionLogs.slice(0, 8).map(s => {
+                const r = s.ratings || {};
+                const hasRatings = s.ratings && (r.dropshot || r.positioning || r.backhand || r.serve);
+                const avg = hasRatings
+                    ? ((Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4).toFixed(1)
+                    : null;
+                const ai = s.aiAnalysis;
 
                 return `
-                    <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-3">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-beige-border">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-xs font-mono font-bold bg-navy-deep text-beige-card px-2.5 py-0.5 rounded">${escapeHtml(m.date)}</span>
-                                <span class="text-sm font-extrabold text-navy-deep">${escapeHtml(m.opponentName || 'Unspecified Opponent')}</span>
-                                ${m.opponentStyle ? `<span class="text-xs text-navy-muted">• ${escapeHtml(m.opponentStyle)}</span>` : ''}
-                                <span class="text-[11px] bg-beige-muted text-navy-slate px-2 py-0.5 rounded border border-beige-border">${escapeHtml(m.type)}</span>
+                    <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 space-y-2 text-xs">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-[10px] font-mono font-bold bg-navy-deep text-beige-card px-2 py-0.5 rounded">${escapeHtml(s.date)}</span>
+                                ${s.opponentName ? `<span class="text-[11px] font-bold text-sage-dark bg-sage-light px-2 py-0.5 rounded">vs ${escapeHtml(s.opponentName)}</span>` : ''}
+                                ${avg ? `<span class="text-[10px] font-mono font-bold bg-beige-card text-navy-deep border border-beige-border px-1.5 py-0.5 rounded">Avg ${avg}/5</span>` : ''}
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-mono font-bold bg-sage-light text-sage-dark px-2.5 py-1 rounded-lg border border-sage-primary/20">Avg ${avg} / 5</span>
-                                <button type="button" onclick="deleteMatchLog('${escapeHtml(m.id)}')" class="p-1.5 text-navy-muted hover:text-red-600 rounded-lg">
-                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            <div class="flex items-center gap-1">
+                                <button type="button" onclick="analyzeExistingSessionLog('${escapeHtml(s.id)}')" title="${ai ? 'Re-run AI Analysis' : 'Generate AI Analysis'}" class="p-1 text-sage-primary hover:text-sage-dark rounded">
+                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button type="button" onclick="deleteUnifiedSessionLog('${escapeHtml(s.id)}')" title="Delete log" class="p-1 text-navy-muted hover:text-red-600 rounded">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                 </button>
                             </div>
                         </div>
 
-                        ${m.tacticalIdea ? `
-                            <div class="bg-beige-muted border border-beige-border rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-                                <div>
-                                    <span class="font-bold text-navy-deep">Tactical Idea Tested:</span>
-                                    <span class="text-navy-slate">${escapeHtml(m.tacticalIdea)}</span>
-                                </div>
-                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border self-start sm:self-center ${badgeCls}">${escapeHtml(m.ideaOutcome || 'Tested')}</span>
+                        ${s.tacticalIdea ? `
+                            <div class="text-[11px] font-semibold text-navy-deep flex items-center justify-between gap-2">
+                                <span class="truncate">💡 ${escapeHtml(s.tacticalIdea)}</span>
+                                <span class="text-[10px] font-mono text-sage-dark flex-shrink-0">${escapeHtml(s.ideaOutcome || '')}</span>
                             </div>
                         ` : ''}
 
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                            <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
-                                <div class="text-[10px] text-navy-muted font-semibold">Drop-Shot Braking</div>
-                                <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.dropshot)} / 5</div>
-                            </div>
-                            <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
-                                <div class="text-[10px] text-navy-muted font-semibold">Baseline Depth</div>
-                                <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.positioning)} / 5</div>
-                            </div>
-                            <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
-                                <div class="text-[10px] text-navy-muted font-semibold">2HB Depth Control</div>
-                                <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.backhand)} / 5</div>
-                            </div>
-                            <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
-                                <div class="text-[10px] text-navy-muted font-semibold">2nd Serve / Shoulder</div>
-                                <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.serve)} / 5</div>
-                            </div>
-                        </div>
-
-                        ${m.notes ? `<p class="text-xs text-navy-slate leading-relaxed pt-1">${escapeHtml(m.notes)}</p>` : ''}
+                        ${ai && ai.verdict ? `
+                            <p class="text-[11px] text-navy-slate leading-relaxed">${escapeHtml(ai.verdict)}</p>
+                            ${Array.isArray(ai.focusTags) && ai.focusTags.length > 0 ? `
+                                <div class="flex flex-wrap gap-1">
+                                    ${ai.focusTags.map(tag => `<span class="text-[9px] font-semibold px-1.5 py-0.5 bg-sage-light text-sage-dark rounded border border-sage-primary/20">${escapeHtml(tag)}</span>`).join('')}
+                                </div>
+                            ` : ''}
+                            ${ai.recommendedDrill ? `<div class="text-[10px] text-sage-dark font-semibold">Drill: ${escapeHtml(ai.recommendedDrill)}</div>` : ''}
+                        ` : `
+                            <p class="text-[11px] text-navy-muted italic line-clamp-2">"${escapeHtml(s.notes)}"</p>
+                            <button type="button" onclick="analyzeExistingSessionLog('${escapeHtml(s.id)}')" class="text-[10px] font-bold text-sage-primary hover:underline flex items-center gap-1">
+                                <i data-lucide="sparkles" class="w-3 h-3"></i>
+                                <span>Run AI Coaching Analysis</span>
+                            </button>
+                        `}
                     </div>
                 `;
             }).join('');
@@ -2457,296 +2883,119 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        // ==========================================
-        // AI SESSION EVALUATOR & STREAM
-        // ==========================================
-        function fillPresetPrompt(presetNum) {
-            const notesEl = document.getElementById('eval-session-notes');
-            const oppEl = document.getElementById('eval-opponent-name');
-            const ideaEl = document.getElementById('eval-tactical-idea');
-            if (!notesEl) return;
-
-            if (presetNum === 1) {
-                if (oppEl && !oppEl.value) oppEl.value = "Budi";
-                if (ideaEl) ideaEl.value = "Hold <1m inside baseline + early split step on BH slice";
-                notesEl.value = "Played 2 sets of group play against Budi. He hit heavy moonballs to push me 2m behind the baseline, then disguised a forehand drop shot. My legs felt heavy braking on the 3rd sprint, though holding closer to the baseline cut down the distance on the second set.";
-            } else {
-                if (oppEl && !oppEl.value) oppEl.value = "Andi";
-                if (ideaEl) ideaEl.value = "Heavy crosscourt loop to BH + left-hand lead follow-through";
-                notesEl.value = "Tested heavy crosscourt loops to Andi's backhand. When I rushed my two-handed backhand on high balls, 4 shots sailed 1 foot long past the baseline. When I kept my chin quiet and led with my left hand, my Solinco Tour Bite strings dipped the ball right onto his baseline.";
-            }
-        }
-
-        function generateLocalCoachEvaluation(sessionType, notes, opponentName = '', tacticalIdea = '') {
-            const lower = notes.toLowerCase();
-            const isDropShot = lower.includes('drop') || lower.includes('sprint') || lower.includes('moonball') || lower.includes('braking');
-            const isBackhand = lower.includes('backhand') || lower.includes('2hb') || lower.includes('long');
-            const isServe = lower.includes('serve') || lower.includes('shoulder') || lower.includes('toss');
-
-            const areas = [];
-            if (isDropShot) areas.push("Early Split-Step on Racquet Deceleration");
-            if (isBackhand) areas.push("Left-Hand Lead & Quiet Chin on 2HB");
-            if (isServe) areas.push("12:30 Toss & 7-to-1 Topspin Brush");
-            if (areas.length < 3) {
-                areas.push("Hold <1m Baseline Recovery Position");
-                areas.push("Eccentric Quad Deceleration Endurance");
-            }
-
-            const oppTag = opponentName ? ` against ${opponentName}` : '';
-            const ideaTag = tacticalIdea ? ` Testing "${tacticalIdea}" gave clear feedback on court positioning.` : '';
-
-            return {
-                summary: `Solid ${sessionType.toLowerCase()} audit${oppTag}.${ideaTag} Prioritizing early cue recognition and compact follow-throughs with your Wilson RF01 Pro will convert defensive sprints into offensive baseline control.`,
-                areasOfImprovement: areas.slice(0, 3),
-                technicalTakeaways: isBackhand
-                    ? "At 100 kg, lifting your head early on high two-handed backhands opens your chest and sends Tour Bite 17g shots 1–2 feet long. Anchor your chin to your front shoulder through contact and let your non-dominant left hand drive upward."
-                    : "For a 100 kg athletic frame, saving energy starts before the sprint: refuse to drift 2–3 meters behind the baseline on high balls. Take the ball on the rise inside 1m of the baseline so any drop shot requires only a 5–6m burst instead of a 15m emergency sprint.",
-                recommendedDrill: isDropShot
-                    ? "15-Min Cue-Read & Brake Drill: Partner feeds 3 deep crosscourt balls followed by a random disguised drop shot; execute an aggressive forward split-step the instant their racquet slows down."
-                    : "15-Min Figure-8 Baseline Depth Drill: Alternate heavy crosscourt 2HB topspin and deep down-the-line drives aiming within 1m of the baseline with zero long misses."
-            };
-        }
-
-        async function evaluateSessionWithAI() {
-            const notesEl = document.getElementById('eval-session-notes');
-            const typeEl = document.getElementById('eval-type-input');
-            const dateEl = document.getElementById('eval-date-input');
-            const oppEl = document.getElementById('eval-opponent-name');
-            const ideaEl = document.getElementById('eval-tactical-idea');
-
-            if (!notesEl || !notesEl.value.trim()) {
-                showToast("Please enter session notes before evaluating.", "error");
-                return;
-            }
-
-            const sessionNotes = notesEl.value.trim();
-            const sessionType = typeEl.value;
-            const sessionDate = dateEl.value || new Date().toISOString().split('T')[0];
-            const opponentName = oppEl ? oppEl.value.trim() : '';
-            const tacticalIdea = ideaEl ? ideaEl.value.trim() : '';
-            const selectedModel = appState.selectedAiModel || 'gemini-3.8-flash';
-
-            const btn = document.getElementById('btn-eval-ai');
-            const badge = document.getElementById('eval-status-badge');
-            const body = document.getElementById('eval-output-body');
-
-            btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="search" class="w-4 h-4 animate-pulse"></i><span>Verifying Model...</span>`;
-            if (badge) {
-                badge.innerText = "Checking Model...";
-                badge.className = "text-[10px] bg-sage-primary/20 text-sage-accent px-2 py-0.5 rounded font-mono animate-pulse";
-            }
-            if (body) {
-                body.className = "text-xs text-beige-muted space-y-2 min-h-[120px] flex items-center justify-center text-center";
-                body.innerHTML = `
-                    <div class="py-6 text-center space-y-2">
-                        <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p class="text-xs text-sage-accent font-semibold">Searching live registry to verify "${escapeHtml(selectedModel)}"...</p>
-                    </div>
-                `;
-            }
-            if (window.lucide) lucide.createIcons();
-
-            // Step 1: Pre-execution live model availability check
-            const availability = await verifySelectedModelAvailability(false);
-
-            // If user selected a cloud Gemini model and has an API key, but the model is NOT available:
-            if (selectedModel !== 'local-coach-ai' && appState.geminiApiKey && !availability.available) {
-                btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="bot" class="w-4 h-4"></i><span>Evaluate Session with AI</span>`;
-                if (badge) {
-                    badge.innerText = "Model Unavailable";
-                    badge.className = "text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded font-mono";
-                }
-                const altModel = availability.fallbackModel || 'local-coach-ai';
-                if (body) {
-                    body.className = "text-xs text-beige-muted space-y-3 text-left";
-                    body.innerHTML = `
-                        <div class="bg-red-950/60 border border-red-500/40 rounded-lg p-3 space-y-2">
-                            <div class="font-bold text-red-300 flex items-center gap-1.5">
-                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                                <span>Selected model "${escapeHtml(selectedModel)}" is unavailable</span>
-                            </div>
-                            <p class="text-[11px] text-beige-muted leading-relaxed">
-                                Live registry search confirmed your API key cannot execute <strong>${escapeHtml(selectedModel)}</strong> (${escapeHtml(availability.reason)}). Select another verified model from the dropdown above or run with the recommended available model below:
-                            </p>
-                            <div class="flex flex-wrap gap-2 pt-1">
-                                <button type="button" onclick="switchToModelAndExecute('${escapeHtml(altModel)}', true)" class="px-3 py-1.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-[11px] rounded-lg transition-colors">
-                                    Switch to ${escapeHtml(altModel)} &amp; Run Now
-                                </button>
-                                <button type="button" onclick="switchToModelAndExecute('local-coach-ai', true)" class="px-3 py-1.5 bg-navy-slate hover:bg-navy-muted/40 text-beige-card font-semibold text-[11px] rounded-lg border border-navy-muted/40">
-                                    Run Offline Coach AI
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-                if (window.lucide) lucide.createIcons();
-                showToast(`Model "${selectedModel}" unavailable. Pick a verified model to run.`, "error");
-                return;
-            }
-
-            // Step 2: Execute evaluation with the verified model
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing Session...</span>`;
-            if (badge) {
-                badge.innerText = "Analyzing...";
-            }
-            if (body) {
-                body.className = "text-xs text-beige-muted space-y-2 min-h-[120px] flex items-center justify-center text-center";
-                body.innerHTML = `
-                    <div class="py-6 text-center space-y-2">
-                        <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p class="text-xs text-sage-accent font-semibold">Running tactical &amp; biomechanical analysis (${escapeHtml(selectedModel)})...</p>
-                    </div>
-                `;
-            }
-            if (window.lucide) lucide.createIcons();
-
-            let evalResult = null;
-            let modelUsed = 'local-coach-ai';
-
-            if (selectedModel !== 'local-coach-ai' && appState.geminiApiKey && availability.available) {
-                const systemPrompt = `You are an elite tennis coach specializing in NTRP 4.0 intermediate singles strategy. Player Profile: 29yo, 100kg, 175cm athletic build, playing with Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs. Playstyle: Counterpuncher / Aggressive Baseliner. Analyze the provided user training session description, opponent matchup, and tactical idea tested. Return a valid JSON object matching this schema:
-{
-  "summary": "Concise 2-sentence tactical summary",
-  "areasOfImprovement": ["Point 1", "Point 2", "Point 3"],
-  "technicalTakeaways": "Detailed technical and biomechanical diagnosis tailored for a 100kg player...",
-  "recommendedDrill": "Specific 15-minute targeted drill"
-}`;
-                const promptText = `Session Type: ${sessionType}\nOpponent Name: ${opponentName || 'Unspecified'}\nTactical Idea Tested: ${tacticalIdea || 'None specified'}\nSession Notes:\n"${sessionNotes}"`;
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(selectedModel)}:generateContent?key=${encodeURIComponent(appState.geminiApiKey)}`;
-                const payload = {
-                    contents: [{ parts: [{ text: promptText }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    generationConfig: {
-                        responseMimeType: "application/json",
-                        responseSchema: {
-                            type: "OBJECT",
-                            properties: {
-                                "summary": { "type": "STRING" },
-                                "areasOfImprovement": {
-                                    "type": "ARRAY",
-                                    "items": { "type": "STRING" }
-                                },
-                                "technicalTakeaways": { "type": "STRING" },
-                                "recommendedDrill": { "type": "STRING" }
-                            },
-                            "required": ["summary", "areasOfImprovement", "technicalTakeaways", "recommendedDrill"]
-                        }
-                    }
-                };
-
-                try {
-                    const res = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (res.ok) {
-                        const jsonRes = await res.json();
-                        const jsonText = jsonRes.candidates?.[0]?.content?.parts?.[0]?.text;
-                        if (jsonText) {
-                            evalResult = JSON.parse(jsonText);
-                            modelUsed = selectedModel;
-                        }
-                    } else {
-                        const errData = await res.json().catch(() => ({}));
-                        showToast(`Gemini execution error (${errData?.error?.message || res.status}) — falling back to Offline Coach AI.`, "error");
-                    }
-                } catch (err) {
-                    console.warn("Live Gemini API fallback triggered:", err);
-                }
-            }
-
-            if (!evalResult) {
-                await new Promise(r => setTimeout(r, 350));
-                evalResult = generateLocalCoachEvaluation(sessionType, sessionNotes, opponentName, tacticalIdea);
-                modelUsed = 'local-coach-ai';
-                if (selectedModel !== 'local-coach-ai' && !appState.geminiApiKey) {
-                    showToast("No API key set — evaluated with Built-in Offline Coach AI.", "info");
-                }
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = `<i data-lucide="bot" class="w-4 h-4"></i><span>Evaluate Session with AI</span>`;
-
-            if (badge) {
-                badge.innerText = modelUsed === 'local-coach-ai' ? "Offline AI" : modelUsed;
-                badge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono";
-            }
-
-            if (body) {
-                body.className = "text-xs text-beige-muted space-y-3 text-left";
-                body.innerHTML = `
-                    <div>
-                        <p class="text-sage-accent font-semibold leading-relaxed">${escapeHtml(evalResult.summary)}</p>
-                    </div>
-                    <div class="space-y-1.5 pt-1 border-t border-navy-slate">
-                        <span class="text-[10px] uppercase font-bold text-navy-muted tracking-wider block">Areas of Improvement:</span>
-                        <div class="flex flex-wrap gap-1.5">
-                            ${evalResult.areasOfImprovement.map(area => `<span class="px-2 py-0.5 bg-sage-primary/20 text-sage-accent border border-sage-primary/30 rounded text-[10px] font-medium">• ${escapeHtml(area)}</span>`).join('')}
-                        </div>
-                    </div>
-                    <div class="pt-1 border-t border-navy-slate space-y-1 text-[11px] leading-relaxed">
-                        <strong class="text-white block">Biomechanical Analysis:</strong>
-                        <p class="text-beige-muted/90">${escapeHtml(evalResult.technicalTakeaways)}</p>
-                    </div>
-                    <div class="bg-navy-slate p-2.5 rounded-lg border border-navy-muted/30 text-[11px]">
-                        <strong class="text-sage-accent">Recommended Drill:</strong> ${escapeHtml(evalResult.recommendedDrill)}
-                    </div>
-                `;
-            }
-
-            const logItem = {
-                id: 'eval-' + Date.now(),
-                date: sessionDate,
-                type: sessionType,
-                opponentName,
-                tacticalIdea,
-                modelUsed,
-                notes: sessionNotes,
-                result: evalResult
-            };
-            appState.evalLogs.unshift(logItem);
-            saveState(true);
-            showToast(`Session evaluated with ${modelUsed === 'local-coach-ai' ? 'Offline Coach AI' : modelUsed}!`, "success");
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function deleteEvalLog(evalId) {
-            appState.evalLogs = appState.evalLogs.filter(e => e.id !== evalId);
-            saveState(true);
-            showToast("Evaluation log removed.", "info");
-        }
-
-        function renderEvaluationsStream() {
-            const container = document.getElementById('evaluations-stream-container');
-            const countBadge = document.getElementById('eval-stream-count');
-            if (countBadge) countBadge.innerText = `${appState.evalLogs.length} logs`;
+        function renderUnifiedSessionLogs() {
+            const container = document.getElementById('match-logs-container');
+            const heading = document.getElementById('match-audits-heading');
             if (!container) return;
 
-            if (appState.evalLogs.length === 0) {
-                container.innerHTML = `<div class="text-[11px] text-navy-muted bg-beige-muted p-4 rounded-xl border border-beige-border text-center">No evaluated sessions yet. Submit a session above to build your AI coaching stream.</div>`;
+            const filtered = activeOpponentFilter === 'ALL'
+                ? appState.sessionLogs
+                : appState.sessionLogs.filter(s => (s.opponentName || '').trim().toLowerCase() === activeOpponentFilter);
+
+            if (heading) {
+                heading.innerText = activeOpponentFilter === 'ALL'
+                    ? `Synchronized Session & AI Analysis History (${filtered.length})`
+                    : `Sessions vs. ${filtered[0]?.opponentName || activeOpponentFilter} (${filtered.length})`;
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-xs text-navy-muted bg-beige-card p-6 rounded-2xl border border-beige-border text-center">No synchronized sessions found for this filter. Use the <strong>Unified Session Log &amp; AI Coach</strong> on the Dashboard to record a session.</div>`;
                 return;
             }
 
-            container.innerHTML = appState.evalLogs.map(ev => `
-                <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 space-y-2 text-xs">
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="text-[10px] font-mono font-bold bg-navy-deep text-beige-card px-2 py-0.5 rounded">${escapeHtml(ev.date)}</span>
-                            ${ev.opponentName ? `<span class="text-[11px] font-bold text-sage-dark bg-sage-light px-2 py-0.5 rounded">vs ${escapeHtml(ev.opponentName)}</span>` : ''}
-                            ${ev.modelUsed ? `<span class="text-[10px] font-mono text-navy-muted">${escapeHtml(ev.modelUsed)}</span>` : ''}
+            const outcomeColors = {
+                'Worked Well': 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                'Mixed / Needs Tweak': 'bg-amber-100 text-amber-800 border-amber-300',
+                "Didn't Work": 'bg-red-100 text-red-800 border-red-300',
+                'Testing / Baseline': 'bg-beige-muted text-navy-muted border-beige-border',
+                'AI Evaluated': 'bg-sage-light text-sage-dark border-sage-primary/30'
+            };
+
+            container.innerHTML = filtered.map(s => {
+                const r = s.ratings || {};
+                const hasRatings = s.ratings && (r.dropshot || r.positioning || r.backhand || r.serve);
+                const avg = hasRatings
+                    ? ((Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4).toFixed(1)
+                    : null;
+                const badgeCls = outcomeColors[s.ideaOutcome] || outcomeColors['Testing / Baseline'];
+                const ai = s.aiAnalysis;
+
+                return `
+                    <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-3.5">
+                        <!-- Top Metadata Header -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-beige-border">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-xs font-mono font-bold bg-navy-deep text-beige-card px-2.5 py-0.5 rounded">${escapeHtml(s.date)}</span>
+                                <span class="text-sm font-extrabold text-navy-deep">${escapeHtml(s.opponentName || 'Unspecified Opponent')}</span>
+                                ${s.opponentStyle ? `<span class="text-xs text-navy-muted">• ${escapeHtml(s.opponentStyle)}</span>` : ''}
+                                ${s.scoreline ? `<span class="text-xs font-mono font-bold bg-sage-light text-sage-dark px-2 py-0.5 rounded border border-sage-primary/20">${escapeHtml(s.scoreline)}</span>` : ''}
+                                <span class="text-[11px] bg-beige-muted text-navy-slate px-2 py-0.5 rounded border border-beige-border">${escapeHtml(s.type)}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${avg ? `<span class="text-xs font-mono font-bold bg-sage-light text-sage-dark px-2.5 py-1 rounded-lg border border-sage-primary/20">Avg ${avg} / 5</span>` : ''}
+                                <button type="button" onclick="analyzeExistingSessionLog('${escapeHtml(s.id)}')" class="px-2.5 py-1 bg-navy-deep hover:bg-navy-slate text-sage-accent text-[11px] font-bold rounded-lg flex items-center gap-1 transition-colors">
+                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                                    <span>${ai ? 'Re-Analyze' : 'Run AI'}</span>
+                                </button>
+                                <button type="button" onclick="deleteUnifiedSessionLog('${escapeHtml(s.id)}')" class="p-1.5 text-navy-muted hover:text-red-600 rounded-lg">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
                         </div>
-                        <button type="button" onclick="deleteEvalLog('${escapeHtml(ev.id)}')" class="text-navy-muted hover:text-red-600 p-1">
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                        </button>
+
+                        <!-- Tactical Experiment Strip -->
+                        ${s.tacticalIdea ? `
+                            <div class="bg-beige-muted border border-beige-border rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                                <div>
+                                    <span class="font-bold text-navy-deep">Tactical Idea Tested:</span>
+                                    <span class="text-navy-slate">${escapeHtml(s.tacticalIdea)}</span>
+                                </div>
+                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border self-start sm:self-center ${badgeCls}">${escapeHtml(s.ideaOutcome || 'Tested')}</span>
+                            </div>
+                        ` : ''}
+
+                        <!-- 4 Tactical Ratings Grid -->
+                        ${hasRatings ? `
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                                <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
+                                    <div class="text-[10px] text-navy-muted font-semibold">Drop-Shot Braking</div>
+                                    <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.dropshot)} / 5</div>
+                                </div>
+                                <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
+                                    <div class="text-[10px] text-navy-muted font-semibold">Baseline Depth (&lt;1m)</div>
+                                    <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.positioning)} / 5</div>
+                                </div>
+                                <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
+                                    <div class="text-[10px] text-navy-muted font-semibold">2HB Depth Control</div>
+                                    <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.backhand)} / 5</div>
+                                </div>
+                                <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
+                                    <div class="text-[10px] text-navy-muted font-semibold">2nd Serve / Shoulder</div>
+                                    <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.serve)} / 5</div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <!-- Raw Session Notes -->
+                        ${s.notes ? `
+                            <div class="text-xs text-navy-slate leading-relaxed bg-beige-muted/50 p-3 rounded-xl border border-beige-border/60">
+                                <span class="font-bold text-navy-deep">Session Notes:</span> ${escapeHtml(s.notes)}
+                            </div>
+                        ` : ''}
+
+                        <!-- Parsed AI Coaching Breakdown -->
+                        ${ai && ai.verdict ? buildParsedAiHtml(ai, false) : `
+                            <div class="bg-beige-muted border border-dashed border-beige-border rounded-xl p-3 flex items-center justify-between gap-2 text-xs">
+                                <span class="text-navy-muted">No AI coaching breakdown generated for this session yet.</span>
+                                <button type="button" onclick="analyzeExistingSessionLog('${escapeHtml(s.id)}')" class="px-3 py-1.5 bg-sage-primary hover:bg-sage-dark text-white font-bold rounded-lg text-[11px] flex items-center gap-1">
+                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                                    <span>Generate AI Analysis</span>
+                                </button>
+                            </div>
+                        `}
                     </div>
-                    ${ev.tacticalIdea ? `<div class="text-[11px] font-semibold text-navy-deep">💡 Idea: ${escapeHtml(ev.tacticalIdea)}</div>` : ''}
-                    <p class="text-[11px] text-navy-slate leading-relaxed">${escapeHtml(ev.result?.summary || '')}</p>
-                    <div class="text-[10px] text-sage-dark font-semibold">Drill: ${escapeHtml(ev.result?.recommendedDrill || '')}</div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             if (window.lucide) lucide.createIcons();
         }
@@ -2773,10 +3022,12 @@
             reader.onload = (e) => {
                 try {
                     const imported = JSON.parse(e.target.result);
-                    appState = Object.assign({}, appState, imported);
+                    const preservedKey = appState.geminiApiKey;
+                    appState = normalizeStatePayload(imported);
+                    appState.geminiApiKey = preservedKey;
                     saveState(true);
                     closeModal('sync-modal');
-                    showToast("Backup restored successfully!", "success");
+                    showToast("Backup restored & unified successfully!", "success");
                 } catch (err) {
                     showToast("Invalid JSON backup file.", "error");
                 }
@@ -2785,14 +3036,24 @@
         }
 
         function exportCSV() {
-            const rows = [['Date', 'Type', 'Opponent Name', 'Opponent Style', 'Tactical Idea', 'Idea Outcome', 'Drop-Shot', 'Depth', '2HB', '2nd Serve', 'Notes']];
-            appState.matchLogs.forEach(m => {
-                const r = m.ratings || {};
+            const rows = [[
+                'Date', 'Type', 'Opponent Name', 'Opponent Style', 'Scoreline',
+                'Tactical Idea', 'Idea Outcome', 'Drop-Shot', 'Baseline Depth', '2HB Control', '2nd Serve',
+                'Session Notes', 'AI Tactical Verdict', 'AI Focus Pillars', 'AI Opponent Adjustment', 'AI Biomechanical Cue', 'AI Recommended Drill'
+            ]];
+            appState.sessionLogs.forEach(s => {
+                const r = s.ratings || {};
+                const ai = s.aiAnalysis || {};
                 rows.push([
-                    m.date, m.type, m.opponentName || '', m.opponentStyle || '',
-                    m.tacticalIdea || '', m.ideaOutcome || '',
+                    s.date || '', s.type || '', s.opponentName || '', s.opponentStyle || '', s.scoreline || '',
+                    s.tacticalIdea || '', s.ideaOutcome || '',
                     r.dropshot || '', r.positioning || '', r.backhand || '', r.serve || '',
-                    (m.notes || '').replace(/"/g, '""')
+                    (s.notes || '').replace(/"/g, '""'),
+                    (ai.verdict || '').replace(/"/g, '""'),
+                    (Array.isArray(ai.focusTags) ? ai.focusTags.join(' | ') : '').replace(/"/g, '""'),
+                    (ai.opponentAdjustment || '').replace(/"/g, '""'),
+                    (ai.biomechanicalCue || '').replace(/"/g, '""'),
+                    (ai.recommendedDrill || '').replace(/"/g, '""')
                 ]);
             });
             const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
@@ -2800,24 +3061,24 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `singles-match-audits-${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `singles-unified-sessions-${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
-            showToast("Match audits CSV exported!", "success");
+            showToast("Unified session & AI logs CSV exported!", "success");
         }
 
         function confirmResetData() {
             showConfirmModal(
                 "Reset All Local Data?",
-                "This will clear your local checklist progress, gym logs, match audits, and opponent scouting cards. Cloud data in Google Sheets will remain intact until you push.",
+                "This will clear your local checklist progress, gym logs, unified session logs, and opponent scouting cards. Cloud data in Google Sheets will remain intact until you push.",
                 () => {
                     localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem(LEGACY_STORAGE_KEY_V3);
                     appState = {
                         targetMatchday: "2026-11-15",
                         checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
                         gymLogs: [],
-                        matchLogs: [],
-                        evalLogs: [],
+                        sessionLogs: [],
                         opponentProfiles: {},
                         stealthCompletedToday: false,
                         webhookUrl: DEFAULT_WEBHOOK_URL,
@@ -2846,8 +3107,8 @@
             renderGymLogs();
             updateOpponentDatalist();
             renderOpponentsSection();
-            renderMatchLogs();
-            renderEvaluationsStream();
+            renderUnifiedSessionLogs();
+            renderUnifiedSessionStream();
 
             const engineBadge = document.getElementById('ai-engine-badge');
             if (engineBadge) {
