@@ -399,6 +399,42 @@
 
                     <!-- Quick Session Logger Input Form -->
                     <div class="space-y-3">
+                        <!-- AI Analysis Model Selector & Live Availability Check -->
+                        <div class="bg-beige-muted border border-beige-border rounded-xl p-3 space-y-2">
+                            <div class="flex items-center justify-between gap-2">
+                                <label for="ai-model-select" class="text-[11px] font-bold text-navy-deep flex items-center gap-1.5">
+                                    <i data-lucide="cpu" class="w-3.5 h-3.5 text-sage-primary"></i>
+                                    <span>AI Analysis Model</span>
+                                </label>
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button" onclick="openApiKeySettings()" class="text-[10px] font-semibold text-navy-muted hover:text-navy-deep underline">
+                                        API Key
+                                    </button>
+                                    <span class="text-navy-muted/40 text-[10px]">•</span>
+                                    <button type="button" onclick="verifySelectedModelAvailability(true)" id="btn-check-model" class="text-[10px] font-bold text-sage-primary hover:text-sage-dark flex items-center gap-1">
+                                        <i data-lucide="search" class="w-3 h-3"></i>
+                                        <span>Verify Now</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <select id="ai-model-select" onchange="handleAiModelChange(this.value)" class="w-full bg-beige-card border border-beige-border rounded-lg px-2.5 py-1.5 text-xs font-semibold text-navy-deep focus:outline-none focus:border-sage-primary">
+                                <option value="gemini-3.8-flash">Gemini 3.8 Flash (Recommended Default)</option>
+                                <option value="gemini-3.6-flash">Gemini 3.6 Flash (Fast &amp; Balanced)</option>
+                                <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite (Ultra-Fast / Free Tier)</option>
+                                <option value="gemini-3-flash-preview">Gemini 3 Flash Preview</option>
+                                <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro Preview (Deep Reasoning)</option>
+                                <option value="gemini-4-argon">Gemini 4 Argon (Flagship Reasoning)</option>
+                                <option value="gemini-2.5-flash">Gemini 2.5 Flash (Legacy Fallback)</option>
+                                <option value="local-coach-ai">Built-in Offline Coach AI (No API Key)</option>
+                            </select>
+                            <div id="model-availability-status" class="text-[10px] text-navy-muted flex items-center justify-between gap-2 pt-0.5">
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="shield-question" class="w-3 h-3 text-sage-primary flex-shrink-0"></i>
+                                    <span>Auto-verifies model availability before each run</span>
+                                </span>
+                            </div>
+                        </div>
+
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-[11px] font-bold text-navy-deep mb-1">Session Type</label>
@@ -435,14 +471,14 @@
                                       class="w-full bg-beige-muted border border-beige-border rounded-xl p-3 text-xs text-navy-deep focus:outline-none focus:border-sage-primary leading-relaxed resize-none"></textarea>
                         </div>
                         <div class="flex gap-1.5 flex-wrap">
-                            <button onclick="fillPresetPrompt(1)" class="px-2 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-[10px] rounded border border-beige-border">
+                            <button type="button" onclick="fillPresetPrompt(1)" class="px-2 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-[10px] rounded border border-beige-border">
                                 🎾 Drop Shot Sprint Fatigue
                             </button>
-                            <button onclick="fillPresetPrompt(2)" class="px-2 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-[10px] rounded border border-beige-border">
+                            <button type="button" onclick="fillPresetPrompt(2)" class="px-2 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-[10px] rounded border border-beige-border">
                                 🎾 2HB Flying Long Fix
                             </button>
                         </div>
-                        <button onclick="evaluateSessionWithAI()" id="btn-eval-ai" class="w-full py-2.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center justify-center gap-2">
+                        <button type="button" onclick="evaluateSessionWithAI()" id="btn-eval-ai" class="w-full py-2.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center justify-center gap-2">
                             <i data-lucide="bot" class="w-4 h-4"></i>
                             <span>Evaluate Session with AI</span>
                         </button>
@@ -751,18 +787,18 @@
                 <input type="date" id="input-target-matchday" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
                 <div class="flex flex-wrap gap-1.5 pt-1">
                     <span class="text-[10px] text-navy-muted block w-full">Quick Presets:</span>
-                    <button onclick="document.getElementById('input-target-matchday').value = '2026-11-15'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Nov 15, 2026</button>
-                    <button onclick="document.getElementById('input-target-matchday').value = '2026-11-22'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Nov 22, 2026</button>
-                    <button onclick="document.getElementById('input-target-matchday').value = '2026-12-05'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Dec 05, 2026</button>
+                    <button type="button" onclick="document.getElementById('input-target-matchday').value = '2026-11-15'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Nov 15, 2026</button>
+                    <button type="button" onclick="document.getElementById('input-target-matchday').value = '2026-11-22'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Nov 22, 2026</button>
+                    <button type="button" onclick="document.getElementById('input-target-matchday').value = '2026-12-05'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Dec 05, 2026</button>
                 </div>
             </div>
             <div class="flex items-center justify-between pt-3 border-t border-beige-border">
-                <button onclick="clearTargetMatchday()" class="px-3 py-2 bg-red-100/70 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl transition-colors">
+                <button type="button" onclick="clearTargetMatchday()" class="px-3 py-2 bg-red-100/70 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl transition-colors">
                     Clear / Off-Season Mode
                 </button>
                 <div class="flex gap-2">
-                    <button onclick="closeModal('matchday-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
-                    <button onclick="saveMatchdayFromInput()" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Target</button>
+                    <button type="button" onclick="closeModal('matchday-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
+                    <button type="button" onclick="saveMatchdayFromInput()" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Target</button>
                 </div>
             </div>
         </div>
@@ -785,7 +821,7 @@
             <div class="space-y-2">
                 <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Local Backup</h4>
                 <div class="grid grid-cols-3 gap-2">
-                    <button onclick="exportJSON()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
+                    <button type="button" onclick="exportJSON()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
                         <i data-lucide="download" class="w-4 h-4 text-sage-primary"></i>
                         <span>Export JSON</span>
                     </button>
@@ -794,7 +830,7 @@
                         <span>Import JSON</span>
                         <input type="file" accept=".json" onchange="importJSON(event)" class="hidden">
                     </label>
-                    <button onclick="exportCSV()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
+                    <button type="button" onclick="exportCSV()" class="p-2.5 bg-beige-muted hover:bg-beige-border text-navy-deep font-bold text-xs rounded-xl border border-beige-border flex flex-col items-center gap-1">
                         <i data-lucide="file-spreadsheet" class="w-4 h-4 text-sage-primary"></i>
                         <span>Export CSV</span>
                     </button>
@@ -813,11 +849,11 @@
                 <input type="url" id="webhook-url-input" placeholder="https://script.google.com/macros/s/.../exec"
                        class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary font-mono">
                 <div class="flex gap-2">
-                    <button onclick="syncToCloud()" id="btn-push-cloud" class="flex-1 py-2.5 bg-sage-primary hover:bg-sage-dark text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors">
+                    <button type="button" onclick="syncToCloud()" id="btn-push-cloud" class="flex-1 py-2.5 bg-sage-primary hover:bg-sage-dark text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors">
                         <i data-lucide="cloud-upload" class="w-4 h-4"></i>
                         <span>Push to Cloud</span>
                     </button>
-                    <button onclick="pullFromCloud()" id="btn-pull-cloud" class="flex-1 py-2.5 bg-navy-deep hover:bg-navy-slate text-beige-card text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors">
+                    <button type="button" onclick="pullFromCloud()" id="btn-pull-cloud" class="flex-1 py-2.5 bg-navy-deep hover:bg-navy-slate text-beige-card text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors">
                         <i data-lucide="cloud-download" class="w-4 h-4 text-sage-accent"></i>
                         <span>Pull from Cloud</span>
                     </button>
@@ -827,17 +863,17 @@
             <!-- Optional Gemini API Key for Live Cloud AI -->
             <div class="space-y-2 pt-3 border-t border-beige-border">
                 <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Gemini AI API Key (Optional)</h4>
-                <p class="text-[11px] text-navy-muted">Leave blank to use the built-in offline Tennis Biomechanics Coach engine, or paste a Google AI Studio key for live Gemini 3 Flash analysis.</p>
+                <p class="text-[11px] text-navy-muted">Leave blank to use the built-in offline Tennis Biomechanics Coach engine, or paste a Google AI Studio key for live Gemini analysis.</p>
                 <div class="flex gap-2">
                     <input type="password" id="gemini-apikey-input" placeholder="AIzaSy..."
                            class="flex-1 bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary font-mono">
-                    <button onclick="saveGeminiApiKey()" class="px-3 py-2 bg-beige-muted hover:bg-beige-border text-navy-deep text-xs font-bold rounded-xl border border-beige-border">Save Key</button>
+                    <button type="button" onclick="saveGeminiApiKey()" class="px-3 py-2 bg-beige-muted hover:bg-beige-border text-navy-deep text-xs font-bold rounded-xl border border-beige-border">Save Key</button>
                 </div>
             </div>
 
             <div class="pt-3 border-t border-beige-border flex justify-between items-center text-xs">
                 <span class="text-navy-muted">Reset local storage</span>
-                <button onclick="confirmResetData()" class="text-red-600 hover:underline font-semibold">Reset Application</button>
+                <button type="button" onclick="confirmResetData()" class="text-red-600 hover:underline font-semibold">Reset Application</button>
             </div>
         </div>
     </div>
@@ -855,7 +891,7 @@
                 </button>
             </div>
             <div class="space-y-2.5">
-                <button onclick="closeModal('quick-log-modal'); openModal('match-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                <button type="button" onclick="closeModal('quick-log-modal'); openModal('match-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
                         <i data-lucide="users" class="w-5 h-5"></i>
                     </span>
@@ -864,7 +900,7 @@
                         <div class="text-xs text-navy-muted">Record opponent name, ratings &amp; whether your tactical idea worked</div>
                     </div>
                 </button>
-                <button onclick="closeModal('quick-log-modal'); openOpponentProfileModal();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                <button type="button" onclick="closeModal('quick-log-modal'); openOpponentProfileModal();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
                         <i data-lucide="user-plus" class="w-5 h-5"></i>
                     </span>
@@ -873,7 +909,7 @@
                         <div class="text-xs text-navy-muted">Save tendencies, weaknesses &amp; next-match gameplan idea</div>
                     </div>
                 </button>
-                <button onclick="closeModal('quick-log-modal'); openModal('gym-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                <button type="button" onclick="closeModal('quick-log-modal'); openModal('gym-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
                         <i data-lucide="dumbbell" class="w-5 h-5"></i>
                     </span>
@@ -882,7 +918,7 @@
                         <div class="text-xs text-navy-muted">Record Bulgarian split squats, RDLs, face pulls</div>
                     </div>
                 </button>
-                <button onclick="closeModal('quick-log-modal'); switchTab('dashboard'); document.getElementById('eval-session-notes').focus();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
+                <button type="button" onclick="closeModal('quick-log-modal'); switchTab('dashboard'); document.getElementById('eval-session-notes').focus();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
                         <i data-lucide="bot" class="w-5 h-5"></i>
                     </span>
@@ -1162,9 +1198,21 @@
             { title: "12:30 Toss Topspin-Slice Serve", desc: "Toss 2nd serves slightly in front & right (12:30/1:00). Brush from 7 to 1 o'clock with wrist snap.", icon: "sparkles" }
         ];
 
+        const AI_MODEL_CATALOG = [
+            { id: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash (Recommended Default)' },
+            { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash (Fast & Balanced)' },
+            { id: 'gemini-3.5-flash-lite', label: 'Gemini 3.5 Flash-Lite (Ultra-Fast / Free Tier)' },
+            { id: 'gemini-3-flash-preview', label: 'Gemini 3 Flash Preview' },
+            { id: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro Preview (Deep Reasoning)' },
+            { id: 'gemini-4-argon', label: 'Gemini 4 Argon (Flagship Reasoning)' },
+            { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (Legacy Fallback)' },
+            { id: 'local-coach-ai', label: 'Built-in Offline Coach AI (No API Key)' }
+        ];
+
         let currentStealthIndex = 0;
         let countdownInterval = null;
         let activeOpponentFilter = 'ALL';
+        let lastDiscoveredLiveModels = [];
 
         let appState = {
             targetMatchday: "2026-11-15",
@@ -1177,10 +1225,13 @@
             webhookUrl: DEFAULT_WEBHOOK_URL,
             autoSync: true,
             geminiApiKey: "",
+            selectedAiModel: "gemini-3.8-flash",
             lastSynced: null
         };
 
-        // Safe HTML Escaping Utility
+        // ==========================================
+        // UTILITIES, TOASTS & CONFIRMATION DIALOGS
+        // ==========================================
         function escapeHtml(str) {
             if (str === null || str === undefined) return '';
             return String(str)
@@ -1191,110 +1242,891 @@
                 .replace(/'/g, '&#039;');
         }
 
-        // DOM Loaded Init
-        window.addEventListener('DOMContentLoaded', () => {
-            loadState();
-            initCountdown();
-            renderAll();
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
 
-            const todayStr = new Date().toISOString().split('T')[0];
-            ['eval-date-input', 'gym-date-input', 'match-date-input'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = todayStr;
-            });
-        });
+            const colors = {
+                success: 'bg-navy-deep text-white border-sage-accent',
+                error: 'bg-red-900 text-white border-red-400',
+                info: 'bg-navy-slate text-beige-card border-navy-muted'
+            };
+            const icons = {
+                success: 'check-circle-2',
+                error: 'alert-circle',
+                info: 'info'
+            };
 
-        // Local Storage Methods
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl border shadow-lg text-xs font-semibold transition-all duration-300 ${colors[type] || colors.info}`;
+            toast.innerHTML = `
+                <i data-lucide="${icons[type] || 'info'}" class="w-4 h-4 flex-shrink-0 text-sage-accent"></i>
+                <span class="leading-snug">${escapeHtml(message)}</span>
+            `;
+            container.appendChild(toast);
+            if (window.lucide) lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-6px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3600);
+        }
+
+        function showConfirmModal(title, message, onConfirm) {
+            const modal = document.getElementById('confirm-modal');
+            const titleEl = document.getElementById('confirm-modal-title');
+            const msgEl = document.getElementById('confirm-modal-msg');
+            const okBtn = document.getElementById('confirm-modal-ok');
+            const cancelBtn = document.getElementById('confirm-modal-cancel');
+
+            if (!modal) return;
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            modal.classList.remove('hidden');
+
+            const cleanup = () => {
+                modal.classList.add('hidden');
+                okBtn.onclick = null;
+                cancelBtn.onclick = null;
+            };
+
+            cancelBtn.onclick = cleanup;
+            okBtn.onclick = () => {
+                cleanup();
+                if (typeof onConfirm === 'function') onConfirm();
+            };
+        }
+
+        // ==========================================
+        // STATE PERSISTENCE & NAVIGATION
+        // ==========================================
         function loadState() {
             try {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    appState = { ...appState, ...parsed };
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    appState = Object.assign({}, appState, parsed);
+                    if (!Array.isArray(appState.checklist) || appState.checklist.length === 0) {
+                        appState.checklist = JSON.parse(JSON.stringify(DEFAULT_CHECKLIST));
+                    }
+                    if (!Array.isArray(appState.gymLogs)) appState.gymLogs = [];
+                    if (!Array.isArray(appState.matchLogs)) appState.matchLogs = [];
+                    if (!Array.isArray(appState.evalLogs)) appState.evalLogs = [];
+                    if (!appState.opponentProfiles || typeof appState.opponentProfiles !== 'object') {
+                        appState.opponentProfiles = {};
+                    }
+                    if (!appState.webhookUrl) appState.webhookUrl = DEFAULT_WEBHOOK_URL;
+                    if (!appState.selectedAiModel) appState.selectedAiModel = "gemini-3.8-flash";
                 }
-            } catch (e) {
-                console.error("Failed to load local state", e);
+            } catch (err) {
+                console.warn("Failed to parse saved state:", err);
             }
 
-            if (!appState.opponentProfiles || typeof appState.opponentProfiles !== 'object') {
-                appState.opponentProfiles = {};
-            }
-
-            if (!appState.webhookUrl) {
-                appState.webhookUrl = DEFAULT_WEBHOOK_URL;
-            }
-
-            const wh = document.getElementById('webhook-url-input');
-            if (wh) wh.value = appState.webhookUrl;
+            const webhookInput = document.getElementById('webhook-url-input');
+            if (webhookInput) webhookInput.value = appState.webhookUrl || DEFAULT_WEBHOOK_URL;
 
             const autoCheck = document.getElementById('auto-sync-checkbox');
             if (autoCheck) autoCheck.checked = Boolean(appState.autoSync);
 
             const apiKeyInput = document.getElementById('gemini-apikey-input');
             if (apiKeyInput && appState.geminiApiKey) apiKeyInput.value = appState.geminiApiKey;
+
+            const evalDateInput = document.getElementById('eval-date-input');
+            if (evalDateInput && !evalDateInput.value) {
+                evalDateInput.value = new Date().toISOString().split('T')[0];
+            }
+
+            syncModelDropdownSelection();
+            if (appState.selectedAiModel === 'local-coach-ai') {
+                updateModelAvailabilityUI('available', 'Built-in Offline Coach AI • Ready (Local)');
+            } else if (!appState.geminiApiKey) {
+                updateModelAvailabilityUI('nokey', 'No API key set • Will use Offline fallback or add key');
+            }
         }
 
-        function saveState(triggerAutoCloud = false) {
+        function saveState(triggerAutoPush = false) {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-            } catch (e) {
-                console.error("Failed to save local state", e);
+            } catch (err) {
+                console.error("Failed to save state:", err);
             }
             renderAll();
-            if (triggerAutoCloud && appState.autoSync && appState.webhookUrl) {
+            if (triggerAutoPush && appState.autoSync && appState.webhookUrl) {
                 syncToCloud(true);
             }
         }
 
-        function toggleAutoSync(enabled) {
-            appState.autoSync = enabled;
-            saveState(false);
-            showToast(enabled ? "Auto-push to Google Sheets enabled." : "Auto-push disabled.", "info");
+        function switchTab(tabName) {
+            const tabs = ['dashboard', 'checklist', 'gym', 'match', 'playbook'];
+            tabs.forEach(t => {
+                const section = document.getElementById(`tab-${t}`);
+                const deskBtn = document.getElementById(`nav-${t}`);
+                const mobBtn = document.getElementById(`mobile-nav-${t}`);
+
+                if (section) {
+                    section.classList.toggle('hidden', t !== tabName);
+                }
+                if (deskBtn) {
+                    if (t === tabName) {
+                        deskBtn.className = "tab-btn bg-navy-deep text-white flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all";
+                    } else {
+                        deskBtn.className = "tab-btn text-navy-slate hover:bg-beige-border/60 flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all";
+                    }
+                }
+                if (mobBtn) {
+                    if (t === tabName) {
+                        mobBtn.className = "mobile-tab-btn bg-navy-deep text-white flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold";
+                    } else {
+                        mobBtn.className = "mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted";
+                    }
+                }
+            });
+            if (window.lucide) lucide.createIcons();
         }
 
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            modal.classList.remove('hidden');
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (modalId === 'matchday-modal') {
+                const input = document.getElementById('input-target-matchday');
+                if (input) input.value = appState.targetMatchday || todayStr;
+            } else if (modalId === 'gym-log-modal') {
+                const input = document.getElementById('gym-date-input');
+                if (input && !input.value) input.value = todayStr;
+            } else if (modalId === 'match-log-modal') {
+                const input = document.getElementById('match-date-input');
+                if (input && !input.value) input.value = todayStr;
+            } else if (modalId === 'sync-modal') {
+                const webhookInput = document.getElementById('webhook-url-input');
+                if (webhookInput) webhookInput.value = appState.webhookUrl || DEFAULT_WEBHOOK_URL;
+                const apiKeyInput = document.getElementById('gemini-apikey-input');
+                if (apiKeyInput) apiKeyInput.value = appState.geminiApiKey || '';
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // ==========================================
+        // CLOUD SYNC (GOOGLE APPS SCRIPT WEBHOOK)
+        // ==========================================
+        function updateSyncStatusBadge(stateType, text) {
+            const badge = document.getElementById('sync-status-badge');
+            const label = document.getElementById('sync-status-text');
+            if (!badge || !label) return;
+
+            label.innerText = text;
+            if (stateType === 'syncing') {
+                badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-amber-500/20 text-amber-300 border border-amber-400/30 flex items-center gap-1.5 animate-pulse";
+            } else if (stateType === 'error') {
+                badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-red-500/20 text-red-300 border border-red-400/30 flex items-center gap-1.5";
+            } else {
+                badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-sage-primary/20 text-sage-accent border border-sage-primary/30 flex items-center gap-1.5";
+            }
+        }
+
+        function toggleAutoSync(checked) {
+            appState.autoSync = Boolean(checked);
+            saveState(false);
+            showToast(checked ? "Auto-push to Google Sheets enabled." : "Auto-push disabled.", "info");
+        }
+
+        async function syncToCloud(isSilent = false) {
+            const inputEl = document.getElementById('webhook-url-input');
+            const url = (inputEl ? inputEl.value.trim() : '') || appState.webhookUrl || DEFAULT_WEBHOOK_URL;
+            if (!url) {
+                if (!isSilent) showToast("Please configure a Google Apps Script Webhook URL first.", "error");
+                return;
+            }
+            appState.webhookUrl = url;
+
+            const pushBtn = document.getElementById('btn-push-cloud');
+            if (pushBtn) pushBtn.disabled = true;
+            updateSyncStatusBadge('syncing', 'Pushing...');
+
+            // Exclude local geminiApiKey from cloud payload
+            const payload = {
+                targetMatchday: appState.targetMatchday,
+                checklist: appState.checklist,
+                gymLogs: appState.gymLogs,
+                matchLogs: appState.matchLogs,
+                evalLogs: appState.evalLogs,
+                opponentProfiles: appState.opponentProfiles,
+                stealthCompletedToday: appState.stealthCompletedToday
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    appState.lastSynced = result.lastSync || new Date().toISOString();
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+                    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    updateSyncStatusBadge('ready', `Synced ${timeStr}`);
+                    if (!isSilent) showToast("Pushed all logs, opponents & experiments to Google Sheets!", "success");
+                } else {
+                    throw new Error(result.message || "Unknown server error");
+                }
+            } catch (err) {
+                console.error("Cloud push failed:", err);
+                updateSyncStatusBadge('error', 'Push Failed');
+                if (!isSilent) showToast(`Cloud push failed: ${err.message}`, "error");
+            } finally {
+                if (pushBtn) pushBtn.disabled = false;
+            }
+        }
+
+        async function pullFromCloud(isSilent = false) {
+            const inputEl = document.getElementById('webhook-url-input');
+            const url = (inputEl ? inputEl.value.trim() : '') || appState.webhookUrl || DEFAULT_WEBHOOK_URL;
+            if (!url) {
+                if (!isSilent) showToast("Please configure a Google Apps Script Webhook URL first.", "error");
+                return;
+            }
+            appState.webhookUrl = url;
+
+            const pullBtn = document.getElementById('btn-pull-cloud');
+            if (pullBtn) pullBtn.disabled = true;
+            updateSyncStatusBadge('syncing', 'Pulling...');
+
+            try {
+                const response = await fetch(`${url}?t=${Date.now()}`, { method: 'GET' });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    if (data.isInitialEmptyCloud) {
+                        updateSyncStatusBadge('ready', 'Cloud Empty');
+                        if (!isSilent) showToast("Cloud sheet is initialized but empty. Click 'Push' to upload your local logs.", "info");
+                    } else {
+                        if (data.targetMatchday !== undefined) appState.targetMatchday = data.targetMatchday;
+                        if (Array.isArray(data.checklist) && data.checklist.length > 0) appState.checklist = data.checklist;
+                        if (Array.isArray(data.gymLogs)) appState.gymLogs = data.gymLogs;
+                        if (Array.isArray(data.matchLogs)) appState.matchLogs = data.matchLogs;
+                        if (Array.isArray(data.evalLogs)) appState.evalLogs = data.evalLogs;
+                        if (data.opponentProfiles && typeof data.opponentProfiles === 'object') {
+                            appState.opponentProfiles = data.opponentProfiles;
+                        }
+                        if (typeof data.stealthCompletedToday === 'boolean') {
+                            appState.stealthCompletedToday = data.stealthCompletedToday;
+                        }
+                        appState.lastSynced = data.lastSynced || new Date().toISOString();
+                        saveState(false);
+
+                        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        updateSyncStatusBadge('ready', `Pulled ${timeStr}`);
+                        if (!isSilent) showToast("Pulled latest state from Google Sheets!", "success");
+                    }
+                } else {
+                    throw new Error(data.message || "Invalid cloud payload");
+                }
+            } catch (err) {
+                console.error("Cloud pull failed:", err);
+                updateSyncStatusBadge('error', 'Pull Failed');
+                if (!isSilent) showToast(`Cloud pull failed: ${err.message}`, "error");
+            } finally {
+                if (pullBtn) pullBtn.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // AI MODEL DROPDOWN & LIVE AVAILABILITY CHECK
+        // ==========================================
         function saveGeminiApiKey() {
             const val = document.getElementById('gemini-apikey-input')?.value.trim() || "";
             appState.geminiApiKey = val;
             saveState(false);
             showToast(val ? "Gemini API key saved locally." : "Cleared Gemini API key (using built-in Coach AI).", "success");
+            if (val && appState.selectedAiModel !== 'local-coach-ai') {
+                verifySelectedModelAvailability(true);
+            } else if (appState.selectedAiModel === 'local-coach-ai') {
+                updateModelAvailabilityUI('available', 'Built-in Offline Coach AI • Ready (Local)');
+            } else {
+                updateModelAvailabilityUI('nokey', 'No API key set • Will use Offline fallback or add key');
+            }
         }
 
-        // Opponent Aggregation Helper
+        function openApiKeySettings() {
+            openModal('sync-modal');
+            setTimeout(() => {
+                const input = document.getElementById('gemini-apikey-input');
+                if (input) input.focus();
+            }, 80);
+        }
+
+        function syncModelDropdownSelection(discoveredModels = []) {
+            const select = document.getElementById('ai-model-select');
+            if (!select) return;
+
+            const currentVal = appState.selectedAiModel || 'gemini-3.8-flash';
+            const liveMap = new Map();
+            discoveredModels.forEach(m => liveMap.set(m.id, m));
+
+            const options = [];
+            const seenIds = new Set();
+
+            AI_MODEL_CATALOG.forEach(item => {
+                seenIds.add(item.id);
+                const liveInfo = liveMap.get(item.id);
+                const suffix = discoveredModels.length > 0 && item.id !== 'local-coach-ai'
+                    ? (liveInfo ? ' ✓ Verified' : ' (Unavailable on Key)')
+                    : '';
+                options.push(`<option value="${escapeHtml(item.id)}">${escapeHtml(item.label + suffix)}</option>`);
+            });
+
+            discoveredModels.forEach(m => {
+                if (!seenIds.has(m.id) && m.id.startsWith('gemini-')) {
+                    seenIds.add(m.id);
+                    options.push(`<option value="${escapeHtml(m.id)}">${escapeHtml((m.displayName || m.id) + ' (' + m.id + ') ✓ Verified')}</option>`);
+                }
+            });
+
+            if (!seenIds.has(currentVal)) {
+                options.unshift(`<option value="${escapeHtml(currentVal)}">${escapeHtml(currentVal)}</option>`);
+            }
+
+            select.innerHTML = options.join('');
+            select.value = currentVal;
+        }
+
+        function handleAiModelChange(modelId) {
+            appState.selectedAiModel = modelId;
+            saveState(false);
+
+            if (modelId === 'local-coach-ai') {
+                updateModelAvailabilityUI('available', 'Built-in Offline Coach AI • Ready (Local)');
+            } else if (!appState.geminiApiKey) {
+                updateModelAvailabilityUI('nokey', 'No Gemini API key set • Will use Offline fallback or add key');
+            } else {
+                updateModelAvailabilityUI('idle', `Selected ${modelId} • Will verify before execution`);
+            }
+        }
+
+        function updateModelAvailabilityUI(status, message, extraHtml = '') {
+            const el = document.getElementById('model-availability-status');
+            if (!el) return;
+
+            const styles = {
+                idle: { cls: 'text-navy-muted', icon: 'shield-question', iconCls: 'text-sage-primary' },
+                checking: { cls: 'text-sage-dark font-semibold', icon: 'loader-2', iconCls: 'text-sage-primary animate-spin' },
+                available: { cls: 'text-emerald-700 font-semibold', icon: 'check-circle-2', iconCls: 'text-emerald-600' },
+                unavailable: { cls: 'text-red-700 font-semibold', icon: 'alert-circle', iconCls: 'text-red-600' },
+                nokey: { cls: 'text-amber-700 font-medium', icon: 'key-round', iconCls: 'text-amber-600' }
+            };
+            const cfg = styles[status] || styles.idle;
+
+            el.className = `text-[10px] flex items-center justify-between gap-2 pt-0.5 flex-wrap ${cfg.cls}`;
+            el.innerHTML = `
+                <span class="flex items-center gap-1">
+                    <i data-lucide="${cfg.icon}" class="w-3 h-3 flex-shrink-0 ${cfg.iconCls}"></i>
+                    <span>${escapeHtml(message)}</span>
+                </span>
+                ${extraHtml}
+            `;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function searchAvailableGeminiModels(apiKey) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 7000);
+
+            try {
+                const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}&pageSize=100`;
+                const res = await fetch(listUrl, { method: 'GET', signal: controller.signal });
+                clearTimeout(timeoutId);
+
+                if (!res.ok) {
+                    const errBody = await res.json().catch(() => ({}));
+                    const errMsg = errBody?.error?.message || `HTTP ${res.status}`;
+                    return { ok: false, models: [], error: errMsg };
+                }
+
+                const data = await res.json();
+                const rawModels = Array.isArray(data.models) ? data.models : [];
+                const generativeModels = rawModels
+                    .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+                    .map(m => ({
+                        id: (m.name || '').replace(/^models\//, ''),
+                        displayName: m.displayName || (m.name || '').replace(/^models\//, '')
+                    }));
+
+                lastDiscoveredLiveModels = generativeModels;
+                syncModelDropdownSelection(generativeModels);
+                return { ok: true, models: generativeModels, error: null };
+            } catch (err) {
+                clearTimeout(timeoutId);
+                return {
+                    ok: false,
+                    models: [],
+                    error: err.name === 'AbortError' ? 'Model registry check timed out' : (err.message || 'Network error')
+                };
+            }
+        }
+
+        function pickBestAvailableFallback(availableModels) {
+            const preferredOrder = [
+                'gemini-3.8-flash',
+                'gemini-3.6-flash',
+                'gemini-3.5-flash-lite',
+                'gemini-3-flash-preview',
+                'gemini-3.1-pro-preview',
+                'gemini-4-argon',
+                'gemini-2.5-flash'
+            ];
+            const availableIds = new Set(availableModels.map(m => m.id));
+            for (const id of preferredOrder) {
+                if (availableIds.has(id)) return id;
+            }
+            const anyGemini = availableModels.find(m => m.id.startsWith('gemini-') && !m.id.includes('image') && !m.id.includes('tts'));
+            return anyGemini ? anyGemini.id : 'local-coach-ai';
+        }
+
+        async function verifySelectedModelAvailability(manualTrigger = false) {
+            const selectedModel = appState.selectedAiModel || 'gemini-3.8-flash';
+
+            if (selectedModel === 'local-coach-ai') {
+                updateModelAvailabilityUI('available', 'Built-in Offline Coach AI • Ready');
+                if (manualTrigger) showToast('Offline Coach AI is ready (no API key needed).', 'success');
+                return { available: true, modelId: 'local-coach-ai', fallbackModel: null, reason: 'local' };
+            }
+
+            if (!appState.geminiApiKey) {
+                updateModelAvailabilityUI(
+                    'nokey',
+                    'No API key configured for live Gemini check',
+                    `<button type="button" onclick="openApiKeySettings()" class="underline font-bold text-navy-deep">Add Key</button>`
+                );
+                if (manualTrigger) {
+                    showToast('Add a Gemini API key in Sync & Data to verify cloud models, or select Built-in Offline Coach AI.', 'info');
+                }
+                return { available: false, modelId: selectedModel, fallbackModel: 'local-coach-ai', reason: 'missing_key' };
+            }
+
+            updateModelAvailabilityUI('checking', `Searching Gemini API for "${selectedModel}"...`);
+
+            const searchRes = await searchAvailableGeminiModels(appState.geminiApiKey);
+            if (!searchRes.ok) {
+                updateModelAvailabilityUI('unavailable', `Registry search failed: ${searchRes.error}`);
+                if (manualTrigger) showToast(`Model search failed: ${searchRes.error}`, 'error');
+                return { available: false, modelId: selectedModel, fallbackModel: 'local-coach-ai', reason: searchRes.error };
+            }
+
+            const matched = searchRes.models.find(m => m.id === selectedModel);
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            if (matched) {
+                updateModelAvailabilityUI('available', `✓ Verified available (${matched.id}) at ${timeStr}`);
+                if (manualTrigger) showToast(`Verified: ${matched.displayName} (${matched.id}) is live & available!`, 'success');
+                return { available: true, modelId: matched.id, fallbackModel: null, reason: 'verified' };
+            } else {
+                const suggested = pickBestAvailableFallback(searchRes.models);
+                const switchAction = suggested !== 'local-coach-ai'
+                    ? `<button type="button" onclick="switchToModelAndExecute('${escapeHtml(suggested)}', false)" class="px-1.5 py-0.5 bg-sage-primary text-white rounded font-bold">Use ${escapeHtml(suggested)}</button>`
+                    : `<button type="button" onclick="switchToModelAndExecute('local-coach-ai', false)" class="px-1.5 py-0.5 bg-navy-deep text-white rounded font-bold">Use Offline AI</button>`;
+
+                updateModelAvailabilityUI('unavailable', `"${selectedModel}" not available on your API key`, switchAction);
+                if (manualTrigger) {
+                    showToast(`"${selectedModel}" is unavailable on your API key. Suggested: ${suggested}.`, 'error');
+                }
+                return { available: false, modelId: selectedModel, fallbackModel: suggested, reason: 'not_in_registry' };
+            }
+        }
+
+        function switchToModelAndExecute(modelId, autoRun = true) {
+            appState.selectedAiModel = modelId;
+            syncModelDropdownSelection(lastDiscoveredLiveModels);
+            saveState(false);
+            if (autoRun) {
+                evaluateSessionWithAI();
+            } else {
+                verifySelectedModelAvailability(true);
+            }
+        }
+
+        // ==========================================
+        // TARGET MATCHDAY & COUNTDOWN TIMER
+        // ==========================================
+        function formatMatchdayPretty(isoStr) {
+            if (!isoStr) return 'Off-Season Mode';
+            const parts = isoStr.split('-').map(Number);
+            if (parts.length !== 3) return isoStr;
+            const d = new Date(parts[0], parts[1] - 1, parts[2]);
+            return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function updateMatchdayDisplay() {
+            const topDisplay = document.getElementById('top-matchday-display');
+            const cardDate = document.getElementById('card-matchday-date');
+            const cardBadge = document.getElementById('matchday-card-badge');
+
+            const pretty = formatMatchdayPretty(appState.targetMatchday);
+            if (topDisplay) topDisplay.innerText = pretty;
+            if (cardDate) cardDate.innerText = pretty;
+
+            if (cardBadge) {
+                if (appState.targetMatchday) {
+                    cardBadge.innerText = 'Active Schedule';
+                    cardBadge.className = 'text-xs px-2.5 py-1 rounded-full font-semibold bg-sage-light text-sage-dark border border-sage-primary/20';
+                } else {
+                    cardBadge.innerText = 'Off-Season';
+                    cardBadge.className = 'text-xs px-2.5 py-1 rounded-full font-semibold bg-beige-muted text-navy-muted border border-beige-border';
+                }
+            }
+            updateCountdownTick();
+        }
+
+        function updateCountdownTick() {
+            const topCd = document.getElementById('top-countdown');
+            const cardDays = document.getElementById('card-matchday-days');
+
+            if (!appState.targetMatchday) {
+                if (topCd) topCd.innerText = 'Off-Season Training';
+                if (cardDays) cardDays.innerText = 'No target match set';
+                return;
+            }
+
+            const parts = appState.targetMatchday.split('-').map(Number);
+            const target = new Date(parts[0], parts[1] - 1, parts[2], 9, 0, 0);
+            const now = new Date();
+            const diffMs = target.getTime() - now.getTime();
+
+            if (diffMs <= 0) {
+                if (topCd) topCd.innerText = 'MATCHDAY ARRIVED';
+                if (cardDays) cardDays.innerText = 'Competition Day!';
+                return;
+            }
+
+            const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+            const mins = Math.floor((diffMs / (1000 * 60)) % 60);
+
+            if (topCd) topCd.innerText = `${days}d ${hours}h ${mins}m left`;
+            if (cardDays) cardDays.innerText = `${days} days, ${hours} hours until match`;
+        }
+
+        function startCountdownTimer() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            updateCountdownTick();
+            countdownInterval = setInterval(updateCountdownTick, 30000);
+        }
+
+        function saveMatchdayFromInput() {
+            const val = document.getElementById('input-target-matchday')?.value;
+            if (!val) {
+                showToast("Please select a valid date.", "error");
+                return;
+            }
+            appState.targetMatchday = val;
+            closeModal('matchday-modal');
+            saveState(true);
+            showToast(`Target matchday updated to ${formatMatchdayPretty(val)}`, "success");
+        }
+
+        function setPresetMatchday(dateStr) {
+            appState.targetMatchday = dateStr;
+            saveState(true);
+            showToast(dateStr ? `Matchday set to ${formatMatchdayPretty(dateStr)}` : "Cleared matchday (Off-Season Mode).", "info");
+        }
+
+        function clearTargetMatchday() {
+            appState.targetMatchday = null;
+            closeModal('matchday-modal');
+            saveState(true);
+            showToast("Switched to Off-Season Mode.", "info");
+        }
+
+        // ==========================================
+        // STEALTH MICRO-GOALS & READINESS RING
+        // ==========================================
+        function cycleStealthObjective() {
+            currentStealthIndex = (currentStealthIndex + 1) % STEALTH_GOALS.length;
+            appState.stealthCompletedToday = false;
+            renderStealthGoal();
+        }
+
+        function renderStealthGoal() {
+            const goal = STEALTH_GOALS[currentStealthIndex];
+            const titleEl = document.getElementById('stealth-title');
+            const descEl = document.getElementById('stealth-desc');
+            const iconEl = document.getElementById('stealth-icon');
+            const btnEl = document.getElementById('btn-stealth-complete');
+
+            if (titleEl) titleEl.innerText = goal.title;
+            if (descEl) descEl.innerText = goal.desc;
+            if (iconEl) iconEl.setAttribute('data-lucide', goal.icon);
+
+            if (btnEl) {
+                if (appState.stealthCompletedToday) {
+                    btnEl.className = "px-3 py-1.5 bg-sage-primary text-white text-xs font-bold rounded-lg border border-sage-accent transition-all flex items-center gap-1";
+                    btnEl.innerHTML = `<i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i><span>Completed!</span>`;
+                } else {
+                    btnEl.className = "px-3 py-1.5 bg-navy-slate hover:bg-navy-muted/30 text-beige-card text-xs font-semibold rounded-lg border border-navy-muted/40 transition-all flex items-center gap-1";
+                    btnEl.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-sage-accent"></i><span>Mark Done</span>`;
+                }
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function markStealthCompleted() {
+            appState.stealthCompletedToday = !appState.stealthCompletedToday;
+            saveState(true);
+            if (appState.stealthCompletedToday) {
+                showToast("Stealth micro-goal marked completed!", "success");
+            }
+        }
+
+        function updateReadinessRing() {
+            const totalTasks = appState.checklist.length;
+            const doneTasks = appState.checklist.filter(t => t.completed).length;
+            const gymCount = appState.gymLogs.length;
+
+            // Compute average rating across match logs (1 to 5 scale)
+            let matchAvg = 0;
+            if (appState.matchLogs.length > 0) {
+                let sum = 0;
+                appState.matchLogs.forEach(m => {
+                    const r = m.ratings || {};
+                    const avg = ((Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4);
+                    sum += avg;
+                });
+                matchAvg = sum / appState.matchLogs.length;
+            }
+
+            // Weighted score: 50% checklist, 25% gym logs (up to 4), 25% match rating
+            const taskScore = totalTasks > 0 ? (doneTasks / totalTasks) * 50 : 0;
+            const gymScore = Math.min(gymCount / 4, 1) * 25;
+            const matchScore = matchAvg > 0 ? (matchAvg / 5) * 25 : 0;
+            const totalPercent = Math.round(taskScore + gymScore + matchScore);
+
+            const ring = document.getElementById('readiness-ring');
+            const pctEl = document.getElementById('readiness-percent');
+            const badgeEl = document.getElementById('readiness-status-badge');
+
+            const circumference = 2 * Math.PI * 56; // ~351.858
+            const offset = circumference - (totalPercent / 100) * circumference;
+
+            if (ring) ring.style.strokeDashoffset = offset.toFixed(1);
+            if (pctEl) pctEl.innerText = `${totalPercent}%`;
+
+            if (badgeEl) {
+                if (totalPercent >= 80) {
+                    badgeEl.innerText = "Match Ready";
+                    badgeEl.className = "text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                } else if (totalPercent >= 45) {
+                    badgeEl.innerText = "Building Peak";
+                    badgeEl.className = "text-[10px] px-2 py-0.5 rounded-full font-semibold bg-sage-light text-sage-dark border border-sage-primary/20";
+                } else {
+                    badgeEl.innerText = "Foundation";
+                    badgeEl.className = "text-[10px] px-2 py-0.5 rounded-full font-semibold bg-beige-muted text-navy-muted border border-beige-border";
+                }
+            }
+
+            const statTasks = document.getElementById('stat-tasks-done');
+            const statGym = document.getElementById('stat-gym-done');
+            const statMatch = document.getElementById('stat-match-avg');
+            const navBadgeTasks = document.getElementById('nav-badge-tasks');
+
+            if (statTasks) statTasks.innerText = `${doneTasks}/${totalTasks}`;
+            if (statGym) statGym.innerText = `${gymCount}`;
+            if (statMatch) statMatch.innerText = matchAvg.toFixed(1);
+            if (navBadgeTasks) navBadgeTasks.innerText = `${doneTasks}/${totalTasks}`;
+        }
+
+        // ==========================================
+        // CHECKLIST RENDERING & ACTIONS
+        // ==========================================
+        function renderChecklist() {
+            const container = document.getElementById('checklist-items-container');
+            if (!container) return;
+
+            const categories = ['Gym Conditioning', 'Group Play Micro-Goals', 'Recovery & Matchday'];
+            const extraCats = [...new Set(appState.checklist.map(t => t.category).filter(c => !categories.includes(c)))];
+            const allCats = [...categories, ...extraCats];
+
+            container.innerHTML = allCats.map(cat => {
+                const items = appState.checklist.filter(t => t.category === cat);
+                if (items.length === 0) return '';
+
+                return `
+                    <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between pb-2 border-b border-beige-border">
+                            <h3 class="text-sm font-extrabold text-navy-deep">${escapeHtml(cat)}</h3>
+                            <span class="text-xs font-mono text-navy-muted">${items.filter(i => i.completed).length}/${items.length} done</span>
+                        </div>
+                        <div class="space-y-2">
+                            ${items.map(task => `
+                                <div class="flex items-start justify-between gap-3 p-3 rounded-xl border transition-all ${task.completed ? 'bg-sage-light/60 border-sage-primary/30' : 'bg-beige-muted border-beige-border hover:border-sage-primary/40'}">
+                                    <label class="flex items-start gap-3 cursor-pointer flex-1">
+                                        <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${escapeHtml(task.id)}')"
+                                               class="mt-1 w-4 h-4 accent-sage-primary rounded cursor-pointer">
+                                        <div>
+                                            <div class="text-xs sm:text-sm font-bold ${task.completed ? 'line-through text-navy-muted' : 'text-navy-deep'}">${escapeHtml(task.title)}</div>
+                                            <div class="text-[11px] text-navy-muted mt-0.5">${escapeHtml(task.subtext || '')}</div>
+                                        </div>
+                                    </label>
+                                    <button type="button" onclick="deleteTask('${escapeHtml(task.id)}')" title="Delete objective" class="p-1.5 text-navy-muted hover:text-red-600 rounded-lg transition-colors">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function toggleTask(taskId) {
+            const task = appState.checklist.find(t => t.id === taskId);
+            if (!task) return;
+            task.completed = !task.completed;
+            saveState(true);
+        }
+
+        function deleteTask(taskId) {
+            appState.checklist = appState.checklist.filter(t => t.id !== taskId);
+            saveState(true);
+            showToast("Objective removed.", "info");
+        }
+
+        function handleAddTask(event) {
+            event.preventDefault();
+            const title = document.getElementById('task-title-input').value.trim();
+            const category = document.getElementById('task-category-input').value;
+            const subtext = document.getElementById('task-subtext-input').value.trim();
+            if (!title) return;
+
+            appState.checklist.push({
+                id: 'task-' + Date.now(),
+                title,
+                category,
+                subtext,
+                completed: false
+            });
+
+            document.getElementById('add-task-form').reset();
+            closeModal('add-task-modal');
+            saveState(true);
+            showToast("New preparation objective added!", "success");
+        }
+
+        // ==========================================
+        // GYM WORKOUT LOGGING
+        // ==========================================
+        function handleLogGym(event) {
+            event.preventDefault();
+            const date = document.getElementById('gym-date-input').value;
+            const routine = document.getElementById('gym-routine-input').value;
+            const exercises = document.getElementById('gym-exercises-input').value.trim();
+            const rpe = document.getElementById('gym-rpe-input').value;
+            const feeling = document.getElementById('gym-feeling-input').value;
+            const notes = document.getElementById('gym-notes-input').value.trim();
+
+            appState.gymLogs.unshift({
+                id: 'gym-' + Date.now(),
+                date,
+                routine,
+                exercises,
+                rpe,
+                feeling,
+                notes
+            });
+
+            document.getElementById('gym-log-form').reset();
+            closeModal('gym-log-modal');
+            saveState(true);
+            showToast("Gym workout logged!", "success");
+        }
+
+        function deleteGymLog(logId) {
+            appState.gymLogs = appState.gymLogs.filter(g => g.id !== logId);
+            saveState(true);
+            showToast("Gym log deleted.", "info");
+        }
+
+        function renderGymLogs() {
+            const container = document.getElementById('gym-logs-container');
+            if (!container) return;
+
+            if (appState.gymLogs.length === 0) {
+                container.innerHTML = `<div class="text-xs text-navy-muted bg-beige-muted p-6 rounded-xl border border-beige-border text-center">No gym sessions logged yet. Click <strong>"Log Workout"</strong> above to record your deceleration &amp; rotator cuff sessions.</div>`;
+                return;
+            }
+
+            container.innerHTML = appState.gymLogs.map(log => `
+                <div class="bg-beige-muted border border-beige-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-xs font-mono font-bold text-sage-dark bg-sage-light px-2 py-0.5 rounded">${escapeHtml(log.date)}</span>
+                            <span class="text-sm font-bold text-navy-deep">${escapeHtml(log.routine)}</span>
+                            <span class="text-[11px] font-mono bg-navy-deep text-beige-card px-2 py-0.5 rounded">RPE ${escapeHtml(log.rpe)}/10</span>
+                        </div>
+                        <div class="text-xs text-navy-slate font-medium">${escapeHtml(log.exercises)}</div>
+                        ${log.notes ? `<div class="text-[11px] text-navy-muted italic">"${escapeHtml(log.notes)}"</div>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2 self-end sm:self-center">
+                        <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-beige-card border border-beige-border text-navy-deep">${escapeHtml(log.feeling)}</span>
+                        <button type="button" onclick="deleteGymLog('${escapeHtml(log.id)}')" class="p-1.5 text-navy-muted hover:text-red-600 rounded-lg">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // ==========================================
+        // REPEAT OPPONENT SCOUTING & TACTICAL EXPERIMENTS
+        // ==========================================
         function getAggregatedOpponents() {
             const map = {};
 
-            const ensure = (rawName) => {
+            function ensureEntry(rawName) {
                 const clean = (rawName || '').trim();
                 if (!clean) return null;
                 const key = clean.toLowerCase();
                 if (!map[key]) {
-                    const prof = appState.opponentProfiles[key] || {};
+                    const saved = appState.opponentProfiles[key] || {};
                     map[key] = {
                         key,
-                        name: prof.name || clean,
-                        style: prof.style || '',
-                        nextIdea: prof.nextIdea || '',
-                        scoutingNotes: prof.scoutingNotes || '',
-                        matchLogs: [],
-                        evalLogs: [],
+                        name: saved.name || clean,
+                        style: saved.style || '',
+                        nextIdea: saved.nextIdea || '',
+                        scoutingNotes: saved.scoutingNotes || '',
+                        matchCount: 0,
+                        evalCount: 0,
+                        ratingSum: 0,
                         experiments: []
                     };
                 }
                 return map[key];
-            };
+            }
 
             Object.keys(appState.opponentProfiles || {}).forEach(k => {
                 const p = appState.opponentProfiles[k];
-                if (p && p.name) ensure(p.name);
+                if (p && p.name) ensureEntry(p.name);
             });
 
-            (appState.matchLogs || []).forEach(m => {
-                const opp = ensure(m.opponentName);
-                if (!opp) return;
-                opp.matchLogs.push(m);
-                if (!opp.style && m.opponentStyle) opp.style = m.opponentStyle;
+            appState.matchLogs.forEach(m => {
+                const entry = ensureEntry(m.opponentName);
+                if (!entry) return;
+                entry.matchCount += 1;
+                if (!entry.style && m.opponentStyle) entry.style = m.opponentStyle;
+                const r = m.ratings || {};
+                const avg = (Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4;
+                entry.ratingSum += avg;
                 if (m.tacticalIdea) {
-                    opp.experiments.push({
+                    entry.experiments.push({
                         date: m.date,
                         idea: m.tacticalIdea,
                         outcome: m.ideaOutcome || 'Tested'
@@ -1302,12 +2134,12 @@
                 }
             });
 
-            (appState.evalLogs || []).forEach(ev => {
-                const opp = ensure(ev.opponentName);
-                if (!opp) return;
-                opp.evalLogs.push(ev);
+            appState.evalLogs.forEach(ev => {
+                const entry = ensureEntry(ev.opponentName);
+                if (!entry) return;
+                entry.evalCount += 1;
                 if (ev.tacticalIdea) {
-                    opp.experiments.push({
+                    entry.experiments.push({
                         date: ev.date,
                         idea: ev.tacticalIdea,
                         outcome: 'AI Evaluated'
@@ -1315,444 +2147,363 @@
                 }
             });
 
-            return Object.values(map).sort((a, b) => (b.matchLogs.length + b.evalLogs.length) - (a.matchLogs.length + a.evalLogs.length));
+            return Object.values(map).sort((a, b) => (b.matchCount + b.evalCount) - (a.matchCount + a.evalCount));
         }
 
-        function updateOpponentsDatalist() {
+        function updateOpponentDatalist() {
             const dl = document.getElementById('opponents-datalist');
             if (!dl) return;
             const opponents = getAggregatedOpponents();
-            dl.innerHTML = opponents.map(o => `<option value="${escapeHtml(o.name)}">${escapeHtml(o.style)}</option>`).join('');
+            dl.innerHTML = opponents.map(o => `<option value="${escapeHtml(o.name)}">${escapeHtml(o.style || 'Tracked Opponent')}</option>`).join('');
         }
 
         function autoFillOpponentStyle(nameVal) {
-            const clean = (nameVal || '').trim().toLowerCase();
-            if (!clean) return;
+            const key = (nameVal || '').trim().toLowerCase();
+            if (!key) return;
             const opponents = getAggregatedOpponents();
-            const found = opponents.find(o => o.key === clean);
-            if (found) {
-                const styleInput = document.getElementById('match-opponent-input');
-                const ideaInput = document.getElementById('match-tactical-idea-input');
-                if (styleInput && !styleInput.value && found.style) {
-                    styleInput.value = found.style;
-                }
-                if (ideaInput && !ideaInput.value && found.nextIdea) {
-                    ideaInput.value = found.nextIdea;
-                }
+            const match = opponents.find(o => o.key === key);
+            if (!match) return;
+
+            const styleInput = document.getElementById('match-opponent-input');
+            const ideaInput = document.getElementById('match-tactical-idea-input');
+            if (styleInput && !styleInput.value && match.style) {
+                styleInput.value = match.style;
+            }
+            if (ideaInput && !ideaInput.value && match.nextIdea) {
+                ideaInput.value = match.nextIdea;
             }
         }
 
-        function openOpponentProfileModal(opponentKey = '') {
-            const form = document.getElementById('opponent-profile-form');
-            if (form) form.reset();
+        function openOpponentProfileModal(existingName = '') {
+            const nameInput = document.getElementById('opp-profile-name');
+            const styleInput = document.getElementById('opp-profile-style');
+            const nextIdeaInput = document.getElementById('opp-profile-next-idea');
+            const notesInput = document.getElementById('opp-profile-notes');
 
-            if (opponentKey) {
-                const opponents = getAggregatedOpponents();
-                const opp = opponents.find(o => o.key === opponentKey);
-                if (opp) {
-                    document.getElementById('opp-profile-name').value = opp.name;
-                    document.getElementById('opp-profile-style').value = opp.style || '';
-                    document.getElementById('opp-profile-next-idea').value = opp.nextIdea || '';
-                    document.getElementById('opp-profile-notes').value = opp.scoutingNotes || '';
-                }
-            }
+            const key = (existingName || '').trim().toLowerCase();
+            const existing = key ? getAggregatedOpponents().find(o => o.key === key) : null;
+
+            if (nameInput) nameInput.value = existing ? existing.name : (existingName || '');
+            if (styleInput) styleInput.value = existing ? existing.style : '';
+            if (nextIdeaInput) nextIdeaInput.value = existing ? existing.nextIdea : '';
+            if (notesInput) notesInput.value = existing ? existing.scoutingNotes : '';
+
             openModal('opponent-profile-modal');
         }
 
-        function handleSaveOpponentProfile(e) {
-            e.preventDefault();
+        function handleSaveOpponentProfile(event) {
+            event.preventDefault();
             const name = document.getElementById('opp-profile-name').value.trim();
-            if (!name) return;
-            const key = name.toLowerCase();
             const style = document.getElementById('opp-profile-style').value.trim();
             const nextIdea = document.getElementById('opp-profile-next-idea').value.trim();
             const scoutingNotes = document.getElementById('opp-profile-notes').value.trim();
+            if (!name) return;
 
+            const key = name.toLowerCase();
             appState.opponentProfiles[key] = {
                 name,
                 style,
                 nextIdea,
-                scoutingNotes
+                scoutingNotes,
+                updatedAt: new Date().toISOString()
             };
-            saveState(true);
+
+            document.getElementById('opponent-profile-form').reset();
             closeModal('opponent-profile-modal');
-            showToast(`Saved scouting card for ${name}!`, 'success');
-        }
-
-        function deleteOpponentProfile(key) {
-            showConfirmModal("Remove Scouting Card", "Remove this opponent's saved scouting profile? (Historical match logs will remain intact.)", () => {
-                delete appState.opponentProfiles[key];
-                if (activeOpponentFilter === key) activeOpponentFilter = 'ALL';
-                saveState(true);
-                showToast("Opponent scouting card removed.", "info");
-            });
-        }
-
-        function setOpponentFilter(key) {
-            activeOpponentFilter = key;
-            renderOpponentSection();
-            renderMatchLogs();
-            if (window.lucide) lucide.createIcons();
-        }
-
-        function jumpToOpponentScouting(key) {
-            activeOpponentFilter = key;
-            switchTab('match');
-        }
-
-        // Custom Toast Notifications
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            if (!container) return;
-
-            const toast = document.createElement('div');
-            const bgClass = type === 'success'
-                ? 'bg-sage-dark text-white'
-                : type === 'error'
-                ? 'bg-red-700 text-white'
-                : 'bg-navy-deep text-beige-card';
-
-            const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info';
-
-            toast.className = `p-3 rounded-xl shadow-lg border border-navy-slate/40 text-xs font-semibold flex items-center justify-between gap-3 pointer-events-auto transition-all transform translate-y-2 opacity-0 ${bgClass}`;
-            toast.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <i data-lucide="${iconName}" class="w-4 h-4 flex-shrink-0"></i>
-                    <span>${escapeHtml(message)}</span>
-                </div>
-                <button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100">
-                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
-                </button>
-            `;
-            container.appendChild(toast);
-            if (window.lucide) lucide.createIcons();
-
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
-            }, 10);
-
-            setTimeout(() => {
-                if (toast.parentElement) {
-                    toast.classList.add('opacity-0');
-                    setTimeout(() => toast.remove(), 300);
-                }
-            }, 4000);
-        }
-
-        // Custom Confirmation Modal
-        function showConfirmModal(title, msg, onConfirm) {
-            const modal = document.getElementById('confirm-modal');
-            const titleEl = document.getElementById('confirm-modal-title');
-            const msgEl = document.getElementById('confirm-modal-msg');
-            const okBtn = document.getElementById('confirm-modal-ok');
-            const cancelBtn = document.getElementById('confirm-modal-cancel');
-            if (!modal) return;
-
-            titleEl.innerText = title;
-            msgEl.innerText = msg;
-            modal.classList.remove('hidden');
-
-            const handleOk = () => {
-                modal.classList.add('hidden');
-                cleanup();
-                onConfirm();
-            };
-            const handleCancel = () => {
-                modal.classList.add('hidden');
-                cleanup();
-            };
-            function cleanup() {
-                okBtn.removeEventListener('click', handleOk);
-                cancelBtn.removeEventListener('click', handleCancel);
-            }
-            okBtn.addEventListener('click', handleOk);
-            cancelBtn.addEventListener('click', handleCancel);
-        }
-
-        // DYNAMIC MATCHDAY MANAGEMENT LOGIC
-        function initCountdown() {
-            if (countdownInterval) clearInterval(countdownInterval);
-
-            function updateTimer() {
-                const topCountdown = document.getElementById('top-countdown');
-                const topDisplay = document.getElementById('top-matchday-display');
-                const cardDate = document.getElementById('card-matchday-date');
-                const cardDays = document.getElementById('card-matchday-days');
-                const cardBadge = document.getElementById('matchday-card-badge');
-
-                if (!appState.targetMatchday) {
-                    if (topCountdown) topCountdown.innerText = "Off-Season / General Prep";
-                    if (topDisplay) topDisplay.innerText = "No active target set";
-                    if (cardDate) cardDate.innerText = "Off-Season Mode";
-                    if (cardDays) cardDays.innerText = "Focus on baseline consistency";
-                    if (cardBadge) {
-                        cardBadge.innerText = "Off-Season";
-                        cardBadge.className = "text-xs px-2.5 py-1 rounded-full font-semibold bg-beige-muted text-navy-muted border border-beige-border";
-                    }
-                    return;
-                }
-
-                const parts = appState.targetMatchday.split('-');
-                const targetDate = new Date(parts[0], parts[1] - 1, parts[2], 9, 0, 0);
-                const now = new Date();
-                const diff = targetDate - now;
-
-                const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-                const dateStr = targetDate.toLocaleDateString('en-US', options);
-
-                if (topDisplay) topDisplay.innerText = dateStr;
-                if (cardDate) cardDate.innerText = dateStr;
-                if (cardBadge) {
-                    cardBadge.innerText = "Active Schedule";
-                    cardBadge.className = "text-xs px-2.5 py-1 rounded-full font-semibold bg-sage-light text-sage-dark border border-sage-primary/20";
-                }
-
-                if (diff <= 0) {
-                    if (topCountdown) topCountdown.innerText = "🔥 MATCHDAY IS TODAY!";
-                    if (cardDays) cardDays.innerText = "Matchday Active!";
-                    return;
-                }
-
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const mins = Math.floor((diff / 1000 / 60) % 60);
-
-                if (topCountdown) topCountdown.innerText = `${days}d ${hours}h ${mins}m to Matchday`;
-                if (cardDays) cardDays.innerText = `${days} days remaining for prep`;
-            }
-
-            updateTimer();
-            countdownInterval = setInterval(updateTimer, 60000);
-        }
-
-        function setPresetMatchday(isoDateStr) {
-            appState.targetMatchday = isoDateStr;
             saveState(true);
-            initCountdown();
-            showToast(isoDateStr ? `Matchday updated to ${isoDateStr}` : "Target matchday cleared (Off-season mode)", 'success');
+            showToast(`Saved scouting card for ${name}!`, "success");
         }
 
-        function saveMatchdayFromInput() {
-            const val = document.getElementById('input-target-matchday').value;
-            if (!val) {
-                clearTargetMatchday();
-                return;
-            }
-            setPresetMatchday(val);
-            closeModal('matchday-modal');
-        }
-
-        function clearTargetMatchday() {
-            appState.targetMatchday = null;
-            saveState(true);
-            initCountdown();
-            closeModal('matchday-modal');
-            showToast("Cleared target matchday. Switched to general off-season prep.", 'info');
-        }
-
-        // Tab Switcher
-        function switchTab(tabId) {
-            const tabs = ['dashboard', 'checklist', 'gym', 'match', 'playbook'];
-            tabs.forEach(t => {
-                const section = document.getElementById(`tab-${t}`);
-                const navBtn = document.getElementById(`nav-${t}`);
-                const mobileNavBtn = document.getElementById(`mobile-nav-${t}`);
-
-                if (t === tabId) {
-                    section?.classList.remove('hidden');
-                    navBtn?.classList.add('bg-navy-deep', 'text-white');
-                    navBtn?.classList.remove('text-navy-slate');
-                    mobileNavBtn?.classList.add('bg-navy-deep', 'text-white');
-                    mobileNavBtn?.classList.remove('text-navy-muted');
-                } else {
-                    section?.classList.add('hidden');
-                    navBtn?.classList.remove('bg-navy-deep', 'text-white');
-                    navBtn?.classList.add('text-navy-slate');
-                    mobileNavBtn?.classList.remove('bg-navy-deep', 'text-white');
-                    mobileNavBtn?.classList.add('text-navy-muted');
-                }
-            });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Master Render Function
-        function renderAll() {
-            updateOpponentsDatalist();
-            renderDashboard();
-            renderChecklist();
-            renderGymLogs();
-            renderOpponentSection();
+        function setOpponentFilter(opponentKey) {
+            activeOpponentFilter = opponentKey || 'ALL';
+            renderOpponentsSection();
             renderMatchLogs();
-            renderEvaluationsStream();
-            updateSyncBadge();
-            if (window.lucide) lucide.createIcons();
         }
 
-        // Render Dashboard Stats & Readiness Ring
-        function renderDashboard() {
-            const totalTasks = appState.checklist.length;
-            const completedTasks = appState.checklist.filter(t => t.completed).length;
-            const taskPct = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-            const gymScore = Math.min(appState.gymLogs.length * 25, 100);
-            const readinessPct = Math.round((taskPct * 0.7) + (gymScore * 0.3));
-
-            const ring = document.getElementById('readiness-ring');
-            if (ring) {
-                const radius = ring.r.baseVal.value;
-                const circumference = 2 * Math.PI * radius;
-                const offset = circumference - (readinessPct / 100) * circumference;
-                ring.style.strokeDashoffset = offset;
-            }
-
-            const rPercent = document.getElementById('readiness-percent');
-            const tasksDone = document.getElementById('stat-tasks-done');
-            const gymDone = document.getElementById('stat-gym-done');
-            const matchAvg = document.getElementById('stat-match-avg');
-            const navBadge = document.getElementById('nav-badge-tasks');
-            const oppBadge = document.getElementById('nav-badge-opponents');
-
-            if (rPercent) rPercent.innerText = `${readinessPct}%`;
-            if (tasksDone) tasksDone.innerText = `${completedTasks}/${totalTasks}`;
-            if (gymDone) gymDone.innerText = appState.gymLogs.length;
-            if (navBadge) navBadge.innerText = `${completedTasks}/${totalTasks}`;
-
+        function renderOpponentsSection() {
             const opponents = getAggregatedOpponents();
-            if (oppBadge) oppBadge.innerText = opponents.length;
+            const navBadge = document.getElementById('nav-badge-opponents');
+            if (navBadge) navBadge.innerText = `${opponents.length}`;
 
-            let avgRating = 0;
-            if (appState.matchLogs.length > 0) {
-                const sum = appState.matchLogs.reduce((acc, l) => {
-                    return acc + (Number(l.ratings.dropshot) + Number(l.ratings.positioning) + Number(l.ratings.backhand) + Number(l.ratings.serve)) / 4;
-                }, 0);
-                avgRating = (sum / appState.matchLogs.length).toFixed(1);
-            }
-            if (matchAvg) matchAvg.innerText = avgRating > 0 ? `${avgRating}` : '0.0';
-
-            // Dashboard Repeat Opponents Preview
-            const oppPreview = document.getElementById('dashboard-opponents-preview');
-            if (oppPreview) {
+            // 1. Dashboard Preview Cards
+            const dashPreview = document.getElementById('dashboard-opponents-preview');
+            if (dashPreview) {
                 if (opponents.length === 0) {
-                    oppPreview.innerHTML = `
-                        <div class="col-span-full bg-beige-muted border border-beige-border rounded-xl p-3 text-navy-muted flex items-center justify-between">
-                            <span>No repeat opponents logged yet. Enter an opponent's name when logging a match or AI evaluation!</span>
-                            <button onclick="openOpponentProfileModal()" class="px-2.5 py-1 bg-sage-primary text-white rounded-lg text-[11px] font-bold flex-shrink-0 ml-2">+ Add Opponent</button>
-                        </div>
-                    `;
+                    dashPreview.innerHTML = `<div class="sm:col-span-2 bg-beige-muted border border-beige-border rounded-xl p-3 text-navy-muted text-center">No repeat opponents tracked yet. Enter an <strong>Opponent Name</strong> in the AI Coach sidebar or Match Audit modal to start building scouting cards.</div>`;
                 } else {
-                    oppPreview.innerHTML = opponents.slice(0, 4).map(o => {
-                        const latestExp = o.experiments[0];
+                    dashPreview.innerHTML = opponents.slice(0, 4).map(opp => {
+                        const avgScore = opp.matchCount > 0 ? (opp.ratingSum / opp.matchCount).toFixed(1) : '-';
+                        const latestExp = opp.experiments[0];
                         return `
-                            <div onclick="jumpToOpponentScouting('${escapeHtml(o.key)}')" class="bg-beige-muted hover:bg-beige-border/70 border border-beige-border rounded-xl p-3 cursor-pointer transition-colors space-y-1">
+                            <div onclick="switchTab('match'); setOpponentFilter('${escapeHtml(opp.key)}');" class="cursor-pointer bg-beige-muted hover:bg-sage-light/60 border border-beige-border rounded-xl p-3 transition-all space-y-1">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-bold text-navy-deep">${escapeHtml(o.name)}</span>
-                                    <span class="text-[10px] font-mono bg-beige-card px-2 py-0.5 rounded border border-beige-border text-sage-dark font-semibold">${o.matchLogs.length + o.evalLogs.length} logs</span>
+                                    <span class="font-bold text-navy-deep">${escapeHtml(opp.name)}</span>
+                                    <span class="text-[10px] font-mono bg-navy-deep text-sage-accent px-2 py-0.5 rounded">${opp.matchCount}M • Avg ${avgScore}</span>
                                 </div>
-                                ${o.style ? `<div class="text-[11px] text-navy-muted truncate">${escapeHtml(o.style)}</div>` : ''}
-                                ${latestExp ? `<div class="text-[10px] text-sage-primary font-semibold truncate">Idea: ${escapeHtml(latestExp.idea)}</div>` : (o.nextIdea ? `<div class="text-[10px] text-navy-slate truncate">Next Idea: ${escapeHtml(o.nextIdea)}</div>` : '')}
+                                <div class="text-[11px] text-navy-muted truncate">${escapeHtml(opp.style || 'Playstyle not set')}</div>
+                                ${latestExp ? `<div class="text-[10px] text-sage-dark font-semibold truncate">💡 ${escapeHtml(latestExp.idea)} (${escapeHtml(latestExp.outcome)})</div>` : ''}
                             </div>
                         `;
                     }).join('');
                 }
             }
 
-            // Stealth Objective Display
-            const stealth = STEALTH_GOALS[currentStealthIndex];
-            const sTitle = document.getElementById('stealth-title');
-            const sDesc = document.getElementById('stealth-desc');
-            const sIcon = document.getElementById('stealth-icon');
-            if (sTitle) sTitle.innerText = stealth.title;
-            if (sDesc) sDesc.innerText = stealth.desc;
-            if (sIcon) sIcon.setAttribute('data-lucide', stealth.icon);
+            // 2. Scouting Lab Cards Grid
+            const cardsContainer = document.getElementById('opponent-cards-container');
+            const clearFilterBtn = document.getElementById('btn-clear-opponent-filter');
+            if (clearFilterBtn) {
+                clearFilterBtn.classList.toggle('hidden', activeOpponentFilter === 'ALL');
+            }
 
-            const completeBtn = document.getElementById('btn-stealth-complete');
-            if (completeBtn) {
-                if (appState.stealthCompletedToday) {
-                    completeBtn.className = "px-3 py-1.5 bg-sage-primary text-white text-xs font-semibold rounded-lg shadow-sm flex items-center gap-1";
-                    completeBtn.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-white"></i><span>Done</span>`;
+            if (cardsContainer) {
+                if (opponents.length === 0) {
+                    cardsContainer.innerHTML = `<div class="md:col-span-2 lg:col-span-3 text-xs text-navy-muted bg-beige-muted p-6 rounded-xl border border-beige-border text-center">No opponents tracked yet. Click <strong>"Add / Edit Opponent"</strong> or log a match with an opponent name to start tracking repeat matchups and tactical experiments.</div>`;
                 } else {
-                    completeBtn.className = "px-3 py-1.5 bg-navy-slate hover:bg-navy-muted/30 text-beige-card text-xs font-semibold rounded-lg border border-navy-muted/40 transition-all flex items-center gap-1";
-                    completeBtn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-sage-accent"></i><span>Mark Done</span>`;
+                    cardsContainer.innerHTML = opponents.map(opp => {
+                        const isSelected = activeOpponentFilter === opp.key;
+                        const avgScore = opp.matchCount > 0 ? (opp.ratingSum / opp.matchCount).toFixed(1) : 'N/A';
+                        const latestExp = opp.experiments[0];
+                        return `
+                            <div onclick="setOpponentFilter('${escapeHtml(opp.key)}')" class="cursor-pointer rounded-2xl p-4 border transition-all flex flex-col justify-between space-y-3 ${isSelected ? 'bg-sage-light border-sage-primary ring-2 ring-sage-primary/30' : 'bg-beige-muted border-beige-border hover:border-sage-primary/50'}">
+                                <div class="space-y-1.5">
+                                    <div class="flex items-start justify-between gap-2">
+                                        <div>
+                                            <div class="font-extrabold text-sm text-navy-deep">${escapeHtml(opp.name)}</div>
+                                            <div class="text-[11px] text-navy-muted">${escapeHtml(opp.style || 'Playstyle unspecified')}</div>
+                                        </div>
+                                        <button type="button" onclick="event.stopPropagation(); openOpponentProfileModal('${escapeHtml(opp.name)}');" title="Edit Scouting Card" class="p-1.5 bg-beige-card hover:bg-beige-border text-navy-deep rounded-lg border border-beige-border">
+                                            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-wrap gap-1.5 pt-1">
+                                        <span class="text-[10px] font-mono bg-navy-deep text-beige-card px-2 py-0.5 rounded">${opp.matchCount} Audits</span>
+                                        <span class="text-[10px] font-mono bg-sage-primary/20 text-sage-dark px-2 py-0.5 rounded font-bold">Avg ${avgScore}/5</span>
+                                        <span class="text-[10px] font-mono bg-beige-card text-navy-slate border border-beige-border px-2 py-0.5 rounded">${opp.evalCount} AI Evals</span>
+                                    </div>
+                                    ${opp.scoutingNotes ? `<p class="text-[11px] text-navy-slate leading-relaxed pt-1">${escapeHtml(opp.scoutingNotes)}</p>` : ''}
+                                </div>
+                                <div class="pt-2 border-t border-beige-border/80 space-y-1 text-[11px]">
+                                    ${opp.nextIdea ? `<div class="text-navy-deep"><strong>Next Plan:</strong> ${escapeHtml(opp.nextIdea)}</div>` : ''}
+                                    ${latestExp ? `<div class="text-sage-dark font-semibold">Last Tested: "${escapeHtml(latestExp.idea)}" → ${escapeHtml(latestExp.outcome)}</div>` : '<div class="text-navy-muted italic">No tactical idea tested yet</div>'}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
                 }
             }
 
-            const engineBadge = document.getElementById('ai-engine-badge');
-            if (engineBadge) {
-                engineBadge.innerText = appState.geminiApiKey ? "Gemini 3" : "Coach AI";
+            // 3. Filter Pills
+            const pillsContainer = document.getElementById('opponent-filter-pills');
+            if (pillsContainer) {
+                const pills = [
+                    `<button type="button" onclick="setOpponentFilter('ALL')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${activeOpponentFilter === 'ALL' ? 'bg-navy-deep text-white' : 'bg-beige-muted text-navy-slate hover:bg-beige-border'}">All (${appState.matchLogs.length})</button>`
+                ];
+                opponents.forEach(opp => {
+                    pills.push(`<button type="button" onclick="setOpponentFilter('${escapeHtml(opp.key)}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${activeOpponentFilter === opp.key ? 'bg-sage-primary text-white' : 'bg-beige-muted text-navy-slate hover:bg-beige-border'}">${escapeHtml(opp.name)} (${opp.matchCount})</button>`);
+                });
+                pillsContainer.innerHTML = pills.join('');
             }
-        }
 
-        function cycleStealthObjective() {
-            currentStealthIndex = (currentStealthIndex + 1) % STEALTH_GOALS.length;
-            renderDashboard();
             if (window.lucide) lucide.createIcons();
         }
 
-        function markStealthCompleted() {
-            appState.stealthCompletedToday = !appState.stealthCompletedToday;
+        // ==========================================
+        // MATCH AUDIT LOGGING & RENDERING
+        // ==========================================
+        function handleLogMatch(event) {
+            event.preventDefault();
+            const date = document.getElementById('match-date-input').value;
+            const type = document.getElementById('match-type-input').value;
+            const opponentName = document.getElementById('match-opponent-name-input').value.trim();
+            const opponentStyle = document.getElementById('match-opponent-input').value.trim();
+            const tacticalIdea = document.getElementById('match-tactical-idea-input').value.trim();
+            const ideaOutcome = document.getElementById('match-idea-outcome-input').value;
+            const notes = document.getElementById('match-notes-input').value.trim();
+
+            const ratings = {
+                dropshot: Number(document.getElementById('rate-input-dropshot').value),
+                positioning: Number(document.getElementById('rate-input-positioning').value),
+                backhand: Number(document.getElementById('rate-input-backhand').value),
+                serve: Number(document.getElementById('rate-input-serve').value)
+            };
+
+            appState.matchLogs.unshift({
+                id: 'match-' + Date.now(),
+                date,
+                type,
+                opponentName,
+                opponentStyle,
+                tacticalIdea,
+                ideaOutcome,
+                ratings,
+                notes
+            });
+
+            // Auto-create opponent profile entry if new name entered
+            if (opponentName) {
+                const key = opponentName.toLowerCase();
+                if (!appState.opponentProfiles[key]) {
+                    appState.opponentProfiles[key] = {
+                        name: opponentName,
+                        style: opponentStyle,
+                        nextIdea: '',
+                        scoutingNotes: '',
+                        updatedAt: new Date().toISOString()
+                    };
+                } else if (opponentStyle && !appState.opponentProfiles[key].style) {
+                    appState.opponentProfiles[key].style = opponentStyle;
+                }
+            }
+
+            document.getElementById('match-log-form').reset();
+            document.getElementById('rate-val-dropshot').innerText = '4 / 5';
+            document.getElementById('rate-val-positioning').innerText = '4 / 5';
+            document.getElementById('rate-val-backhand').innerText = '3 / 5';
+            document.getElementById('rate-val-serve').innerText = '4 / 5';
+            closeModal('match-log-modal');
             saveState(true);
+            showToast("Match audit & tactical experiment logged!", "success");
         }
 
-        // SIDEBAR SESSION EVALUATOR & AI ENGINE
-        function fillPresetPrompt(num) {
-            const textarea = document.getElementById('eval-session-notes');
-            const oppInput = document.getElementById('eval-opponent-name');
-            const ideaInput = document.getElementById('eval-tactical-idea');
-            if (!textarea) return;
-            if (num === 1) {
-                if (oppInput && !oppInput.value) oppInput.value = "Budi";
-                if (ideaInput && !ideaInput.value) ideaInput.value = "Hold <1m baseline vs moonball + drop shot";
-                textarea.value = "Played 3 sets of doubles today. Opponent kept hitting deep moonballs to my backhand followed by disguised drop shots. At 100kg, sprinting forward 14m repeatedly burned out my legs by set 2. Missed 3 backhands long when rushed.";
-            } else if (num === 2) {
-                if (oppInput && !oppInput.value) oppInput.value = "Hendra";
-                if (ideaInput && !ideaInput.value) ideaInput.value = "Left-hand lead on high 2HB + 12:30 kick serve";
-                textarea.value = "Baseline practice session. Forehands felt great with Wilson RF01 Pro, but my 2-handed backhand kept sailing long whenever the ball bounced above shoulder height. Worked on topspin 2nd serve with 12:30 toss, shoulder felt fine.";
+        function deleteMatchLog(logId) {
+            appState.matchLogs = appState.matchLogs.filter(m => m.id !== logId);
+            saveState(true);
+            showToast("Match audit deleted.", "info");
+        }
+
+        function renderMatchLogs() {
+            const container = document.getElementById('match-logs-container');
+            const heading = document.getElementById('match-audits-heading');
+            if (!container) return;
+
+            const filtered = activeOpponentFilter === 'ALL'
+                ? appState.matchLogs
+                : appState.matchLogs.filter(m => (m.opponentName || '').trim().toLowerCase() === activeOpponentFilter);
+
+            if (heading) {
+                heading.innerText = activeOpponentFilter === 'ALL'
+                    ? `Match Audit History (${filtered.length})`
+                    : `Match Audits vs. ${filtered[0]?.opponentName || activeOpponentFilter} (${filtered.length})`;
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-xs text-navy-muted bg-beige-card p-6 rounded-2xl border border-beige-border text-center">No match audits found for this filter. Click <strong>"Log Match Audit"</strong> to record opponent ratings and tactical experiments.</div>`;
+                return;
+            }
+
+            const outcomeColors = {
+                'Worked Well': 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                'Mixed / Needs Tweak': 'bg-amber-100 text-amber-800 border-amber-300',
+                "Didn't Work": 'bg-red-100 text-red-800 border-red-300',
+                'No Experiment': 'bg-beige-muted text-navy-muted border-beige-border'
+            };
+
+            container.innerHTML = filtered.map(m => {
+                const r = m.ratings || {};
+                const avg = ((Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4).toFixed(1);
+                const badgeCls = outcomeColors[m.ideaOutcome] || outcomeColors['No Experiment'];
+
+                return `
+                    <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-beige-border">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-xs font-mono font-bold bg-navy-deep text-beige-card px-2.5 py-0.5 rounded">${escapeHtml(m.date)}</span>
+                                <span class="text-sm font-extrabold text-navy-deep">${escapeHtml(m.opponentName || 'Unspecified Opponent')}</span>
+                                ${m.opponentStyle ? `<span class="text-xs text-navy-muted">• ${escapeHtml(m.opponentStyle)}</span>` : ''}
+                                <span class="text-[11px] bg-beige-muted text-navy-slate px-2 py-0.5 rounded border border-beige-border">${escapeHtml(m.type)}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-mono font-bold bg-sage-light text-sage-dark px-2.5 py-1 rounded-lg border border-sage-primary/20">Avg ${avg} / 5</span>
+                                <button type="button" onclick="deleteMatchLog('${escapeHtml(m.id)}')" class="p-1.5 text-navy-muted hover:text-red-600 rounded-lg">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        ${m.tacticalIdea ? `
+                            <div class="bg-beige-muted border border-beige-border rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                                <div>
+                                    <span class="font-bold text-navy-deep">Tactical Idea Tested:</span>
+                                    <span class="text-navy-slate">${escapeHtml(m.tacticalIdea)}</span>
+                                </div>
+                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border self-start sm:self-center ${badgeCls}">${escapeHtml(m.ideaOutcome || 'Tested')}</span>
+                            </div>
+                        ` : ''}
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                            <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
+                                <div class="text-[10px] text-navy-muted font-semibold">Drop-Shot Braking</div>
+                                <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.dropshot)} / 5</div>
+                            </div>
+                            <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
+                                <div class="text-[10px] text-navy-muted font-semibold">Baseline Depth</div>
+                                <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.positioning)} / 5</div>
+                            </div>
+                            <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
+                                <div class="text-[10px] text-navy-muted font-semibold">2HB Depth Control</div>
+                                <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.backhand)} / 5</div>
+                            </div>
+                            <div class="bg-beige-muted p-2.5 rounded-xl border border-beige-border text-center">
+                                <div class="text-[10px] text-navy-muted font-semibold">2nd Serve / Shoulder</div>
+                                <div class="font-extrabold text-navy-deep mt-0.5">${escapeHtml(r.serve)} / 5</div>
+                            </div>
+                        </div>
+
+                        ${m.notes ? `<p class="text-xs text-navy-slate leading-relaxed pt-1">${escapeHtml(m.notes)}</p>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // ==========================================
+        // AI SESSION EVALUATOR & STREAM
+        // ==========================================
+        function fillPresetPrompt(presetNum) {
+            const notesEl = document.getElementById('eval-session-notes');
+            const oppEl = document.getElementById('eval-opponent-name');
+            const ideaEl = document.getElementById('eval-tactical-idea');
+            if (!notesEl) return;
+
+            if (presetNum === 1) {
+                if (oppEl && !oppEl.value) oppEl.value = "Budi";
+                if (ideaEl) ideaEl.value = "Hold <1m inside baseline + early split step on BH slice";
+                notesEl.value = "Played 2 sets of group play against Budi. He hit heavy moonballs to push me 2m behind the baseline, then disguised a forehand drop shot. My legs felt heavy braking on the 3rd sprint, though holding closer to the baseline cut down the distance on the second set.";
+            } else {
+                if (oppEl && !oppEl.value) oppEl.value = "Andi";
+                if (ideaEl) ideaEl.value = "Heavy crosscourt loop to BH + left-hand lead follow-through";
+                notesEl.value = "Tested heavy crosscourt loops to Andi's backhand. When I rushed my two-handed backhand on high balls, 4 shots sailed 1 foot long past the baseline. When I kept my chin quiet and led with my left hand, my Solinco Tour Bite strings dipped the ball right onto his baseline.";
             }
         }
 
-        function generateLocalCoachEvaluation(sessionType, notes, opponentName, tacticalIdea) {
-            const text = notes.toLowerCase();
+        function generateLocalCoachEvaluation(sessionType, notes, opponentName = '', tacticalIdea = '') {
+            const lower = notes.toLowerCase();
+            const isDropShot = lower.includes('drop') || lower.includes('sprint') || lower.includes('moonball') || lower.includes('braking');
+            const isBackhand = lower.includes('backhand') || lower.includes('2hb') || lower.includes('long');
+            const isServe = lower.includes('serve') || lower.includes('shoulder') || lower.includes('toss');
+
             const areas = [];
-            const takeaways = [];
-            let drill = "15-Min Baseline Hug & Cue Drill: Rally crosscourt while refusing to step >1m behind baseline; split-step forward immediately whenever feeder decelerates swing.";
-
-            if (text.includes('drop') || text.includes('moonball') || text.includes('sprint') || text.includes('tired') || text.includes('fatigue') || text.includes('legs')) {
-                areas.push("Hug baseline (<1m) to cut drop-shot sprint from 14m to 5m");
-                areas.push("Read early racquet deceleration & open face cues");
-                takeaways.push("At 100 kg, allowing moonballs to push you 2-3m behind the baseline forces repeated 14m sprints and heavy eccentric quad braking. Holding within 1m of the baseline cuts recovery distance in half.");
-                drill = "15-Min Eccentric Braking & Net Transition Drill: Play group points with a strict personal rule—never retreat >1m behind baseline. On drop shots, angle softly crosscourt and hold net position.";
+            if (isDropShot) areas.push("Early Split-Step on Racquet Deceleration");
+            if (isBackhand) areas.push("Left-Hand Lead & Quiet Chin on 2HB");
+            if (isServe) areas.push("12:30 Toss & 7-to-1 Topspin Brush");
+            if (areas.length < 3) {
+                areas.push("Hold <1m Baseline Recovery Position");
+                areas.push("Eccentric Quad Deceleration Endurance");
             }
 
-            if (text.includes('backhand') || text.includes('2hb') || text.includes('long') || text.includes('sail') || text.includes('high')) {
-                areas.push("Lead 2HB with non-dominant left hand & keep chin quiet");
-                takeaways.push("Backhands sailing long on high balls happen when your torso straightens up early and your right hand dominates. Treat the 2HB as a left-handed topspin forehand drive with your chin anchored to your front shoulder.");
-                if (!text.includes('drop')) {
-                    drill = "15-Min Crosscourt 2HB Topspin Clearance Drill: Hit 20 consecutive crosscourt 2-handed backhands aiming 3-4 feet over the net with Solinco Tour Bite bite, focusing on staying low through contact.";
-                }
-            }
-
-            if (text.includes('serve') || text.includes('shoulder') || text.includes('toss') || text.includes('kick')) {
-                areas.push("Maintain 12:30/1:00 toss & 7-to-1 wrist snap on 2nd serve");
-                takeaways.push("Keeping the 2nd serve toss slightly forward at 12:30/1:00 protects your rotator cuff from lumbar/shoulder hyper-extension while generating heavy spin with your RF01 Pro.");
-                if (areas.length === 1) {
-                    drill = "15-Min 12:30 Topspin-Slice Serve Target Drill: Hit 30 2nd serves at 75% effort targeting the opponent's backhand body/backhand corner using pure upward wrist brush.";
-                }
-            }
-
-            if (areas.length === 0) {
-                areas.push("Maintain <1m baseline court positioning");
-                areas.push("Execute early split-step before opponent contact");
-                areas.push("Attack short balls with heavy inside-out/crosscourt forehand");
-                takeaways.push("For your 29yo/100kg aggressive counterpunching profile with the Wilson RF01 Pro + Tour Bite 17g @ 51 lbs, dictating tempo from inside 1m of the baseline maximizes your heavy forehand weapon while conserving leg stamina.");
-            }
-
-            const oppContext = opponentName ? ` vs ${opponentName}` : '';
-            const ideaContext = tacticalIdea ? ` Testing "${tacticalIdea}" gives you a clear tactical benchmark—track whether it draws shorter replies in your next set.` : '';
+            const oppTag = opponentName ? ` against ${opponentName}` : '';
+            const ideaTag = tacticalIdea ? ` Testing "${tacticalIdea}" gave clear feedback on court positioning.` : '';
 
             return {
-                summary: `Evaluated ${sessionType}${oppContext}: Strong foundation with your RF01 Pro setup; tightening baseline depth discipline and early cue recognition will preserve energy.${ideaContext}`,
+                summary: `Solid ${sessionType.toLowerCase()} audit${oppTag}.${ideaTag} Prioritizing early cue recognition and compact follow-throughs with your Wilson RF01 Pro will convert defensive sprints into offensive baseline control.`,
                 areasOfImprovement: areas.slice(0, 3),
-                technicalTakeaways: takeaways.join(" "),
-                recommendedDrill: drill
+                technicalTakeaways: isBackhand
+                    ? "At 100 kg, lifting your head early on high two-handed backhands opens your chest and sends Tour Bite 17g shots 1–2 feet long. Anchor your chin to your front shoulder through contact and let your non-dominant left hand drive upward."
+                    : "For a 100 kg athletic frame, saving energy starts before the sprint: refuse to drift 2–3 meters behind the baseline on high balls. Take the ball on the rise inside 1m of the baseline so any drop shot requires only a 5–6m burst instead of a 15m emergency sprint.",
+                recommendedDrill: isDropShot
+                    ? "15-Min Cue-Read & Brake Drill: Partner feeds 3 deep crosscourt balls followed by a random disguised drop shot; execute an aggressive forward split-step the instant their racquet slows down."
+                    : "15-Min Figure-8 Baseline Depth Drill: Alternate heavy crosscourt 2HB topspin and deep down-the-line drives aiming within 1m of the baseline with zero long misses."
             };
         }
 
@@ -1773,30 +2524,88 @@
             const sessionDate = dateEl.value || new Date().toISOString().split('T')[0];
             const opponentName = oppEl ? oppEl.value.trim() : '';
             const tacticalIdea = ideaEl ? ideaEl.value.trim() : '';
+            const selectedModel = appState.selectedAiModel || 'gemini-3.8-flash';
 
             const btn = document.getElementById('btn-eval-ai');
             const badge = document.getElementById('eval-status-badge');
             const body = document.getElementById('eval-output-body');
 
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing Session...</span>`;
+            btn.innerHTML = `<i data-lucide="search" class="w-4 h-4 animate-pulse"></i><span>Verifying Model...</span>`;
             if (badge) {
-                badge.innerText = "Evaluating...";
+                badge.innerText = "Checking Model...";
                 badge.className = "text-[10px] bg-sage-primary/20 text-sage-accent px-2 py-0.5 rounded font-mono animate-pulse";
             }
             if (body) {
+                body.className = "text-xs text-beige-muted space-y-2 min-h-[120px] flex items-center justify-center text-center";
                 body.innerHTML = `
                     <div class="py-6 text-center space-y-2">
                         <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p class="text-xs text-sage-accent font-semibold">Analyzing footwork, matchup dynamics &amp; tactical idea...</p>
+                        <p class="text-xs text-sage-accent font-semibold">Searching live registry to verify "${escapeHtml(selectedModel)}"...</p>
+                    </div>
+                `;
+            }
+            if (window.lucide) lucide.createIcons();
+
+            // Step 1: Pre-execution live model availability check
+            const availability = await verifySelectedModelAvailability(false);
+
+            // If user selected a cloud Gemini model and has an API key, but the model is NOT available:
+            if (selectedModel !== 'local-coach-ai' && appState.geminiApiKey && !availability.available) {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="bot" class="w-4 h-4"></i><span>Evaluate Session with AI</span>`;
+                if (badge) {
+                    badge.innerText = "Model Unavailable";
+                    badge.className = "text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded font-mono";
+                }
+                const altModel = availability.fallbackModel || 'local-coach-ai';
+                if (body) {
+                    body.className = "text-xs text-beige-muted space-y-3 text-left";
+                    body.innerHTML = `
+                        <div class="bg-red-950/60 border border-red-500/40 rounded-lg p-3 space-y-2">
+                            <div class="font-bold text-red-300 flex items-center gap-1.5">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                <span>Selected model "${escapeHtml(selectedModel)}" is unavailable</span>
+                            </div>
+                            <p class="text-[11px] text-beige-muted leading-relaxed">
+                                Live registry search confirmed your API key cannot execute <strong>${escapeHtml(selectedModel)}</strong> (${escapeHtml(availability.reason)}). Select another verified model from the dropdown above or run with the recommended available model below:
+                            </p>
+                            <div class="flex flex-wrap gap-2 pt-1">
+                                <button type="button" onclick="switchToModelAndExecute('${escapeHtml(altModel)}', true)" class="px-3 py-1.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-[11px] rounded-lg transition-colors">
+                                    Switch to ${escapeHtml(altModel)} &amp; Run Now
+                                </button>
+                                <button type="button" onclick="switchToModelAndExecute('local-coach-ai', true)" class="px-3 py-1.5 bg-navy-slate hover:bg-navy-muted/40 text-beige-card font-semibold text-[11px] rounded-lg border border-navy-muted/40">
+                                    Run Offline Coach AI
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                if (window.lucide) lucide.createIcons();
+                showToast(`Model "${selectedModel}" unavailable. Pick a verified model to run.`, "error");
+                return;
+            }
+
+            // Step 2: Execute evaluation with the verified model
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing Session...</span>`;
+            if (badge) {
+                badge.innerText = "Analyzing...";
+            }
+            if (body) {
+                body.className = "text-xs text-beige-muted space-y-2 min-h-[120px] flex items-center justify-center text-center";
+                body.innerHTML = `
+                    <div class="py-6 text-center space-y-2">
+                        <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        <p class="text-xs text-sage-accent font-semibold">Running tactical &amp; biomechanical analysis (${escapeHtml(selectedModel)})...</p>
                     </div>
                 `;
             }
             if (window.lucide) lucide.createIcons();
 
             let evalResult = null;
+            let modelUsed = 'local-coach-ai';
 
-            if (appState.geminiApiKey) {
+            if (selectedModel !== 'local-coach-ai' && appState.geminiApiKey && availability.available) {
                 const systemPrompt = `You are an elite tennis coach specializing in NTRP 4.0 intermediate singles strategy. Player Profile: 29yo, 100kg, 175cm athletic build, playing with Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs. Playstyle: Counterpuncher / Aggressive Baseliner. Analyze the provided user training session description, opponent matchup, and tactical idea tested. Return a valid JSON object matching this schema:
 {
   "summary": "Concise 2-sentence tactical summary",
@@ -1805,7 +2614,7 @@
   "recommendedDrill": "Specific 15-minute targeted drill"
 }`;
                 const promptText = `Session Type: ${sessionType}\nOpponent Name: ${opponentName || 'Unspecified'}\nTactical Idea Tested: ${tacticalIdea || 'None specified'}\nSession Notes:\n"${sessionNotes}"`;
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${encodeURIComponent(appState.geminiApiKey)}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(selectedModel)}:generateContent?key=${encodeURIComponent(appState.geminiApiKey)}`;
                 const payload = {
                     contents: [{ parts: [{ text: promptText }] }],
                     systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -1838,7 +2647,11 @@
                         const jsonText = jsonRes.candidates?.[0]?.content?.parts?.[0]?.text;
                         if (jsonText) {
                             evalResult = JSON.parse(jsonText);
+                            modelUsed = selectedModel;
                         }
+                    } else {
+                        const errData = await res.json().catch(() => ({}));
+                        showToast(`Gemini execution error (${errData?.error?.message || res.status}) — falling back to Offline Coach AI.`, "error");
                     }
                 } catch (err) {
                     console.warn("Live Gemini API fallback triggered:", err);
@@ -1846,15 +2659,19 @@
             }
 
             if (!evalResult) {
-                await new Promise(r => setTimeout(r, 450));
+                await new Promise(r => setTimeout(r, 350));
                 evalResult = generateLocalCoachEvaluation(sessionType, sessionNotes, opponentName, tacticalIdea);
+                modelUsed = 'local-coach-ai';
+                if (selectedModel !== 'local-coach-ai' && !appState.geminiApiKey) {
+                    showToast("No API key set — evaluated with Built-in Offline Coach AI.", "info");
+                }
             }
 
             btn.disabled = false;
             btn.innerHTML = `<i data-lucide="bot" class="w-4 h-4"></i><span>Evaluate Session with AI</span>`;
 
             if (badge) {
-                badge.innerText = "Complete";
+                badge.innerText = modelUsed === 'local-coach-ai' ? "Offline AI" : modelUsed;
                 badge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono";
             }
 
@@ -1886,604 +2703,167 @@
                 type: sessionType,
                 opponentName,
                 tacticalIdea,
+                modelUsed,
                 notes: sessionNotes,
                 result: evalResult
             };
             appState.evalLogs.unshift(logItem);
             saveState(true);
-            showToast("Session evaluation generated & saved!", "success");
+            showToast(`Session evaluated with ${modelUsed === 'local-coach-ai' ? 'Offline Coach AI' : modelUsed}!`, "success");
             if (window.lucide) lucide.createIcons();
         }
 
-        // Render Recent Evaluations Stream
+        function deleteEvalLog(evalId) {
+            appState.evalLogs = appState.evalLogs.filter(e => e.id !== evalId);
+            saveState(true);
+            showToast("Evaluation log removed.", "info");
+        }
+
         function renderEvaluationsStream() {
             const container = document.getElementById('evaluations-stream-container');
-            const countEl = document.getElementById('eval-stream-count');
+            const countBadge = document.getElementById('eval-stream-count');
+            if (countBadge) countBadge.innerText = `${appState.evalLogs.length} logs`;
             if (!container) return;
 
-            if (countEl) countEl.innerText = `${appState.evalLogs.length} logs`;
-
             if (appState.evalLogs.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-6 bg-beige-muted border border-beige-border rounded-xl text-navy-muted text-xs">
-                        No evaluated sessions yet. Use the AI Session Evaluator above to analyze your hits!
-                    </div>
-                `;
+                container.innerHTML = `<div class="text-[11px] text-navy-muted bg-beige-muted p-4 rounded-xl border border-beige-border text-center">No evaluated sessions yet. Submit a session above to build your AI coaching stream.</div>`;
                 return;
             }
 
-            container.innerHTML = appState.evalLogs.map((item, idx) => `
+            container.innerHTML = appState.evalLogs.map(ev => `
                 <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 space-y-2 text-xs">
-                    <div class="flex justify-between items-center pb-1 border-b border-beige-border">
+                    <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="font-bold text-sage-primary font-mono">${escapeHtml(item.date)}</span>
-                            <span class="font-bold text-navy-deep">• ${escapeHtml(item.type)}</span>
-                            ${item.opponentName ? `<span class="px-1.5 py-0.5 bg-navy-deep text-beige-card rounded text-[10px] font-semibold">vs ${escapeHtml(item.opponentName)}</span>` : ''}
+                            <span class="text-[10px] font-mono font-bold bg-navy-deep text-beige-card px-2 py-0.5 rounded">${escapeHtml(ev.date)}</span>
+                            ${ev.opponentName ? `<span class="text-[11px] font-bold text-sage-dark bg-sage-light px-2 py-0.5 rounded">vs ${escapeHtml(ev.opponentName)}</span>` : ''}
+                            ${ev.modelUsed ? `<span class="text-[10px] font-mono text-navy-muted">${escapeHtml(ev.modelUsed)}</span>` : ''}
                         </div>
-                        <button onclick="deleteEvalLog(${idx})" class="text-navy-muted hover:text-red-600 p-1">
+                        <button type="button" onclick="deleteEvalLog('${escapeHtml(ev.id)}')" class="text-navy-muted hover:text-red-600 p-1">
                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                         </button>
                     </div>
-                    ${item.tacticalIdea ? `<div class="text-[11px] font-semibold text-sage-dark bg-sage-light px-2 py-1 rounded border border-sage-primary/20">Idea Tested: ${escapeHtml(item.tacticalIdea)}</div>` : ''}
-                    <div class="text-navy-slate italic text-[11px] line-clamp-2">"${escapeHtml(item.notes)}"</div>
-                    ${item.result && item.result.areasOfImprovement ? `
-                        <div class="flex flex-wrap gap-1 pt-1">
-                            ${item.result.areasOfImprovement.map(a => `<span class="px-2 py-0.5 bg-beige-card text-navy-deep border border-beige-border rounded text-[9px] font-semibold">${escapeHtml(a)}</span>`).join('')}
-                        </div>
-                    ` : ''}
+                    ${ev.tacticalIdea ? `<div class="text-[11px] font-semibold text-navy-deep">💡 Idea: ${escapeHtml(ev.tacticalIdea)}</div>` : ''}
+                    <p class="text-[11px] text-navy-slate leading-relaxed">${escapeHtml(ev.result?.summary || '')}</p>
+                    <div class="text-[10px] text-sage-dark font-semibold">Drill: ${escapeHtml(ev.result?.recommendedDrill || '')}</div>
                 </div>
             `).join('');
+
+            if (window.lucide) lucide.createIcons();
         }
 
-        function deleteEvalLog(idx) {
-            showConfirmModal("Delete Session Log", "Are you sure you want to remove this evaluation from your history?", () => {
-                appState.evalLogs.splice(idx, 1);
-                saveState(true);
-                showToast("Session log removed.", "info");
-            });
-        }
-
-        // Checklist Operations
-        function renderChecklist() {
-            const container = document.getElementById('checklist-items-container');
-            if (!container) return;
-
-            if (appState.checklist.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 bg-beige-card border border-beige-border rounded-2xl text-navy-muted text-xs">No objectives found. Add your first task!</div>`;
-                return;
-            }
-
-            container.innerHTML = appState.checklist.map(task => `
-                <div class="bg-beige-card border border-beige-border hover:border-sage-primary/40 transition-colors rounded-2xl p-4 flex items-start justify-between gap-4 shadow-sm">
-                    <div class="flex items-start gap-3 cursor-pointer" onclick="toggleTask('${escapeHtml(task.id)}')">
-                        <div class="w-6 h-6 rounded-lg border mt-0.5 ${task.completed ? 'bg-sage-primary border-sage-primary text-white' : 'border-beige-border bg-beige-muted'} flex items-center justify-center flex-shrink-0 transition-colors">
-                            ${task.completed ? '<i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>' : ''}
-                        </div>
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <h4 class="text-sm font-bold ${task.completed ? 'line-through text-navy-muted' : 'text-navy-deep'}">${escapeHtml(task.title)}</h4>
-                                <span class="text-[10px] bg-beige-muted text-navy-muted border border-beige-border px-2 py-0.5 rounded font-mono">${escapeHtml(task.category)}</span>
-                            </div>
-                            <p class="text-xs text-navy-slate leading-relaxed">${escapeHtml(task.subtext)}</p>
-                        </div>
-                    </div>
-                    <button onclick="deleteTask('${escapeHtml(task.id)}')" class="text-navy-muted hover:text-red-600 p-1.5 rounded-lg hover:bg-beige-muted transition-colors">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function toggleTask(id) {
-            appState.checklist = appState.checklist.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-            saveState(true);
-        }
-
-        function deleteTask(id) {
-            appState.checklist = appState.checklist.filter(t => t.id !== id);
-            saveState(true);
-        }
-
-        function handleAddTask(e) {
-            e.preventDefault();
-            const title = document.getElementById('task-title-input').value.trim();
-            const category = document.getElementById('task-category-input').value;
-            const subtext = document.getElementById('task-subtext-input').value.trim();
-            if (!title) return;
-
-            appState.checklist.push({
-                id: 'task-' + Date.now(),
-                title,
-                category,
-                subtext: subtext || 'Custom singles preparation task.',
-                completed: false
-            });
-            saveState(true);
-            closeModal('add-task-modal');
-            document.getElementById('add-task-form').reset();
-            showToast("Objective added to checklist!", "success");
-        }
-
-        // Gym Log Operations
-        function renderGymLogs() {
-            const container = document.getElementById('gym-logs-container');
-            if (!container) return;
-
-            if (appState.gymLogs.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 bg-beige-muted border border-beige-border rounded-xl text-navy-muted text-xs">No gym workouts logged yet. Perform your first braking routine!</div>`;
-                return;
-            }
-
-            container.innerHTML = appState.gymLogs.map((log, idx) => `
-                <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 flex justify-between items-center text-xs">
-                    <div class="space-y-0.5">
-                        <div class="font-bold text-navy-deep">${escapeHtml(log.date)} • ${escapeHtml(log.routine)} <span class="text-sage-primary font-mono">(RPE ${escapeHtml(log.rpe)}/10)</span></div>
-                        <div class="text-navy-slate">${escapeHtml(log.exercises)}</div>
-                        ${log.notes ? `<div class="text-[11px] text-navy-muted italic">"${escapeHtml(log.notes)}"</div>` : ''}
-                    </div>
-                    <button onclick="deleteGymLog(${idx})" class="text-navy-muted hover:text-red-600 p-1">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function handleLogGym(e) {
-            e.preventDefault();
-            const date = document.getElementById('gym-date-input').value;
-            const routine = document.getElementById('gym-routine-input').value;
-            const exercises = document.getElementById('gym-exercises-input').value.trim();
-            const rpe = document.getElementById('gym-rpe-input').value;
-            const feeling = document.getElementById('gym-feeling-input').value;
-            const notes = document.getElementById('gym-notes-input').value.trim();
-            if (!exercises) return;
-
-            appState.gymLogs.unshift({ date, routine, exercises, rpe, feeling, notes });
-            saveState(true);
-            closeModal('gym-log-modal');
-            document.getElementById('gym-log-form').reset();
-            document.getElementById('gym-date-input').value = new Date().toISOString().split('T')[0];
-            showToast("Gym workout logged!", "success");
-        }
-
-        function deleteGymLog(idx) {
-            appState.gymLogs.splice(idx, 1);
-            saveState(true);
-        }
-
-        // Opponent Scouting Section & Match Log Operations
-        function getOutcomeBadgeClass(outcome) {
-            if (!outcome) return 'bg-beige-muted text-navy-slate border-beige-border';
-            if (outcome.includes('Worked')) return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-            if (outcome.includes('Mixed')) return 'bg-amber-100 text-amber-800 border-amber-200';
-            if (outcome.includes("Didn't")) return 'bg-red-100 text-red-800 border-red-200';
-            return 'bg-sage-light text-sage-dark border-sage-primary/20';
-        }
-
-        function renderOpponentSection() {
-            const container = document.getElementById('opponent-cards-container');
-            const pillsContainer = document.getElementById('opponent-filter-pills');
-            const clearBtn = document.getElementById('btn-clear-opponent-filter');
-            if (!container) return;
-
-            const opponents = getAggregatedOpponents();
-
-            if (clearBtn) {
-                if (activeOpponentFilter !== 'ALL') clearBtn.classList.remove('hidden');
-                else clearBtn.classList.add('hidden');
-            }
-
-            if (pillsContainer) {
-                const allBtnClass = activeOpponentFilter === 'ALL'
-                    ? 'bg-navy-deep text-white'
-                    : 'bg-beige-card text-navy-slate border border-beige-border hover:bg-beige-muted';
-                let pillsHtml = `<button onclick="setOpponentFilter('ALL')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${allBtnClass}">All (${appState.matchLogs.length})</button>`;
-
-                opponents.forEach(o => {
-                    const isSelected = activeOpponentFilter === o.key;
-                    const cls = isSelected
-                        ? 'bg-sage-primary text-white'
-                        : 'bg-beige-card text-navy-slate border border-beige-border hover:bg-beige-muted';
-                    pillsHtml += `<button onclick="setOpponentFilter('${escapeHtml(o.key)}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${cls}">${escapeHtml(o.name)} (${o.matchLogs.length})</button>`;
-                });
-                pillsContainer.innerHTML = pillsHtml;
-            }
-
-            if (opponents.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-6 bg-beige-muted border border-beige-border rounded-xl text-navy-muted text-xs space-y-2">
-                        <p>No opponents tracked yet. Add a scouting card or enter an opponent's name when logging a match audit.</p>
-                        <button onclick="openOpponentProfileModal()" class="px-3 py-1.5 bg-sage-primary text-white font-bold rounded-lg text-xs">+ Create First Opponent Card</button>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = opponents.map(o => {
-                const mc = o.matchLogs.length;
-                const avgDrop = mc > 0 ? (o.matchLogs.reduce((s, m) => s + Number(m.ratings.dropshot || 0), 0) / mc).toFixed(1) : '-';
-                const avgDepth = mc > 0 ? (o.matchLogs.reduce((s, m) => s + Number(m.ratings.positioning || 0), 0) / mc).toFixed(1) : '-';
-                const avgBh = mc > 0 ? (o.matchLogs.reduce((s, m) => s + Number(m.ratings.backhand || 0), 0) / mc).toFixed(1) : '-';
-                const avgServe = mc > 0 ? (o.matchLogs.reduce((s, m) => s + Number(m.ratings.serve || 0), 0) / mc).toFixed(1) : '-';
-                const isSelected = activeOpponentFilter === o.key;
-
-                return `
-                    <div onclick="setOpponentFilter('${escapeHtml(o.key)}')" class="bg-beige-muted border ${isSelected ? 'border-sage-primary ring-2 ring-sage-primary/30' : 'border-beige-border hover:border-sage-primary/50'} rounded-xl p-4 space-y-3 cursor-pointer transition-all flex flex-col justify-between">
-                        <div class="space-y-2">
-                            <div class="flex items-start justify-between gap-2">
-                                <div>
-                                    <div class="font-extrabold text-sm text-navy-deep flex items-center gap-1.5">
-                                        <span>${escapeHtml(o.name)}</span>
-                                        <span class="text-[10px] font-mono bg-navy-deep text-beige-card px-1.5 py-0.5 rounded">${mc} audits</span>
-                                    </div>
-                                    <div class="text-[11px] text-navy-muted">${escapeHtml(o.style || 'Playstyle not set')}</div>
-                                </div>
-                                <div class="flex items-center gap-1" onclick="event.stopPropagation()">
-                                    <button onclick="openOpponentProfileModal('${escapeHtml(o.key)}')" title="Edit Scouting Card" class="p-1 text-navy-muted hover:text-navy-deep rounded">
-                                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                                    </button>
-                                    <button onclick="deleteOpponentProfile('${escapeHtml(o.key)}')" title="Remove Scouting Card" class="p-1 text-navy-muted hover:text-red-600 rounded">
-                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            ${mc > 0 ? `
-                                <div class="grid grid-cols-4 gap-1 text-[10px] text-center font-mono">
-                                    <div class="bg-beige-card py-1 rounded border border-beige-border">Drop: <strong>${avgDrop}</strong></div>
-                                    <div class="bg-beige-card py-1 rounded border border-beige-border">Depth: <strong>${avgDepth}</strong></div>
-                                    <div class="bg-beige-card py-1 rounded border border-beige-border">2HB: <strong>${avgBh}</strong></div>
-                                    <div class="bg-beige-card py-1 rounded border border-beige-border">2nd: <strong>${avgServe}</strong></div>
-                                </div>
-                            ` : ''}
-
-                            ${o.experiments.length > 0 ? `
-                                <div class="space-y-1 pt-1">
-                                    <div class="text-[10px] font-bold uppercase tracking-wider text-navy-muted">Tested Tactical Ideas:</div>
-                                    ${o.experiments.slice(0, 2).map(exp => `
-                                        <div class="flex items-center justify-between gap-1.5 bg-beige-card px-2 py-1 rounded border border-beige-border text-[11px]">
-                                            <span class="truncate text-navy-deep font-medium">${escapeHtml(exp.idea)}</span>
-                                            <span class="px-1.5 py-0.5 rounded border text-[9px] font-bold flex-shrink-0 ${getOutcomeBadgeClass(exp.outcome)}">${escapeHtml(exp.outcome)}</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            ` : ''}
-
-                            ${o.nextIdea ? `
-                                <div class="bg-sage-light/80 border border-sage-primary/20 rounded-lg px-2.5 py-1.5 text-[11px] text-sage-dark">
-                                    <strong>Next Idea:</strong> ${escapeHtml(o.nextIdea)}
-                                </div>
-                            ` : ''}
-                        </div>
-
-                        ${o.scoutingNotes ? `<div class="text-[11px] text-navy-slate italic border-t border-beige-border pt-2 line-clamp-2">"${escapeHtml(o.scoutingNotes)}"</div>` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderMatchLogs() {
-            const container = document.getElementById('match-logs-container');
-            const heading = document.getElementById('match-audits-heading');
-            if (!container) return;
-
-            const filtered = appState.matchLogs
-                .map((log, originalIdx) => ({ log, originalIdx }))
-                .filter(({ log }) => {
-                    if (activeOpponentFilter === 'ALL') return true;
-                    return (log.opponentName || '').trim().toLowerCase() === activeOpponentFilter;
-                });
-
-            if (heading) {
-                heading.innerText = activeOpponentFilter === 'ALL'
-                    ? `Match Audit History (${filtered.length})`
-                    : `Match Audits vs ${filtered[0]?.log?.opponentName || activeOpponentFilter} (${filtered.length})`;
-            }
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 bg-beige-card border border-beige-border rounded-2xl text-navy-muted text-xs">No match audits recorded for this filter. Log a match audit to track tactical ideas!</div>`;
-                return;
-            }
-
-            container.innerHTML = filtered.map(({ log, originalIdx }) => `
-                <div class="bg-beige-card border border-beige-border rounded-2xl p-4 space-y-2.5 text-xs shadow-xs">
-                    <div class="flex justify-between items-center pb-2 border-b border-beige-border flex-wrap gap-2">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="font-bold text-navy-deep">${escapeHtml(log.date)} • ${escapeHtml(log.type)}</span>
-                            ${log.opponentName ? `<span class="px-2 py-0.5 bg-navy-deep text-beige-card rounded-md text-[11px] font-bold">vs ${escapeHtml(log.opponentName)}</span>` : ''}
-                            ${log.opponentStyle ? `<span class="text-navy-muted">(${escapeHtml(log.opponentStyle)})</span>` : ''}
-                        </div>
-                        <button onclick="deleteMatchLog(${originalIdx})" class="text-navy-muted hover:text-red-600 p-1">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                    ${log.tacticalIdea ? `
-                        <div class="flex items-center justify-between gap-2 bg-beige-muted px-3 py-2 rounded-xl border border-beige-border">
-                            <div>
-                                <span class="text-[10px] font-bold uppercase text-navy-muted block">Tactical Idea Tested</span>
-                                <span class="font-semibold text-navy-deep">${escapeHtml(log.tacticalIdea)}</span>
-                            </div>
-                            ${log.ideaOutcome && log.ideaOutcome !== 'No Experiment' ? `<span class="px-2 py-0.5 rounded-md border text-[10px] font-bold ${getOutcomeBadgeClass(log.ideaOutcome)}">${escapeHtml(log.ideaOutcome)}</span>` : ''}
-                        </div>
-                    ` : ''}
-                    <div class="grid grid-cols-4 gap-2 text-[11px] text-center font-mono">
-                        <div class="bg-beige-muted p-1.5 rounded">Drop: ${escapeHtml(log.ratings.dropshot)}/5</div>
-                        <div class="bg-beige-muted p-1.5 rounded">Depth: ${escapeHtml(log.ratings.positioning)}/5</div>
-                        <div class="bg-beige-muted p-1.5 rounded">2HB: ${escapeHtml(log.ratings.backhand)}/5</div>
-                        <div class="bg-beige-muted p-1.5 rounded">Serve: ${escapeHtml(log.ratings.serve)}/5</div>
-                    </div>
-                    ${log.notes ? `<div class="text-navy-slate italic">"${escapeHtml(log.notes)}"</div>` : ''}
-                </div>
-            `).join('');
-        }
-
-        function handleLogMatch(e) {
-            e.preventDefault();
-            const date = document.getElementById('match-date-input').value;
-            const type = document.getElementById('match-type-input').value;
-            const opponentName = document.getElementById('match-opponent-name-input').value.trim();
-            const opponentStyle = document.getElementById('match-opponent-input').value.trim();
-            const tacticalIdea = document.getElementById('match-tactical-idea-input').value.trim();
-            const ideaOutcome = document.getElementById('match-idea-outcome-input').value;
-            const dropshot = document.getElementById('rate-input-dropshot').value;
-            const positioning = document.getElementById('rate-input-positioning').value;
-            const backhand = document.getElementById('rate-input-backhand').value;
-            const serve = document.getElementById('rate-input-serve').value;
-            const notes = document.getElementById('match-notes-input').value.trim();
-
-            if (opponentName) {
-                const key = opponentName.toLowerCase();
-                if (!appState.opponentProfiles[key]) {
-                    appState.opponentProfiles[key] = {
-                        name: opponentName,
-                        style: opponentStyle,
-                        nextIdea: '',
-                        scoutingNotes: ''
-                    };
-                } else if (opponentStyle && !appState.opponentProfiles[key].style) {
-                    appState.opponentProfiles[key].style = opponentStyle;
-                }
-            }
-
-            appState.matchLogs.unshift({
-                date,
-                type,
-                opponentName,
-                opponentStyle,
-                tacticalIdea,
-                ideaOutcome,
-                ratings: { dropshot, positioning, backhand, serve },
-                notes
-            });
-            saveState(true);
-            closeModal('match-log-modal');
-            document.getElementById('match-log-form').reset();
-            document.getElementById('match-date-input').value = new Date().toISOString().split('T')[0];
-            document.getElementById('rate-val-dropshot').innerText = '4 / 5';
-            document.getElementById('rate-val-positioning').innerText = '4 / 5';
-            document.getElementById('rate-val-backhand').innerText = '3 / 5';
-            document.getElementById('rate-val-serve').innerText = '4 / 5';
-            showToast(opponentName ? `Match audit vs ${opponentName} logged!` : "Match audit logged!", "success");
-        }
-
-        function deleteMatchLog(idx) {
-            appState.matchLogs.splice(idx, 1);
-            saveState(true);
-        }
-
-        // Data Sync & Export Logic
-        function updateSyncBadge() {
-            const badgeText = document.getElementById('sync-status-text');
-            const badgeIcon = document.getElementById('sync-status-badge');
-            if (!badgeText || !badgeIcon) return;
-
-            if (appState.lastSynced) {
-                badgeText.innerText = `Synced (${appState.lastSynced})`;
-                badgeIcon.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5";
-            } else if (appState.webhookUrl) {
-                badgeText.innerText = "Webhook Ready";
-                badgeIcon.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-sage-primary/20 text-sage-accent border border-sage-primary/30 flex items-center gap-1.5";
-            } else {
-                badgeText.innerText = "Local Only";
-                badgeIcon.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-sage-primary/20 text-sage-accent border border-sage-primary/30 flex items-center gap-1.5";
-            }
-        }
-
+        // ==========================================
+        // EXPORT, IMPORT & RESET
+        // ==========================================
         function exportJSON() {
-            const exportObj = { ...appState };
-            delete exportObj.geminiApiKey;
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
-            const anchor = document.createElement('a');
-            anchor.setAttribute("href", dataStr);
-            anchor.setAttribute("download", `singles_match_ready_backup_${new Date().toISOString().split('T')[0]}.json`);
-            document.body.appendChild(anchor);
-            anchor.click();
-            anchor.remove();
-            showToast("Exported JSON state backup!", "success");
+            const safeCopy = Object.assign({}, appState, { geminiApiKey: "" });
+            const blob = new Blob([JSON.stringify(safeCopy, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `singles-match-ready-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("JSON backup downloaded!", "success");
         }
 
         function importJSON(event) {
-            const file = event.target.files[0];
+            const file = event.target.files?.[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 try {
                     const imported = JSON.parse(e.target.result);
-                    if (imported && Array.isArray(imported.checklist)) {
-                        appState = { ...appState, ...imported };
-                        saveState(true);
-                        initCountdown();
-                        showToast("Data imported from JSON file!", "success");
-                        closeModal('sync-modal');
-                    } else {
-                        showToast("Invalid JSON structure.", "error");
-                    }
+                    appState = Object.assign({}, appState, imported);
+                    saveState(true);
+                    closeModal('sync-modal');
+                    showToast("Backup restored successfully!", "success");
                 } catch (err) {
-                    showToast("Failed to parse JSON file.", "error");
+                    showToast("Invalid JSON backup file.", "error");
                 }
             };
             reader.readAsText(file);
         }
 
         function exportCSV() {
-            let csv = "data:text/csv;charset=utf-8,";
-            csv += "--- MATCH AUDITS & TACTICAL EXPERIMENTS ---\nDate,Type,Opponent,Style,Tactical Idea,Outcome,Drop,Depth,2HB,2nd Serve,Notes\n";
+            const rows = [['Date', 'Type', 'Opponent Name', 'Opponent Style', 'Tactical Idea', 'Idea Outcome', 'Drop-Shot', 'Depth', '2HB', '2nd Serve', 'Notes']];
             appState.matchLogs.forEach(m => {
                 const r = m.ratings || {};
-                csv += `"${m.date}","${m.type}","${(m.opponentName || '').replace(/"/g, '""')}","${(m.opponentStyle || '').replace(/"/g, '""')}","${(m.tacticalIdea || '').replace(/"/g, '""')}","${(m.ideaOutcome || '').replace(/"/g, '""')}",${r.dropshot || ''},${r.positioning || ''},${r.backhand || ''},${r.serve || ''},"${(m.notes || '').replace(/"/g, '""')}"\n`;
+                rows.push([
+                    m.date, m.type, m.opponentName || '', m.opponentStyle || '',
+                    m.tacticalIdea || '', m.ideaOutcome || '',
+                    r.dropshot || '', r.positioning || '', r.backhand || '', r.serve || '',
+                    (m.notes || '').replace(/"/g, '""')
+                ]);
             });
-            csv += "\n--- AI SESSION EVALUATIONS ---\nDate,Type,Opponent,Tactical Idea,Notes,Summary\n";
-            appState.evalLogs.forEach(e => {
-                csv += `"${e.date}","${e.type}","${(e.opponentName || '').replace(/"/g, '""')}","${(e.tacticalIdea || '').replace(/"/g, '""')}","${(e.notes || '').replace(/"/g, '""')}","${(e.result?.summary || '').replace(/"/g, '""')}"\n`;
-            });
-            csv += "\n--- GYM LOGS ---\nDate,Routine,Exercises,RPE\n";
-            appState.gymLogs.forEach(g => {
-                csv += `"${g.date}","${g.routine}","${(g.exercises || '').replace(/"/g, '""')}","${g.rpe}"\n`;
-            });
-            const link = document.createElement("a");
-            link.setAttribute("href", encodeURI(csv));
-            link.setAttribute("download", `singles_match_ready_logs_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast("Exported CSV logs!", "success");
-        }
-
-        async function syncToCloud(silent = false) {
-            const inputEl = document.getElementById('webhook-url-input');
-            const url = (inputEl ? inputEl.value.trim() : '') || appState.webhookUrl || DEFAULT_WEBHOOK_URL;
-            if (!url) {
-                if (!silent) showToast("Please enter a Google Apps Script Webhook URL.", "error");
-                return;
-            }
-            appState.webhookUrl = url;
-
-            const pushBtn = document.getElementById('btn-push-cloud');
-            if (pushBtn) pushBtn.disabled = true;
-
-            try {
-                const payloadToSync = {
-                    targetMatchday: appState.targetMatchday,
-                    checklist: appState.checklist,
-                    gymLogs: appState.gymLogs,
-                    matchLogs: appState.matchLogs,
-                    evalLogs: appState.evalLogs,
-                    opponentProfiles: appState.opponentProfiles,
-                    stealthCompletedToday: appState.stealthCompletedToday
-                };
-
-                const res = await fetch(url, {
-                    method: 'POST',
-                    redirect: 'follow',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payloadToSync)
-                });
-
-                const result = await res.json();
-                if (result && result.status === 'success') {
-                    appState.lastSynced = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    saveState(false);
-                    if (!silent) showToast("Data & Opponents synced to Google Sheets!", "success");
-                } else {
-                    throw new Error(result?.message || "Unexpected Apps Script response");
-                }
-            } catch (err) {
-                console.error("Cloud push error:", err);
-                if (!silent) showToast("Cloud push failed. Redeploy Code.gs as Web App (Anyone).", "error");
-            } finally {
-                if (pushBtn) pushBtn.disabled = false;
-            }
-        }
-
-        async function pullFromCloud() {
-            const inputEl = document.getElementById('webhook-url-input');
-            const url = (inputEl ? inputEl.value.trim() : '') || appState.webhookUrl || DEFAULT_WEBHOOK_URL;
-            if (!url) {
-                showToast("Please enter a Google Apps Script Webhook URL.", "error");
-                return;
-            }
-            appState.webhookUrl = url;
-
-            const pullBtn = document.getElementById('btn-pull-cloud');
-            if (pullBtn) pullBtn.disabled = true;
-
-            try {
-                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-                const res = await fetch(cacheBusterUrl, {
-                    method: 'GET',
-                    redirect: 'follow'
-                });
-
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}`);
-                }
-
-                const cloudData = await res.json();
-
-                if (cloudData && cloudData.status === 'error') {
-                    throw new Error(cloudData.message || "Apps Script error");
-                }
-
-                if (cloudData && cloudData.isInitialEmptyCloud) {
-                    showToast("Cloud sheet has no saved snapshot yet. Push your current data first!", "info");
-                    return;
-                }
-
-                if (cloudData && (Array.isArray(cloudData.checklist) || cloudData.targetMatchday !== undefined || cloudData.matchday !== undefined)) {
-                    appState = {
-                        ...appState,
-                        targetMatchday: cloudData.targetMatchday !== undefined ? cloudData.targetMatchday : (cloudData.matchday || appState.targetMatchday),
-                        checklist: Array.isArray(cloudData.checklist) && cloudData.checklist.length > 0 ? cloudData.checklist : appState.checklist,
-                        gymLogs: Array.isArray(cloudData.gymLogs) ? cloudData.gymLogs : appState.gymLogs,
-                        matchLogs: Array.isArray(cloudData.matchLogs) ? cloudData.matchLogs : appState.matchLogs,
-                        evalLogs: Array.isArray(cloudData.evalLogs) ? cloudData.evalLogs : appState.evalLogs,
-                        opponentProfiles: (cloudData.opponentProfiles && typeof cloudData.opponentProfiles === 'object') ? cloudData.opponentProfiles : appState.opponentProfiles,
-                        stealthCompletedToday: cloudData.stealthCompletedToday !== undefined ? cloudData.stealthCompletedToday : appState.stealthCompletedToday,
-                        webhookUrl: url,
-                        lastSynced: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                    };
-                    saveState(false);
-                    initCountdown();
-                    showToast("Pulled latest state & opponents from Google Sheets!", "success");
-                    closeModal('sync-modal');
-                } else {
-                    throw new Error("Unrecognized cloud payload format. Ensure updated Code.gs is deployed.");
-                }
-            } catch (err) {
-                console.error("Cloud pull error:", err);
-                showToast(`Pull failed: ${err.message}`, "error");
-            } finally {
-                if (pullBtn) pullBtn.disabled = false;
-            }
+            const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `singles-match-audits-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Match audits CSV exported!", "success");
         }
 
         function confirmResetData() {
-            showConfirmModal("Reset Application Data", "This will wipe all custom logs, opponents, and task progress back to defaults. Continue?", () => {
-                localStorage.removeItem(STORAGE_KEY);
-                appState = {
-                    targetMatchday: "2026-11-15",
-                    checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
-                    gymLogs: [],
-                    matchLogs: [],
-                    evalLogs: [],
-                    opponentProfiles: {},
-                    stealthCompletedToday: false,
-                    webhookUrl: DEFAULT_WEBHOOK_URL,
-                    autoSync: true,
-                    geminiApiKey: "",
-                    lastSynced: null
-                };
-                activeOpponentFilter = 'ALL';
-                saveState(false);
-                initCountdown();
-                closeModal('sync-modal');
-                showToast("Application reset to default state.", "info");
-            });
+            showConfirmModal(
+                "Reset All Local Data?",
+                "This will clear your local checklist progress, gym logs, match audits, and opponent scouting cards. Cloud data in Google Sheets will remain intact until you push.",
+                () => {
+                    localStorage.removeItem(STORAGE_KEY);
+                    appState = {
+                        targetMatchday: "2026-11-15",
+                        checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
+                        gymLogs: [],
+                        matchLogs: [],
+                        evalLogs: [],
+                        opponentProfiles: {},
+                        stealthCompletedToday: false,
+                        webhookUrl: DEFAULT_WEBHOOK_URL,
+                        autoSync: true,
+                        geminiApiKey: "",
+                        selectedAiModel: "gemini-3.8-flash",
+                        lastSynced: null
+                    };
+                    activeOpponentFilter = 'ALL';
+                    syncModelDropdownSelection([]);
+                    saveState(false);
+                    closeModal('sync-modal');
+                    showToast("Local application data has been reset.", "info");
+                }
+            );
         }
 
-        // Modal Helpers
-        function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+        // ==========================================
+        // MASTER RENDER & INITIALIZATION
+        // ==========================================
+        function renderAll() {
+            updateMatchdayDisplay();
+            renderStealthGoal();
+            updateReadinessRing();
+            renderChecklist();
+            renderGymLogs();
+            updateOpponentDatalist();
+            renderOpponentsSection();
+            renderMatchLogs();
+            renderEvaluationsStream();
+
+            const engineBadge = document.getElementById('ai-engine-badge');
+            if (engineBadge) {
+                const sel = appState.selectedAiModel || 'gemini-3.8-flash';
+                engineBadge.innerText = sel === 'local-coach-ai'
+                    ? 'Offline AI'
+                    : (appState.geminiApiKey ? sel.replace('gemini-', 'G-') : 'Coach AI');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        window.onload = function () {
+            loadState();
+            renderAll();
+            startCountdownTimer();
+        };
     </script>
 </body>
 </html>
