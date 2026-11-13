@@ -65,7 +65,6 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-sage-primary selection:text-white">
-
     <!-- Toast Notification Overlay Container -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-2"></div>
 
@@ -105,10 +104,18 @@
                 <span class="hidden md:inline text-navy-muted">•</span>
                 <span class="hidden md:inline text-beige-muted/80">NTRP 4.0 Singles Prep</span>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2.5 flex-wrap justify-center">
+                <button onclick="pullFromCloud()" title="Pull latest state from Google Sheets" class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-navy-slate hover:bg-navy-muted/40 text-beige-card border border-navy-muted/40 flex items-center gap-1 transition-colors">
+                    <i data-lucide="cloud-download" class="w-3 h-3 text-sage-accent"></i>
+                    <span>Pull</span>
+                </button>
+                <button onclick="syncToCloud()" title="Push current state to Google Sheets" class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-navy-slate hover:bg-navy-muted/40 text-beige-card border border-navy-muted/40 flex items-center gap-1 transition-colors">
+                    <i data-lucide="cloud-upload" class="w-3 h-3 text-sage-accent"></i>
+                    <span>Push</span>
+                </button>
                 <div id="sync-status-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-sage-primary/20 text-sage-accent border border-sage-primary/30 flex items-center gap-1.5">
-                    <i data-lucide="cloud-off" class="w-3 h-3"></i>
-                    <span id="sync-status-text">Local Only</span>
+                    <i data-lucide="cloud" class="w-3 h-3"></i>
+                    <span id="sync-status-text">Webhook Ready</span>
                 </div>
                 <div id="top-countdown" class="bg-navy-slate px-3 py-1 rounded-lg border border-navy-muted/40 font-mono text-sage-accent font-semibold text-xs">
                     Calculating...
@@ -136,24 +143,24 @@
 
                 <!-- Desktop Navigation Tabs -->
                 <nav class="hidden md:flex items-center gap-1 bg-beige-muted p-1.5 rounded-xl border border-beige-border">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn bg-navy-deep text-white flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                         <span>Dashboard & Evaluator</span>
                     </button>
-                    <button onclick="switchTab('checklist')" id="nav-checklist" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                    <button onclick="switchTab('checklist')" id="nav-checklist" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="check-square" class="w-4 h-4"></i>
                         <span>Readiness Checklist</span>
-                        <span id="nav-badge-tasks" class="bg-sage-primary text-white text-xs px-2 py-0.5 rounded-full font-mono">0/9</span>
+                        <span id="nav-badge-tasks" class="bg-sage-primary text-white text-xs px-2 py-0.5 rounded-full font-mono">0/8</span>
                     </button>
-                    <button onclick="switchTab('gym')" id="nav-gym" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                    <button onclick="switchTab('gym')" id="nav-gym" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="dumbbell" class="w-4 h-4"></i>
                         <span>Gym Workout</span>
                     </button>
-                    <button onclick="switchTab('match')" id="nav-match" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                    <button onclick="switchTab('match')" id="nav-match" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="activity" class="w-4 h-4"></i>
                         <span>Match Audit</span>
                     </button>
-                    <button onclick="switchTab('playbook')" id="nav-playbook" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
+                    <button onclick="switchTab('playbook')" id="nav-playbook" class="tab-btn text-navy-slate flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all">
                         <i data-lucide="book-open" class="w-4 h-4"></i>
                         <span>Playbook</span>
                     </button>
@@ -175,7 +182,7 @@
 
         <!-- Mobile Navigation Bar -->
         <div class="md:hidden flex overflow-x-auto border-t border-beige-border px-2 py-1.5 gap-1 scrollbar-none bg-beige-card">
-            <button onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="mobile-tab-btn flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-navy-muted">
+            <button onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="mobile-tab-btn bg-navy-deep text-white flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold">
                 <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
                 <span>Dashboard</span>
             </button>
@@ -200,16 +207,12 @@
 
     <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
-
         <!-- TAB 1: MAIN SPLIT DASHBOARD + SIDE EVALUATION PANEL -->
         <section id="tab-dashboard" class="space-y-6">
-            
             <!-- Split Layout: Left Main Workspace (7 Cols) + Right Session Evaluation Panel (5 Cols) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                
                 <!-- LEFT COLUMN: Workspace, Readiness & Stealth Goals (7 Cols) -->
                 <div class="lg:col-span-7 space-y-6">
-                    
                     <!-- Matchday Target Card -->
                     <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-4">
                         <div class="flex items-center justify-between pb-3 border-b border-beige-border">
@@ -226,14 +229,12 @@
                                 Active Schedule
                             </span>
                         </div>
-
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                             <div class="bg-beige-muted p-3.5 rounded-xl border border-beige-border space-y-1">
                                 <div class="text-navy-muted font-medium">Scheduled Matchday</div>
                                 <div id="card-matchday-date" class="text-base font-extrabold text-navy-deep">Sat, Nov 15, 2026</div>
                                 <div id="card-matchday-days" class="text-[11px] text-sage-primary font-semibold">Calculating...</div>
                             </div>
-
                             <div class="bg-beige-muted p-3.5 rounded-xl border border-beige-border flex flex-col justify-between space-y-2">
                                 <span class="text-navy-muted font-medium">Quick Date Adjust:</span>
                                 <div class="flex flex-wrap gap-1.5">
@@ -248,7 +249,6 @@
 
                     <!-- Readiness Ring + Stealth Objective Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-6">
-                        
                         <!-- SVG Match Readiness Index Ring -->
                         <div class="sm:col-span-5 bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm flex flex-col justify-between relative overflow-hidden">
                             <div class="flex items-center justify-between mb-2">
@@ -260,11 +260,10 @@
                                     On Track
                                 </span>
                             </div>
-
                             <div class="flex items-center justify-center my-2 relative">
                                 <svg class="w-36 h-36 transform -rotate-90">
                                     <circle cx="72" cy="72" r="56" stroke="currentColor" stroke-width="10" class="text-beige-muted" fill="transparent"/>
-                                    <circle id="readiness-ring" cx="72" cy="72" r="56" stroke="currentColor" stroke-width="10" class="text-sage-primary ring-chart" 
+                                    <circle id="readiness-ring" cx="72" cy="72" r="56" stroke="currentColor" stroke-width="10" class="text-sage-primary ring-chart"
                                             stroke-dasharray="351.8" stroke-dashoffset="351.8" stroke-linecap="round" fill="transparent"/>
                                 </svg>
                                 <div class="absolute flex flex-col items-center justify-center text-center">
@@ -272,7 +271,6 @@
                                     <span class="text-[10px] text-navy-muted font-medium">Preparedness</span>
                                 </div>
                             </div>
-
                             <div class="grid grid-cols-3 gap-1 pt-3 border-t border-beige-border text-center">
                                 <div>
                                     <div id="stat-tasks-done" class="text-sm font-bold text-navy-deep">0/0</div>
@@ -303,7 +301,6 @@
                                     <span>Shuffle</span>
                                 </button>
                             </div>
-
                             <div class="bg-navy-slate/80 border border-navy-muted/30 rounded-xl p-3.5 my-1">
                                 <div class="flex items-start gap-3">
                                     <div class="p-2 bg-navy-deep rounded-lg border border-navy-muted/30 text-sage-accent flex-shrink-0">
@@ -317,7 +314,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="flex items-center justify-between pt-1">
                                 <span class="text-[10px] text-navy-muted">Execute during doubles / group play</span>
                                 <button onclick="markStealthCompleted()" id="btn-stealth-complete" class="px-3 py-1.5 bg-navy-slate hover:bg-navy-muted/30 text-beige-card text-xs font-semibold rounded-lg border border-navy-muted/40 transition-all flex items-center gap-1">
@@ -341,10 +337,9 @@
                             <div class="text-xs space-y-1 text-navy-slate">
                                 <div><strong>Build:</strong> 29 yrs | 100 kg | 175 cm Athletic</div>
                                 <div><strong>Style:</strong> Counterpuncher / Aggressive Baseliner</div>
-                                <div class="text-navy-muted text-[11px] pt-1">Primary Challenge: Drop-shot sprint fatigue & 2HB long errors.</div>
+                                <div class="text-navy-muted text-[11px] pt-1">Primary Challenge: Drop-shot sprint fatigue &amp; 2HB long errors.</div>
                             </div>
                         </div>
-
                         <div class="bg-beige-card border border-beige-border rounded-2xl p-4 shadow-sm space-y-2">
                             <div class="flex items-center justify-between pb-2 border-b border-beige-border">
                                 <span class="text-xs font-bold text-navy-deep flex items-center gap-1.5">
@@ -360,23 +355,21 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- RIGHT COLUMN: SIDEBAR SESSION LOGGING & AI EVALUATION (5 Cols) -->
                 <div class="lg:col-span-5 bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-5">
-                    
                     <div class="flex items-center justify-between pb-3 border-b border-beige-border">
                         <div class="flex items-center gap-2">
                             <span class="p-2 bg-navy-deep text-sage-accent rounded-xl">
                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
                             </span>
                             <div>
-                                <h3 class="text-sm font-extrabold text-navy-deep">Session Evaluation & AI Coach</h3>
-                                <p class="text-[11px] text-navy-muted">Real-time analysis & areas of improvement</p>
+                                <h3 class="text-sm font-extrabold text-navy-deep">Session Evaluation &amp; AI Coach</h3>
+                                <p class="text-[11px] text-navy-muted">Real-time analysis &amp; areas of improvement</p>
                             </div>
                         </div>
-                        <span class="text-[10px] bg-sage-primary/20 text-sage-dark px-2 py-0.5 rounded font-mono font-bold">Gemini 3</span>
+                        <span id="ai-engine-badge" class="text-[10px] bg-sage-primary/20 text-sage-dark px-2 py-0.5 rounded font-mono font-bold">Coach AI</span>
                     </div>
 
                     <!-- Quick Session Logger Input Form -->
@@ -396,13 +389,11 @@
                                 <input type="date" id="eval-date-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-1.5 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
                             </div>
                         </div>
-
                         <div>
                             <label class="block text-[11px] font-bold text-navy-deep mb-1">Raw Session Description</label>
-                            <textarea id="eval-session-notes" rows="4" placeholder="Describe rallies, physical fatigue, drop shots encountered, or backhand errors..." 
+                            <textarea id="eval-session-notes" rows="4" placeholder="Describe rallies, physical fatigue, drop shots encountered, or backhand errors..."
                                       class="w-full bg-beige-muted border border-beige-border rounded-xl p-3 text-xs text-navy-deep focus:outline-none focus:border-sage-primary leading-relaxed resize-none"></textarea>
                         </div>
-
                         <div class="flex gap-1.5 flex-wrap">
                             <button onclick="fillPresetPrompt(1)" class="px-2 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-[10px] rounded border border-beige-border">
                                 🎾 Drop Shot Sprint Fatigue
@@ -411,7 +402,6 @@
                                 🎾 2HB Flying Long Fix
                             </button>
                         </div>
-
                         <button onclick="evaluateSessionWithAI()" id="btn-eval-ai" class="w-full py-2.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center justify-center gap-2">
                             <i data-lucide="bot" class="w-4 h-4"></i>
                             <span>Evaluate Session with AI</span>
@@ -427,12 +417,11 @@
                             </span>
                             <span id="eval-status-badge" class="text-[10px] bg-navy-slate text-navy-muted px-2 py-0.5 rounded font-mono">Ready</span>
                         </div>
-                        
                         <div id="eval-output-body" class="text-xs text-beige-muted space-y-2 min-h-[120px] flex items-center justify-center text-center">
                             <div class="space-y-1 p-2">
                                 <i data-lucide="file-text" class="w-6 h-6 mx-auto text-navy-muted"></i>
                                 <p>Enter your session notes above and click <strong>"Evaluate Session with AI"</strong>.</p>
-                                <p class="text-[10px] text-navy-muted">Tailored technical diagnosis & areas of improvement will render here.</p>
+                                <p class="text-[10px] text-navy-muted">Tailored technical diagnosis &amp; areas of improvement will render here.</p>
                             </div>
                         </div>
                     </div>
@@ -446,18 +435,13 @@
                             </h4>
                             <span id="eval-stream-count" class="text-[10px] font-mono text-navy-muted">0 logs</span>
                         </div>
-
                         <div id="evaluations-stream-container" class="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
                             <!-- Dynamic Stream Items -->
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </section>
-
 
         <!-- TAB 2: READINESS CHECKLIST -->
         <section id="tab-checklist" class="space-y-6 hidden">
@@ -476,12 +460,10 @@
                     <span>Add Objective</span>
                 </button>
             </div>
-
             <div id="checklist-items-container" class="space-y-3">
                 <!-- Dynamic insertion -->
             </div>
         </section>
-
 
         <!-- TAB 3: GYM WORKOUT -->
         <section id="tab-gym" class="space-y-6 hidden">
@@ -489,7 +471,7 @@
                 <div>
                     <h2 class="text-xl font-extrabold text-navy-deep flex items-center gap-2">
                         <i data-lucide="dumbbell" class="w-6 h-6 text-sage-primary"></i>
-                        Gym Conditioning & Deceleration Protocols
+                        Gym Conditioning &amp; Deceleration Protocols
                     </h2>
                     <p class="text-xs sm:text-sm text-navy-muted mt-1">
                         Build leg deceleration strength for drop-shot retrieval and rotator cuff durability for topspin 2nd serves.
@@ -506,7 +488,7 @@
                 <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-3">
                     <h3 class="text-sm font-bold text-navy-deep flex items-center gap-2 border-b border-beige-border pb-2">
                         <i data-lucide="activity" class="w-4 h-4 text-sage-primary"></i>
-                        Routine A: Leg Deceleration & Quad Braking
+                        Routine A: Leg Deceleration &amp; Quad Braking
                     </h3>
                     <div class="space-y-2 text-xs">
                         <div class="bg-beige-muted p-3 rounded-xl border border-beige-border flex justify-between items-center">
@@ -519,7 +501,7 @@
                         <div class="bg-beige-muted p-3 rounded-xl border border-beige-border flex justify-between items-center">
                             <div>
                                 <div class="font-bold text-navy-deep">Romanian Deadlifts (RDLs)</div>
-                                <div class="text-[11px] text-navy-muted">Hamstring & posterior chain recovery</div>
+                                <div class="text-[11px] text-navy-muted">Hamstring &amp; posterior chain recovery</div>
                             </div>
                             <span class="font-mono text-sage-primary font-bold">3 × 8 reps</span>
                         </div>
@@ -542,7 +524,7 @@
                         <div class="bg-beige-muted p-3 rounded-xl border border-beige-border flex justify-between items-center">
                             <div>
                                 <div class="font-bold text-navy-deep">Cable Face Pulls w/ External Rotation</div>
-                                <div class="text-[11px] text-navy-muted">Rear delts & rotator cuff stability</div>
+                                <div class="text-[11px] text-navy-muted">Rear delts &amp; rotator cuff stability</div>
                             </div>
                             <span class="font-mono text-sage-primary font-bold">3 × 15 reps</span>
                         </div>
@@ -576,14 +558,13 @@
             </div>
         </section>
 
-
         <!-- TAB 4: MATCH AUDIT LOG -->
         <section id="tab-match" class="space-y-6 hidden">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-beige-card border border-beige-border p-6 rounded-2xl shadow-sm">
                 <div>
                     <h2 class="text-xl font-extrabold text-navy-deep flex items-center gap-2">
                         <i data-lucide="activity" class="w-6 h-6 text-sage-primary"></i>
-                        Match & Group Play Tactical Audit
+                        Match &amp; Group Play Tactical Audit
                     </h2>
                     <p class="text-xs sm:text-sm text-navy-muted mt-1">
                         Rate drop-shot reaction speed, baseline positioning, 2HB control, and 2nd serve consistency.
@@ -594,22 +575,20 @@
                     <span>Log Match Audit</span>
                 </button>
             </div>
-
             <div id="match-logs-container" class="space-y-4">
                 <!-- Dynamic insertion -->
             </div>
         </section>
-
 
         <!-- TAB 5: PLAYBOOK -->
         <section id="tab-playbook" class="space-y-6 hidden">
             <div class="bg-beige-card border border-beige-border p-6 rounded-2xl shadow-sm">
                 <h2 class="text-xl font-extrabold text-navy-deep flex items-center gap-2">
                     <i data-lucide="book-open" class="w-6 h-6 text-sage-primary"></i>
-                    Tactical Counter-Playbook: Neutralizing Moonballs & Drop Shots
+                    Tactical Counter-Playbook: Neutralizing Moonballs &amp; Drop Shots
                 </h2>
                 <p class="text-xs sm:text-sm text-navy-muted mt-1">
-                    Specific tactical blueprints formulated for 4.0 singles competition using your Wilson RF01 & Solinco Tour Bite setup.
+                    Specific tactical blueprints formulated for 4.0 singles competition using your Wilson RF01 &amp; Solinco Tour Bite setup.
                 </p>
             </div>
 
@@ -617,11 +596,11 @@
             <div class="bg-beige-card border border-beige-border rounded-2xl p-6 shadow-sm">
                 <h3 class="text-base font-bold text-navy-deep mb-4 flex items-center gap-2">
                     <i data-lucide="map" class="w-5 h-5 text-sage-primary"></i>
-                    Court Geometry & Sprint Distance Reduction Matrix
+                    Court Geometry &amp; Sprint Distance Reduction Matrix
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                     <div class="md:col-span-7 bg-navy-deep border border-navy-slate rounded-xl p-4 flex justify-center relative overflow-hidden court-svg-bg shadow-md">
-                        <svg viewBox="0 0 300 420" class="w-full max-w-[320px] h-auto drop-shadow-md">
+                        <svg viewBox="0 0 360 420" class="w-full max-w-[360px] h-auto drop-shadow-md">
                             <rect x="20" y="20" width="260" height="380" fill="none" stroke="#5A6578" stroke-width="3"/>
                             <line x1="15" y1="210" x2="285" y2="210" stroke="#FDFBF7" stroke-width="4"/>
                             <line x1="20" y1="100" x2="280" y2="100" stroke="#5A6578" stroke-width="2"/>
@@ -630,18 +609,17 @@
                             <circle cx="150" cy="50" r="10" fill="#E53E3E"/>
                             <text x="150" y="32" fill="#E53E3E" font-size="10" font-weight="bold" text-anchor="middle">OPPONENT (DROPPER)</text>
                             <circle cx="150" cy="405" r="9" fill="#94A3B8" stroke="#FDFBF7" stroke-width="1.5" stroke-dasharray="2,2"/>
-                            <text x="210" y="408" fill="#94A3B8" font-size="9" text-anchor="start">❌ Old Position (3m back)</text>
+                            <text x="168" y="408" fill="#94A3B8" font-size="9" text-anchor="start">Old Position (3m back)</text>
                             <circle cx="150" cy="375" r="10" fill="#789078" stroke="#000" stroke-width="2"/>
-                            <text x="210" y="378" fill="#789078" font-size="10" font-weight="bold" text-anchor="start">✓ New Position (&lt;1m back)</text>
+                            <text x="168" y="378" fill="#789078" font-size="10" font-weight="bold" text-anchor="start">New Position (&lt;1m back)</text>
                             <line x1="140" y1="400" x2="100" y2="225" stroke="#E53E3E" stroke-width="2" stroke-dasharray="4,4"/>
-                            <text x="75" y="310" fill="#E53E3E" font-size="9" font-weight="bold">14-16m sprint</text>
+                            <text x="58" y="310" fill="#E53E3E" font-size="9" font-weight="bold">14-16m sprint</text>
                             <line x1="155" y1="365" x2="130" y2="225" stroke="#789078" stroke-width="3"/>
-                            <text x="175" y="295" fill="#789078" font-size="9" font-weight="bold">5-6m sprint</text>
+                            <text x="165" y="295" fill="#789078" font-size="9" font-weight="bold">5-6m sprint</text>
                             <circle cx="110" cy="220" r="14" fill="#38BDF8" fill-opacity="0.25" stroke="#38BDF8" stroke-dasharray="2,2"/>
                             <text x="110" y="223" fill="#38BDF8" font-size="8" text-anchor="middle">Drop Zone</text>
                         </svg>
                     </div>
-
                     <div class="md:col-span-5 space-y-4 text-xs">
                         <div class="bg-beige-muted p-4 rounded-xl border border-beige-border space-y-2">
                             <h4 class="font-bold text-navy-deep text-sm flex items-center gap-1.5">
@@ -649,14 +627,21 @@
                                 Visual Cues of Disguised Drop Shots
                             </h4>
                             <p class="text-navy-slate leading-relaxed"><strong>1. Racquet Deceleration:</strong> Swing speed accelerates initially, then suddenly slows right before contact.</p>
-                            <p class="text-navy-slate leading-relaxed"><strong>2. Open Racquet Face & Chest:</strong> Shoulder rotation halts; racquet face opens flat or upward.</p>
+                            <p class="text-navy-slate leading-relaxed"><strong>2. Open Racquet Face &amp; Chest:</strong> Shoulder rotation halts; racquet face opens flat or upward.</p>
                             <p class="text-navy-slate leading-relaxed"><strong>3. Off-Hand Drop:</strong> Non-dominant hand drops off racquet throat early to establish slice posture.</p>
+                        </div>
+                        <div class="bg-beige-muted p-4 rounded-xl border border-beige-border space-y-2">
+                            <h4 class="font-bold text-navy-deep text-sm flex items-center gap-1.5">
+                                <i data-lucide="sliders" class="w-4 h-4 text-sage-primary"></i>
+                                Biomechanical Stroke Cues
+                            </h4>
+                            <p class="text-navy-slate leading-relaxed"><strong>2HB Long Error Fix:</strong> Lead with non-dominant left hand up &amp; through; keep chin quiet on front shoulder through follow-through.</p>
+                            <p class="text-navy-slate leading-relaxed"><strong>Shoulder-Safe 2nd Serve:</strong> Toss at 12:30/1:00 o'clock and brush 7 to 1 o'clock with wrist snap instead of arching behind head.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 
     <!-- Footer -->
@@ -664,15 +649,13 @@
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="flex items-center gap-2 text-beige-card">
                 <span class="w-2 h-2 rounded-full bg-sage-accent"></span>
-                <span class="font-semibold">Singles Match Ready • Tactical & Fitness Dashboard</span>
+                <span class="font-semibold">Singles Match Ready • Tactical &amp; Fitness Dashboard</span>
             </div>
             <div class="text-beige-muted/70">Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs</div>
         </div>
     </footer>
 
-
     <!-- MODALS SECTION -->
-
     <!-- Modal 1: Target Matchday Manager Modal -->
     <div id="matchday-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
@@ -685,11 +668,9 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-
             <div class="space-y-3">
                 <label class="block text-xs font-semibold text-navy-deep">Select Target Match Date</label>
                 <input type="date" id="input-target-matchday" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
-                
                 <div class="flex flex-wrap gap-1.5 pt-1">
                     <span class="text-[10px] text-navy-muted block w-full">Quick Presets:</span>
                     <button onclick="document.getElementById('input-target-matchday').value = '2026-11-15'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Nov 15, 2026</button>
@@ -697,7 +678,6 @@
                     <button onclick="document.getElementById('input-target-matchday').value = '2026-12-05'" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-slate text-xs rounded border border-beige-border">Dec 05, 2026</button>
                 </div>
             </div>
-
             <div class="flex items-center justify-between pt-3 border-t border-beige-border">
                 <button onclick="clearTargetMatchday()" class="px-3 py-2 bg-red-100/70 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl transition-colors">
                     Clear / Off-Season Mode
@@ -710,14 +690,13 @@
         </div>
     </div>
 
-
     <!-- Modal 2: Sync & Data Manager Modal -->
     <div id="sync-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-3 border-b border-beige-border">
                 <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
                     <i data-lucide="refresh-cw" class="w-5 h-5 text-sage-primary"></i>
-                    Sync & Data Manager
+                    Sync &amp; Data Manager
                 </h3>
                 <button onclick="closeModal('sync-modal')" class="text-navy-muted hover:text-navy-deep">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -746,18 +725,35 @@
 
             <!-- Cloud Webhook Sync -->
             <div class="space-y-3 pt-3 border-t border-beige-border">
-                <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Google Sheets Cloud Webhook</h4>
-                <input type="url" id="webhook-url-input" placeholder="https://script.google.com/macros/s/.../exec" 
-                       class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Google Sheets Cloud Webhook</h4>
+                    <label class="flex items-center gap-1.5 text-[11px] font-semibold text-navy-slate cursor-pointer">
+                        <input type="checkbox" id="auto-sync-checkbox" onchange="toggleAutoSync(this.checked)" class="accent-sage-primary">
+                        <span>Auto-push on save</span>
+                    </label>
+                </div>
+                <input type="url" id="webhook-url-input" placeholder="https://script.google.com/macros/s/.../exec"
+                       class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary font-mono">
                 <div class="flex gap-2">
-                    <button onclick="syncToCloud()" class="flex-1 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+                    <button onclick="syncToCloud()" id="btn-push-cloud" class="flex-1 py-2.5 bg-sage-primary hover:bg-sage-dark text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors">
                         <i data-lucide="cloud-upload" class="w-4 h-4"></i>
                         <span>Push to Cloud</span>
                     </button>
-                    <button onclick="pullFromCloud()" class="flex-1 py-2 bg-navy-deep text-beige-card text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+                    <button onclick="pullFromCloud()" id="btn-pull-cloud" class="flex-1 py-2.5 bg-navy-deep hover:bg-navy-slate text-beige-card text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors">
                         <i data-lucide="cloud-download" class="w-4 h-4 text-sage-accent"></i>
                         <span>Pull from Cloud</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- Optional Gemini API Key for Live Cloud AI -->
+            <div class="space-y-2 pt-3 border-t border-beige-border">
+                <h4 class="text-xs font-bold text-navy-deep uppercase tracking-wider">Gemini AI API Key (Optional)</h4>
+                <p class="text-[11px] text-navy-muted">Leave blank to use the built-in offline Tennis Biomechanics Coach engine, or paste a Google AI Studio key for live Gemini 3 Flash analysis.</p>
+                <div class="flex gap-2">
+                    <input type="password" id="gemini-apikey-input" placeholder="AIzaSy..."
+                           class="flex-1 bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary font-mono">
+                    <button onclick="saveGeminiApiKey()" class="px-3 py-2 bg-beige-muted hover:bg-beige-border text-navy-deep text-xs font-bold rounded-xl border border-beige-border">Save Key</button>
                 </div>
             </div>
 
@@ -767,7 +763,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Modal 3: Quick Log Selector Modal -->
     <div id="quick-log-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -781,7 +776,6 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            
             <div class="space-y-2.5">
                 <button onclick="closeModal('quick-log-modal'); openModal('gym-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
@@ -792,17 +786,15 @@
                         <div class="text-xs text-navy-muted">Record Bulgarian split squats, RDLs, face pulls</div>
                     </div>
                 </button>
-
                 <button onclick="closeModal('quick-log-modal'); openModal('match-log-modal');" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
                         <i data-lucide="activity" class="w-5 h-5"></i>
                     </span>
                     <div>
                         <div class="text-sm font-bold text-navy-deep">Audit Group / Match Session</div>
-                        <div class="text-xs text-navy-muted">Rate drop-shot reaction & backhand depth control</div>
+                        <div class="text-xs text-navy-muted">Rate drop-shot reaction &amp; backhand depth control</div>
                     </div>
                 </button>
-
                 <button onclick="closeModal('quick-log-modal'); switchTab('dashboard'); document.getElementById('eval-session-notes').focus();" class="w-full p-3.5 bg-beige-muted hover:bg-beige-border border border-beige-border rounded-xl text-left flex items-center gap-3 transition-colors">
                     <span class="p-2.5 bg-sage-light text-sage-dark rounded-xl">
                         <i data-lucide="bot" class="w-5 h-5"></i>
@@ -816,7 +808,6 @@
         </div>
     </div>
 
-
     <!-- Modal 4: Add Custom Task Modal -->
     <div id="add-task-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
@@ -829,11 +820,10 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            
             <form id="add-task-form" onsubmit="handleAddTask(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-navy-deep mb-1">Task Title</label>
-                    <input type="text" id="task-title-input" required placeholder="e.g. 20 min crosscourt backhand drill" 
+                    <input type="text" id="task-title-input" required placeholder="e.g. 20 min crosscourt backhand drill"
                            class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
                 </div>
                 <div>
@@ -841,12 +831,12 @@
                     <select id="task-category-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
                         <option value="Gym Conditioning">Gym Conditioning</option>
                         <option value="Group Play Micro-Goals">Group Play Micro-Goals</option>
-                        <option value="Recovery & Matchday">Recovery & Matchday</option>
+                        <option value="Recovery & Matchday">Recovery &amp; Matchday</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-navy-deep mb-1">Notes / Tactical Details</label>
-                    <textarea id="task-subtext-input" rows="2" placeholder="Specific technical focus" 
+                    <textarea id="task-subtext-input" rows="2" placeholder="Specific technical focus"
                               class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
@@ -856,7 +846,6 @@
             </form>
         </div>
     </div>
-
 
     <!-- Modal 5: Log Gym Modal -->
     <div id="gym-log-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -870,7 +859,6 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            
             <form id="gym-log-form" onsubmit="handleLogGym(event)" class="space-y-4">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -880,19 +868,17 @@
                     <div>
                         <label class="block text-xs font-semibold text-navy-deep mb-1">Focus Routine</label>
                         <select id="gym-routine-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
-                            <option value="Deceleration & Braking (Legs/Core)">Deceleration & Braking (Legs)</option>
-                            <option value="Shoulder & Rotator Protection">Shoulder & Rotator Protection</option>
+                            <option value="Deceleration & Braking (Legs/Core)">Deceleration &amp; Braking (Legs)</option>
+                            <option value="Shoulder & Rotator Protection">Shoulder &amp; Rotator Protection</option>
                             <option value="Full Conditioning Combo">Full Conditioning Combo</option>
                         </select>
                     </div>
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-navy-deep mb-1">Exercises & Loads</label>
-                    <input type="text" id="gym-exercises-input" required placeholder="e.g. Bulgarian Split Squats 3x8 (20kg), Face Pulls 3x15" 
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Exercises &amp; Loads</label>
+                    <input type="text" id="gym-exercises-input" required placeholder="e.g. Bulgarian Split Squats 3x8 (20kg), Face Pulls 3x15"
                            class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
                 </div>
-
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-navy-deep mb-1">RPE Strain (1-10)</label>
@@ -901,18 +887,16 @@
                     <div>
                         <label class="block text-xs font-semibold text-navy-deep mb-1">Leg Braking Feeling</label>
                         <select id="gym-feeling-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
-                            <option value="Strong & Explosive">Strong & Explosive</option>
+                            <option value="Strong & Explosive">Strong &amp; Explosive</option>
                             <option value="Moderate Quad Fatigue">Moderate Quad Fatigue</option>
                             <option value="Heavy / Sore">Heavy / Sore</option>
                         </select>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-navy-deep mb-1">Notes</label>
                     <textarea id="gym-notes-input" rows="2" placeholder="Rotator cuff felt great on face pulls..." class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
                 </div>
-
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('gym-log-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Workout</button>
@@ -920,7 +904,6 @@
             </form>
         </div>
     </div>
-
 
     <!-- Modal 6: Match Audit Log Modal -->
     <div id="match-log-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -934,7 +917,6 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            
             <form id="match-log-form" onsubmit="handleLogMatch(event)" class="space-y-4">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -950,23 +932,19 @@
                         </select>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-navy-deep mb-1">Opponent Style</label>
                     <input type="text" id="match-opponent-input" placeholder="e.g. Moonballer / Drop-shotter" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
                 </div>
-
                 <div class="space-y-3 bg-beige-muted p-4 rounded-xl border border-beige-border">
                     <div class="text-xs font-bold text-navy-deep uppercase tracking-wider mb-1">Tactical Performance Ratings (1 to 5)</div>
-
                     <div>
                         <div class="flex justify-between text-xs text-navy-deep mb-1">
-                            <span>Drop-Shot Reaction & Braking:</span>
+                            <span>Drop-Shot Reaction &amp; Braking:</span>
                             <span id="rate-val-dropshot" class="font-bold text-sage-primary">4 / 5</span>
                         </div>
                         <input type="range" min="1" max="5" value="4" id="rate-input-dropshot" oninput="document.getElementById('rate-val-dropshot').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
                     </div>
-
                     <div>
                         <div class="flex justify-between text-xs text-navy-deep mb-1">
                             <span>Baseline Depth (&lt;1m line):</span>
@@ -974,7 +952,6 @@
                         </div>
                         <input type="range" min="1" max="5" value="4" id="rate-input-positioning" oninput="document.getElementById('rate-val-positioning').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
                     </div>
-
                     <div>
                         <div class="flex justify-between text-xs text-navy-deep mb-1">
                             <span>2HB Depth (No long error):</span>
@@ -982,21 +959,18 @@
                         </div>
                         <input type="range" min="1" max="5" value="3" id="rate-input-backhand" oninput="document.getElementById('rate-val-backhand').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
                     </div>
-
                     <div>
                         <div class="flex justify-between text-xs text-navy-deep mb-1">
-                            <span>2nd Serve Quality & Shoulder Comfort:</span>
+                            <span>2nd Serve Quality &amp; Shoulder Comfort:</span>
                             <span id="rate-val-serve" class="font-bold text-sage-primary">4 / 5</span>
                         </div>
                         <input type="range" min="1" max="5" value="4" id="rate-input-serve" oninput="document.getElementById('rate-val-serve').innerText = this.value + ' / 5'" class="w-full accent-sage-primary">
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-navy-deep mb-1">Observations</label>
                     <textarea id="match-notes-input" rows="2" placeholder="e.g. Read 3 drop shots early. Backhand missed long twice..." class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
                 </div>
-
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('match-log-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save Audit</button>
@@ -1005,10 +979,10 @@
         </div>
     </div>
 
-
     <!-- APPLICATION JAVASCRIPT LOGIC -->
     <script>
         const STORAGE_KEY = 'singles_match_ready_v3_state';
+        const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwNKHkbe745Z0P5AGl_m-MMbeGV_zHE3vSa9so1ECSt5MhIn0OcuxLMgPsvX3Bcljkm/exec';
 
         const DEFAULT_CHECKLIST = [
             { id: 'task-1', title: 'Eccentric Leg Deceleration Workout', subtext: 'Bulgarian split squats (3x8 slow lower phase) & RDLs at gym.', category: 'Gym Conditioning', completed: false },
@@ -1030,15 +1004,18 @@
         ];
 
         let currentStealthIndex = 0;
+        let countdownInterval = null;
 
         let appState = {
-            targetMatchday: "2026-11-15", // Default target ISO date string
-            checklist: [...DEFAULT_CHECKLIST],
+            targetMatchday: "2026-11-15",
+            checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
             gymLogs: [],
             matchLogs: [],
             evalLogs: [],
             stealthCompletedToday: false,
-            webhookUrl: "",
+            webhookUrl: DEFAULT_WEBHOOK_URL,
+            autoSync: true,
+            geminiApiKey: "",
             lastSynced: null
         };
 
@@ -1049,13 +1026,10 @@
             renderAll();
 
             const todayStr = new Date().toISOString().split('T')[0];
-            const evalDateInput = document.getElementById('eval-date-input');
-            const gymDateInput = document.getElementById('gym-date-input');
-            const matchDateInput = document.getElementById('match-date-input');
-
-            if (evalDateInput) evalDateInput.value = todayStr;
-            if (gymDateInput) gymDateInput.value = todayStr;
-            if (matchDateInput) matchDateInput.value = todayStr;
+            ['eval-date-input', 'gym-date-input', 'match-date-input'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = todayStr;
+            });
         });
 
         // Local Storage Methods
@@ -1069,38 +1043,70 @@
             } catch (e) {
                 console.error("Failed to load local state", e);
             }
-            if (appState.webhookUrl) {
-                const wh = document.getElementById('webhook-url-input');
-                if (wh) wh.value = appState.webhookUrl;
+
+            if (!appState.webhookUrl) {
+                appState.webhookUrl = DEFAULT_WEBHOOK_URL;
             }
+
+            const wh = document.getElementById('webhook-url-input');
+            if (wh) wh.value = appState.webhookUrl;
+
+            const autoCheck = document.getElementById('auto-sync-checkbox');
+            if (autoCheck) autoCheck.checked = Boolean(appState.autoSync);
+
+            const apiKeyInput = document.getElementById('gemini-apikey-input');
+            if (apiKeyInput && appState.geminiApiKey) apiKeyInput.value = appState.geminiApiKey;
         }
 
-        function saveState() {
+        function saveState(triggerAutoCloud = false) {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
             } catch (e) {
                 console.error("Failed to save local state", e);
             }
             renderAll();
+            if (triggerAutoCloud && appState.autoSync && appState.webhookUrl) {
+                syncToCloud(true);
+            }
         }
 
-        // Custom Toast Notifications (Replaces alert)
+        function toggleAutoSync(enabled) {
+            appState.autoSync = enabled;
+            saveState(false);
+            showToast(enabled ? "Auto-push to Google Sheets enabled." : "Auto-push disabled.", "info");
+        }
+
+        function saveGeminiApiKey() {
+            const val = document.getElementById('gemini-apikey-input')?.value.trim() || "";
+            appState.geminiApiKey = val;
+            saveState(false);
+            showToast(val ? "Gemini API key saved locally." : "Cleared Gemini API key (using built-in Coach AI).", "success");
+        }
+
+        // Custom Toast Notifications
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             if (!container) return;
 
             const toast = document.createElement('div');
-            const bgClass = type === 'success' ? 'bg-sage-dark text-white' : type === 'error' ? 'bg-red-700 text-white' : 'bg-navy-deep text-beige-card';
-            
+            const bgClass = type === 'success'
+                ? 'bg-sage-dark text-white'
+                : type === 'error'
+                ? 'bg-red-700 text-white'
+                : 'bg-navy-deep text-beige-card';
+
+            const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info';
+
             toast.className = `p-3 rounded-xl shadow-lg border border-navy-slate/40 text-xs font-semibold flex items-center justify-between gap-3 pointer-events-auto transition-all transform translate-y-2 opacity-0 ${bgClass}`;
             toast.innerHTML = `
                 <div class="flex items-center gap-2">
-                    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-4 h-4"></i>
+                    <i data-lucide="${iconName}" class="w-4 h-4 flex-shrink-0"></i>
                     <span>${message}</span>
                 </div>
-                <button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                <button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
             `;
-
             container.appendChild(toast);
             if (window.lucide) lucide.createIcons();
 
@@ -1116,18 +1122,17 @@
             }, 4000);
         }
 
-        // Custom Confirmation Modal (Replaces confirm)
+        // Custom Confirmation Modal
         function showConfirmModal(title, msg, onConfirm) {
             const modal = document.getElementById('confirm-modal');
             const titleEl = document.getElementById('confirm-modal-title');
             const msgEl = document.getElementById('confirm-modal-msg');
             const okBtn = document.getElementById('confirm-modal-ok');
             const cancelBtn = document.getElementById('confirm-modal-cancel');
-
             if (!modal) return;
+
             titleEl.innerText = title;
             msgEl.innerText = msg;
-
             modal.classList.remove('hidden');
 
             const handleOk = () => {
@@ -1135,23 +1140,22 @@
                 cleanup();
                 onConfirm();
             };
-
             const handleCancel = () => {
                 modal.classList.add('hidden');
                 cleanup();
             };
-
             function cleanup() {
                 okBtn.removeEventListener('click', handleOk);
                 cancelBtn.removeEventListener('click', handleCancel);
             }
-
             okBtn.addEventListener('click', handleOk);
             cancelBtn.addEventListener('click', handleCancel);
         }
 
         // DYNAMIC MATCHDAY MANAGEMENT LOGIC
         function initCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+
             function updateTimer() {
                 const topCountdown = document.getElementById('top-countdown');
                 const topDisplay = document.getElementById('top-matchday-display');
@@ -1196,20 +1200,19 @@
                 const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
                 const mins = Math.floor((diff / 1000 / 60) % 60);
 
-                const countdownText = `${days}d ${hours}h ${mins}m to Matchday`;
-                if (topCountdown) topCountdown.innerText = countdownText;
+                if (topCountdown) topCountdown.innerText = `${days}d ${hours}h ${mins}m to Matchday`;
                 if (cardDays) cardDays.innerText = `${days} days remaining for prep`;
             }
+
             updateTimer();
-            setInterval(updateTimer, 60000);
+            countdownInterval = setInterval(updateTimer, 60000);
         }
 
         function setPresetMatchday(isoDateStr) {
             appState.targetMatchday = isoDateStr;
-            saveState();
+            saveState(true);
             initCountdown();
             showToast(isoDateStr ? `Matchday updated to ${isoDateStr}` : "Target matchday cleared (Off-season mode)", 'success');
-            if (appState.webhookUrl) syncToCloud();
         }
 
         function saveMatchdayFromInput() {
@@ -1224,11 +1227,10 @@
 
         function clearTargetMatchday() {
             appState.targetMatchday = null;
-            saveState();
+            saveState(true);
             initCountdown();
             closeModal('matchday-modal');
             showToast("Cleared target matchday. Switched to general off-season prep.", 'info');
-            if (appState.webhookUrl) syncToCloud();
         }
 
         // Tab Switcher
@@ -1308,7 +1310,6 @@
             const sTitle = document.getElementById('stealth-title');
             const sDesc = document.getElementById('stealth-desc');
             const sIcon = document.getElementById('stealth-icon');
-
             if (sTitle) sTitle.innerText = stealth.title;
             if (sDesc) sDesc.innerText = stealth.desc;
             if (sIcon) sIcon.setAttribute('data-lucide', stealth.icon);
@@ -1323,6 +1324,11 @@
                     completeBtn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-sage-accent"></i><span>Mark Done</span>`;
                 }
             }
+
+            const engineBadge = document.getElementById('ai-engine-badge');
+            if (engineBadge) {
+                engineBadge.innerText = appState.geminiApiKey ? "Gemini 3" : "Coach AI";
+            }
         }
 
         function cycleStealthObjective() {
@@ -1333,10 +1339,10 @@
 
         function markStealthCompleted() {
             appState.stealthCompletedToday = !appState.stealthCompletedToday;
-            saveState();
+            saveState(true);
         }
 
-        // SIDEBAR SESSION EVALUATOR & GEMINI API CALL
+        // SIDEBAR SESSION EVALUATOR & AI ENGINE
         function fillPresetPrompt(num) {
             const textarea = document.getElementById('eval-session-notes');
             if (!textarea) return;
@@ -1345,6 +1351,55 @@
             } else if (num === 2) {
                 textarea.value = "Baseline practice session. Forehands felt great with Wilson RF01 Pro, but my 2-handed backhand kept sailing long whenever the ball bounced above shoulder height. Worked on topspin 2nd serve with 12:30 toss, shoulder felt fine.";
             }
+        }
+
+        function generateLocalCoachEvaluation(sessionType, notes) {
+            const text = notes.toLowerCase();
+            const areas = [];
+            const takeaways = [];
+            let drill = "15-Min Baseline Hug & Cue Drill: Rally crosscourt while refusing to step >1m behind baseline; split-step forward immediately whenever feeder decelerates swing.";
+
+            if (text.includes('drop') || text.includes('moonball') || text.includes('sprint') || text.includes('tired') || text.includes('fatigue') || text.includes('legs')) {
+                areas.push("Hug baseline (<1m) to cut drop-shot sprint from 14m to 5m");
+                areas.push("Read early racquet deceleration & open face cues");
+                takeaways.push("At 100 kg, allowing moonballs to push you 2-3m behind the baseline forces repeated 14m sprints and heavy eccentric quad braking. Holding within 1m of the baseline cuts recovery distance in half.");
+                drill = "15-Min Eccentric Braking & Net Transition Drill: Play group points with a strict personal rule—never retreat >1m behind baseline. On drop shots, angle softly crosscourt and hold net position.";
+            }
+
+            if (text.includes('backhand') || text.includes('2hb') || text.includes('long') || text.includes('sail') || text.includes('high')) {
+                areas.push("Lead 2HB with non-dominant left hand & keep chin quiet");
+                takeaways.push("Backhands sailing long on high balls happen when your torso straightens up early and your right hand dominates. Treat the 2HB as a left-handed topspin forehand drive with your chin anchored to your front shoulder.");
+                if (!text.includes('drop')) {
+                    drill = "15-Min Crosscourt 2HB Topspin Clearance Drill: Hit 20 consecutive crosscourt 2-handed backhands aiming 3-4 feet over the net with Solinco Tour Bite bite, focusing on staying low through contact.";
+                }
+            }
+
+            if (text.includes('serve') || text.includes('shoulder') || text.includes('toss') || text.includes('kick')) {
+                areas.push("Maintain 12:30/1:00 toss & 7-to-1 wrist snap on 2nd serve");
+                takeaways.push("Keeping the 2nd serve toss slightly forward at 12:30/1:00 protects your rotator cuff from lumbar/shoulder hyper-extension while generating heavy spin with your RF01 Pro.");
+                if (areas.length === 1) {
+                    drill = "15-Min 12:30 Topspin-Slice Serve Target Drill: Hit 30 2nd serves at 75% effort targeting the opponent's backhand body/backhand corner using pure upward wrist brush.";
+                }
+            }
+
+            if (text.includes('return') || text.includes('middle')) {
+                areas.push("Step 2 steps inside baseline on weak 2nd serves");
+                takeaways.push("Returning passively to the middle gives counterpunchers easy angles. Step inside on weak 2nd serves and drive deep crosscourt.");
+            }
+
+            if (areas.length === 0) {
+                areas.push("Maintain <1m baseline court positioning");
+                areas.push("Execute early split-step before opponent contact");
+                areas.push("Attack short balls with heavy inside-out/crosscourt forehand");
+                takeaways.push("For your 29yo/100kg aggressive counterpunching profile with the Wilson RF01 Pro + Tour Bite 17g @ 51 lbs, dictating tempo from inside 1m of the baseline maximizes your heavy forehand weapon while conserving leg stamina.");
+            }
+
+            return {
+                summary: `Evaluated ${sessionType}: Strong foundation with your RF01 Pro setup; tightening baseline depth discipline and early cue recognition will preserve energy for late sets.`,
+                areasOfImprovement: areas.slice(0, 3),
+                technicalTakeaways: takeaways.join(" "),
+                recommendedDrill: drill
+            };
         }
 
         async function evaluateSessionWithAI() {
@@ -1366,7 +1421,7 @@
             const body = document.getElementById('eval-output-body');
 
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing with Gemini AI...</span>`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing Session...</span>`;
             if (badge) {
                 badge.innerText = "Evaluating...";
                 badge.className = "text-[10px] bg-sage-primary/20 text-sage-accent px-2 py-0.5 rounded font-mono animate-pulse";
@@ -1375,49 +1430,45 @@
                 body.innerHTML = `
                     <div class="py-6 text-center space-y-2">
                         <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p class="text-xs text-sage-accent font-semibold">Analyzing footwork, 2HB mechanics & drop-shot reaction...</p>
+                        <p class="text-xs text-sage-accent font-semibold">Analyzing footwork, 2HB mechanics &amp; drop-shot reaction...</p>
                     </div>
                 `;
             }
             if (window.lucide) lucide.createIcons();
 
-            const systemPrompt = `You are an elite tennis coach specializing in NTRP 4.0 intermediate singles strategy.
-Player Profile: 29yo, 100kg, 175cm athletic build, playing with Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs. Playstyle: Counterpuncher / Aggressive Baseliner.
-Analyze the provided user training session description. Return a valid JSON object matching this schema:
+            let evalResult = null;
+
+            // If user provided a Gemini API Key, call Gemini 3 Flash live
+            if (appState.geminiApiKey) {
+                const systemPrompt = `You are an elite tennis coach specializing in NTRP 4.0 intermediate singles strategy. Player Profile: 29yo, 100kg, 175cm athletic build, playing with Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs. Playstyle: Counterpuncher / Aggressive Baseliner. Analyze the provided user training session description. Return a valid JSON object matching this schema:
 {
   "summary": "Concise 2-sentence tactical summary",
-  "areasOfImprovement": ["Point 1 (e.g. Hug baseline <1m to cut drop shot sprint)", "Point 2 (e.g. Quiet chin & left-hand drive on 2HB)", "Point 3 (e.g. Bulgarian split squat eccentric quad braking)"],
+  "areasOfImprovement": ["Point 1", "Point 2", "Point 3"],
   "technicalTakeaways": "Detailed technical and biomechanical diagnosis tailored for a 100kg player...",
   "recommendedDrill": "Specific 15-minute targeted drill"
 }`;
-
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-            const payload = {
-                contents: [{ parts: [{ text: `Session Type: ${sessionType}\nSession Notes:\n"${sessionNotes}"` }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "summary": { "type": "STRING" },
-                            "areasOfImprovement": { 
-                                "type": "ARRAY", 
-                                "items": { "type": "STRING" } 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${encodeURIComponent(appState.geminiApiKey)}`;
+                const payload = {
+                    contents: [{ parts: [{ text: `Session Type: ${sessionType}\nSession Notes:\n"${sessionNotes}"` }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                "summary": { "type": "STRING" },
+                                "areasOfImprovement": {
+                                    "type": "ARRAY",
+                                    "items": { "type": "STRING" }
+                                },
+                                "technicalTakeaways": { "type": "STRING" },
+                                "recommendedDrill": { "type": "STRING" }
                             },
-                            "technicalTakeaways": { "type": "STRING" },
-                            "recommendedDrill": { "type": "STRING" }
-                        },
-                        "required": ["summary", "areasOfImprovement", "technicalTakeaways", "recommendedDrill"]
+                            "required": ["summary", "areasOfImprovement", "technicalTakeaways", "recommendedDrill"]
+                        }
                     }
-                }
-            };
+                };
 
-            let evalResult = null;
-            let delay = 1000;
-            for (let attempt = 0; attempt < 3; attempt++) {
                 try {
                     const res = await fetch(apiUrl, {
                         method: 'POST',
@@ -1429,72 +1480,59 @@ Analyze the provided user training session description. Return a valid JSON obje
                         const jsonText = jsonRes.candidates?.[0]?.content?.parts?.[0]?.text;
                         if (jsonText) {
                             evalResult = JSON.parse(jsonText);
-                            break;
                         }
                     }
                 } catch (err) {
-                    console.debug(`Gemini retry attempt ${attempt + 1}`);
+                    console.warn("Live Gemini API fallback triggered:", err);
                 }
-                await new Promise(r => setTimeout(r, delay));
-                delay *= 2;
+            }
+
+            // Fallback to built-in biomechanics coach engine if no API key or network fallback
+            if (!evalResult) {
+                await new Promise(r => setTimeout(r, 450));
+                evalResult = generateLocalCoachEvaluation(sessionType, sessionNotes);
             }
 
             btn.disabled = false;
             btn.innerHTML = `<i data-lucide="bot" class="w-4 h-4"></i><span>Evaluate Session with AI</span>`;
 
-            if (evalResult) {
-                if (badge) {
-                    badge.innerText = "Complete";
-                    badge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono";
-                }
-
-                // Render Result Card
-                if (body) {
-                    body.className = "text-xs text-beige-muted space-y-3";
-                    body.innerHTML = `
-                        <div>
-                            <p class="text-sage-accent font-semibold leading-relaxed">${evalResult.summary}</p>
-                        </div>
-                        <div class="space-y-1.5 pt-1 border-t border-navy-slate">
-                            <span class="text-[10px] uppercase font-bold text-navy-muted tracking-wider block">Areas of Improvement:</span>
-                            <div class="flex flex-wrap gap-1.5">
-                                ${evalResult.areasOfImprovement.map(area => `<span class="px-2 py-0.5 bg-sage-primary/20 text-sage-accent border border-sage-primary/30 rounded text-[10px] font-medium">• ${area}</span>`).join('')}
-                            </div>
-                        </div>
-                        <div class="pt-1 border-t border-navy-slate space-y-1 text-[11px] leading-relaxed">
-                            <strong class="text-white block">Biomechanical Analysis:</strong>
-                            <p class="text-beige-muted/90">${evalResult.technicalTakeaways}</p>
-                        </div>
-                        <div class="bg-navy-slate p-2.5 rounded-lg border border-navy-muted/30 text-[11px]">
-                            <strong class="text-sage-accent">Recommended Drill:</strong> ${evalResult.recommendedDrill}
-                        </div>
-                    `;
-                }
-
-                // Save to Evaluation Stream
-                const logItem = {
-                    id: 'eval-' + Date.now(),
-                    date: sessionDate,
-                    type: sessionType,
-                    notes: sessionNotes,
-                    result: evalResult
-                };
-
-                appState.evalLogs.unshift(logItem);
-                saveState();
-                showToast("AI Session Evaluation generated & saved to log stream!", "success");
-                if (appState.webhookUrl) syncToCloud();
-
-            } else {
-                if (badge) {
-                    badge.innerText = "Error";
-                    badge.className = "text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded font-mono";
-                }
-                if (body) {
-                    body.innerHTML = `<div class="text-center py-4 text-xs text-red-400">Failed to evaluate session. Please check your network and try again.</div>`;
-                }
-                showToast("AI Evaluation failed. Please try again.", "error");
+            if (badge) {
+                badge.innerText = "Complete";
+                badge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono";
             }
+
+            if (body) {
+                body.className = "text-xs text-beige-muted space-y-3 text-left";
+                body.innerHTML = `
+                    <div>
+                        <p class="text-sage-accent font-semibold leading-relaxed">${evalResult.summary}</p>
+                    </div>
+                    <div class="space-y-1.5 pt-1 border-t border-navy-slate">
+                        <span class="text-[10px] uppercase font-bold text-navy-muted tracking-wider block">Areas of Improvement:</span>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${evalResult.areasOfImprovement.map(area => `<span class="px-2 py-0.5 bg-sage-primary/20 text-sage-accent border border-sage-primary/30 rounded text-[10px] font-medium">• ${area}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="pt-1 border-t border-navy-slate space-y-1 text-[11px] leading-relaxed">
+                        <strong class="text-white block">Biomechanical Analysis:</strong>
+                        <p class="text-beige-muted/90">${evalResult.technicalTakeaways}</p>
+                    </div>
+                    <div class="bg-navy-slate p-2.5 rounded-lg border border-navy-muted/30 text-[11px]">
+                        <strong class="text-sage-accent">Recommended Drill:</strong> ${evalResult.recommendedDrill}
+                    </div>
+                `;
+            }
+
+            const logItem = {
+                id: 'eval-' + Date.now(),
+                date: sessionDate,
+                type: sessionType,
+                notes: sessionNotes,
+                result: evalResult
+            };
+            appState.evalLogs.unshift(logItem);
+            saveState(true);
+            showToast("Session evaluation generated & saved!", "success");
             if (window.lucide) lucide.createIcons();
         }
 
@@ -1539,7 +1577,7 @@ Analyze the provided user training session description. Return a valid JSON obje
         function deleteEvalLog(idx) {
             showConfirmModal("Delete Session Log", "Are you sure you want to remove this evaluation from your history?", () => {
                 appState.evalLogs.splice(idx, 1);
-                saveState();
+                saveState(true);
                 showToast("Session log removed.", "info");
             });
         }
@@ -1561,7 +1599,7 @@ Analyze the provided user training session description. Return a valid JSON obje
                             ${task.completed ? '<i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>' : ''}
                         </div>
                         <div class="space-y-1">
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 flex-wrap">
                                 <h4 class="text-sm font-bold ${task.completed ? 'line-through text-navy-muted' : 'text-navy-deep'}">${task.title}</h4>
                                 <span class="text-[10px] bg-beige-muted text-navy-muted border border-beige-border px-2 py-0.5 rounded font-mono">${task.category}</span>
                             </div>
@@ -1577,12 +1615,12 @@ Analyze the provided user training session description. Return a valid JSON obje
 
         function toggleTask(id) {
             appState.checklist = appState.checklist.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-            saveState();
+            saveState(true);
         }
 
         function deleteTask(id) {
             appState.checklist = appState.checklist.filter(t => t.id !== id);
-            saveState();
+            saveState(true);
         }
 
         function handleAddTask(e) {
@@ -1594,9 +1632,12 @@ Analyze the provided user training session description. Return a valid JSON obje
 
             appState.checklist.push({
                 id: 'task-' + Date.now(),
-                title, category, subtext: subtext || 'Custom singles preparation task.', completed: false
+                title,
+                category,
+                subtext: subtext || 'Custom singles preparation task.',
+                completed: false
             });
-            saveState();
+            saveState(true);
             closeModal('add-task-modal');
             document.getElementById('add-task-form').reset();
             showToast("Objective added to checklist!", "success");
@@ -1614,11 +1655,14 @@ Analyze the provided user training session description. Return a valid JSON obje
 
             container.innerHTML = appState.gymLogs.map((log, idx) => `
                 <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 flex justify-between items-center text-xs">
-                    <div>
-                        <div class="font-bold text-navy-deep">${log.date} • ${log.routine}</div>
+                    <div class="space-y-0.5">
+                        <div class="font-bold text-navy-deep">${log.date} • ${log.routine} <span class="text-sage-primary font-mono">(RPE ${log.rpe}/10)</span></div>
                         <div class="text-navy-slate">${log.exercises}</div>
+                        ${log.notes ? `<div class="text-[11px] text-navy-muted italic">"${log.notes}"</div>` : ''}
                     </div>
-                    <button onclick="deleteGymLog(${idx})" class="text-navy-muted hover:text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <button onclick="deleteGymLog(${idx})" class="text-navy-muted hover:text-red-600 p-1">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
                 </div>
             `).join('');
         }
@@ -1631,18 +1675,19 @@ Analyze the provided user training session description. Return a valid JSON obje
             const rpe = document.getElementById('gym-rpe-input').value;
             const feeling = document.getElementById('gym-feeling-input').value;
             const notes = document.getElementById('gym-notes-input').value.trim();
-
             if (!exercises) return;
+
             appState.gymLogs.unshift({ date, routine, exercises, rpe, feeling, notes });
-            saveState();
+            saveState(true);
             closeModal('gym-log-modal');
             document.getElementById('gym-log-form').reset();
+            document.getElementById('gym-date-input').value = new Date().toISOString().split('T')[0];
             showToast("Gym workout logged!", "success");
         }
 
         function deleteGymLog(idx) {
             appState.gymLogs.splice(idx, 1);
-            saveState();
+            saveState(true);
         }
 
         // Match Log Operations
@@ -1659,7 +1704,9 @@ Analyze the provided user training session description. Return a valid JSON obje
                 <div class="bg-beige-card border border-beige-border rounded-2xl p-4 space-y-2 text-xs">
                     <div class="flex justify-between items-center pb-2 border-b border-beige-border">
                         <span class="font-bold text-navy-deep">${log.date} • ${log.type} ${log.opponentStyle ? `(vs ${log.opponentStyle})` : ''}</span>
-                        <button onclick="deleteMatchLog(${idx})" class="text-navy-muted hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        <button onclick="deleteMatchLog(${idx})" class="text-navy-muted hover:text-red-600">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
                     </div>
                     <div class="grid grid-cols-4 gap-2 text-[11px] text-center font-mono">
                         <div class="bg-beige-muted p-1.5 rounded">Drop: ${log.ratings.dropshot}/5</div>
@@ -1683,16 +1730,23 @@ Analyze the provided user training session description. Return a valid JSON obje
             const serve = document.getElementById('rate-input-serve').value;
             const notes = document.getElementById('match-notes-input').value.trim();
 
-            appState.matchLogs.unshift({ date, type, opponentStyle, ratings: { dropshot, positioning, backhand, serve }, notes });
-            saveState();
+            appState.matchLogs.unshift({
+                date,
+                type,
+                opponentStyle,
+                ratings: { dropshot, positioning, backhand, serve },
+                notes
+            });
+            saveState(true);
             closeModal('match-log-modal');
             document.getElementById('match-log-form').reset();
+            document.getElementById('match-date-input').value = new Date().toISOString().split('T')[0];
             showToast("Match audit logged!", "success");
         }
 
         function deleteMatchLog(idx) {
             appState.matchLogs.splice(idx, 1);
-            saveState();
+            saveState(true);
         }
 
         // Data Sync & Export Logic
@@ -1704,6 +1758,9 @@ Analyze the provided user training session description. Return a valid JSON obje
             if (appState.lastSynced) {
                 badgeText.innerText = `Synced (${appState.lastSynced})`;
                 badgeIcon.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5";
+            } else if (appState.webhookUrl) {
+                badgeText.innerText = "Webhook Ready";
+                badgeIcon.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-sage-primary/20 text-sage-accent border border-sage-primary/30 flex items-center gap-1.5";
             } else {
                 badgeText.innerText = "Local Only";
                 badgeIcon.className = "px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-sage-primary/20 text-sage-accent border border-sage-primary/30 flex items-center gap-1.5";
@@ -1711,7 +1768,9 @@ Analyze the provided user training session description. Return a valid JSON obje
         }
 
         function exportJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+            const exportObj = { ...appState };
+            delete exportObj.geminiApiKey; // Keep API key private on local device
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
             const anchor = document.createElement('a');
             anchor.setAttribute("href", dataStr);
             anchor.setAttribute("download", `singles_match_ready_backup_${new Date().toISOString().split('T')[0]}.json`);
@@ -1730,9 +1789,12 @@ Analyze the provided user training session description. Return a valid JSON obje
                     const imported = JSON.parse(e.target.result);
                     if (imported && Array.isArray(imported.checklist)) {
                         appState = { ...appState, ...imported };
-                        saveState();
+                        saveState(true);
+                        initCountdown();
                         showToast("Data imported from JSON file!", "success");
                         closeModal('sync-modal');
+                    } else {
+                        showToast("Invalid JSON structure.", "error");
                     }
                 } catch (err) {
                     showToast("Failed to parse JSON file.", "error");
@@ -1745,13 +1807,12 @@ Analyze the provided user training session description. Return a valid JSON obje
             let csv = "data:text/csv;charset=utf-8,";
             csv += "--- AI SESSION EVALUATIONS ---\nDate,Type,Notes,Summary\n";
             appState.evalLogs.forEach(e => {
-                csv += `"${e.date}","${e.type}","${e.notes.replace(/"/g, '""')}","${(e.result?.summary||'').replace(/"/g, '""')}"\n`;
+                csv += `"${e.date}","${e.type}","${(e.notes || '').replace(/"/g, '""')}","${(e.result?.summary || '').replace(/"/g, '""')}"\n`;
             });
             csv += "\n--- GYM LOGS ---\nDate,Routine,Exercises,RPE\n";
             appState.gymLogs.forEach(g => {
-                csv += `"${g.date}","${g.routine}","${g.exercises.replace(/"/g, '""')}","${g.rpe}"\n`;
+                csv += `"${g.date}","${g.routine}","${(g.exercises || '').replace(/"/g, '""')}","${g.rpe}"\n`;
             });
-
             const link = document.createElement("a");
             link.setAttribute("href", encodeURI(csv));
             link.setAttribute("download", `singles_match_ready_logs_${new Date().toISOString().split('T')[0]}.csv`);
@@ -1761,47 +1822,111 @@ Analyze the provided user training session description. Return a valid JSON obje
             showToast("Exported CSV logs!", "success");
         }
 
-        async function syncToCloud() {
-            const url = document.getElementById('webhook-url-input').value.trim();
+        async function syncToCloud(silent = false) {
+            const inputEl = document.getElementById('webhook-url-input');
+            const url = (inputEl ? inputEl.value.trim() : '') || appState.webhookUrl || DEFAULT_WEBHOOK_URL;
             if (!url) {
-                showToast("Please enter a Google Apps Script Webhook URL.", "error");
+                if (!silent) showToast("Please enter a Google Apps Script Webhook URL.", "error");
                 return;
             }
             appState.webhookUrl = url;
+
+            const pushBtn = document.getElementById('btn-push-cloud');
+            if (pushBtn) pushBtn.disabled = true;
+
             try {
-                await fetch(url, {
+                // Omit sensitive local-only geminiApiKey from cloud payload
+                const payloadToSync = {
+                    targetMatchday: appState.targetMatchday,
+                    checklist: appState.checklist,
+                    gymLogs: appState.gymLogs,
+                    matchLogs: appState.matchLogs,
+                    evalLogs: appState.evalLogs,
+                    stealthCompletedToday: appState.stealthCompletedToday
+                };
+
+                // Use text/plain;charset=utf-8 to avoid Google Apps Script CORS OPTIONS preflight failure
+                const res = await fetch(url, {
                     method: 'POST',
-                    mode: 'cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(appState)
+                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payloadToSync)
                 });
-                appState.lastSynced = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                saveState();
-                showToast("Data pushed to Google Sheets!", "success");
+
+                const result = await res.json();
+                if (result && result.status === 'success') {
+                    appState.lastSynced = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    saveState(false);
+                    if (!silent) showToast("Data pushed & synced to Google Sheets!", "success");
+                } else {
+                    throw new Error(result?.message || "Unexpected Apps Script response");
+                }
             } catch (err) {
-                showToast("Cloud sync failed. Check URL.", "error");
+                console.error("Cloud push error:", err);
+                if (!silent) showToast("Cloud push failed. Redeploy Code.gs as Web App (Anyone).", "error");
+            } finally {
+                if (pushBtn) pushBtn.disabled = false;
             }
         }
 
         async function pullFromCloud() {
-            const url = document.getElementById('webhook-url-input').value.trim();
+            const inputEl = document.getElementById('webhook-url-input');
+            const url = (inputEl ? inputEl.value.trim() : '') || appState.webhookUrl || DEFAULT_WEBHOOK_URL;
             if (!url) {
                 showToast("Please enter a Google Apps Script Webhook URL.", "error");
                 return;
             }
             appState.webhookUrl = url;
+
+            const pullBtn = document.getElementById('btn-pull-cloud');
+            if (pullBtn) pullBtn.disabled = true;
+
             try {
-                const res = await fetch(url);
+                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+                const res = await fetch(cacheBusterUrl, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+
                 const cloudData = await res.json();
-                if (cloudData && Array.isArray(cloudData.checklist)) {
-                    appState = { ...appState, ...cloudData, webhookUrl: url };
-                    appState.lastSynced = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    saveState();
+
+                if (cloudData && cloudData.status === 'error') {
+                    throw new Error(cloudData.message || "Apps Script error");
+                }
+
+                if (cloudData && cloudData.isInitialEmptyCloud) {
+                    showToast("Cloud sheet has no saved snapshot yet. Push your current data first!", "info");
+                    return;
+                }
+
+                if (cloudData && (Array.isArray(cloudData.checklist) || cloudData.targetMatchday !== undefined || cloudData.matchday !== undefined)) {
+                    appState = {
+                        ...appState,
+                        targetMatchday: cloudData.targetMatchday !== undefined ? cloudData.targetMatchday : (cloudData.matchday || appState.targetMatchday),
+                        checklist: Array.isArray(cloudData.checklist) && cloudData.checklist.length > 0 ? cloudData.checklist : appState.checklist,
+                        gymLogs: Array.isArray(cloudData.gymLogs) ? cloudData.gymLogs : appState.gymLogs,
+                        matchLogs: Array.isArray(cloudData.matchLogs) ? cloudData.matchLogs : appState.matchLogs,
+                        evalLogs: Array.isArray(cloudData.evalLogs) ? cloudData.evalLogs : appState.evalLogs,
+                        stealthCompletedToday: cloudData.stealthCompletedToday !== undefined ? cloudData.stealthCompletedToday : appState.stealthCompletedToday,
+                        webhookUrl: url,
+                        lastSynced: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    };
+                    saveState(false);
+                    initCountdown();
                     showToast("Pulled latest state from Google Sheets!", "success");
                     closeModal('sync-modal');
+                } else {
+                    throw new Error("Unrecognized cloud payload format. Ensure updated Code.gs is deployed.");
                 }
             } catch (err) {
-                showToast("Failed to pull from Cloud.", "error");
+                console.error("Cloud pull error:", err);
+                showToast(`Pull failed: ${err.message}`, "error");
+            } finally {
+                if (pullBtn) pullBtn.disabled = false;
             }
         }
 
@@ -1810,15 +1935,18 @@ Analyze the provided user training session description. Return a valid JSON obje
                 localStorage.removeItem(STORAGE_KEY);
                 appState = {
                     targetMatchday: "2026-11-15",
-                    checklist: [...DEFAULT_CHECKLIST],
+                    checklist: JSON.parse(JSON.stringify(DEFAULT_CHECKLIST)),
                     gymLogs: [],
                     matchLogs: [],
                     evalLogs: [],
                     stealthCompletedToday: false,
-                    webhookUrl: "",
+                    webhookUrl: DEFAULT_WEBHOOK_URL,
+                    autoSync: true,
+                    geminiApiKey: "",
                     lastSynced: null
                 };
-                saveState();
+                saveState(false);
+                initCountdown();
                 closeModal('sync-modal');
                 showToast("Application reset to default state.", "info");
             });
