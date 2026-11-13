@@ -349,6 +349,36 @@
                         </div>
                     </div>
 
+                    <!-- Rolling 10-15 Match Training Block Synthesizer (Grounded in Curated Drill Library) -->
+                    <div class="bg-navy-deep text-beige-card border border-navy-slate rounded-2xl p-5 shadow-md space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-navy-slate">
+                            <div class="flex items-center gap-2.5">
+                                <span class="p-2 bg-sage-primary/20 text-sage-accent rounded-xl border border-sage-primary/30">
+                                    <i data-lucide="layers" class="w-4 h-4"></i>
+                                </span>
+                                <div>
+                                    <h3 class="text-xs sm:text-sm font-extrabold text-white tracking-wide flex items-center gap-2">
+                                        <span>Training Block Drill Synthesizer</span>
+                                        <span id="block-window-badge" class="text-[10px] font-mono bg-navy-slate text-sage-accent px-2 py-0.5 rounded border border-navy-muted/40">0 / 15 Logs</span>
+                                    </h3>
+                                    <p class="text-[11px] text-beige-muted/80">Scans up to your last 15 sessions + T-Rex 3 HR load &amp; selects 1–2 drills from your Playbook Library</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 self-start sm:self-center">
+                                <button type="button" onclick="switchTab('playbook')" class="px-2.5 py-1.5 bg-navy-slate hover:bg-navy-muted/40 text-beige-card text-[11px] font-semibold rounded-xl border border-navy-muted/40 transition-colors">
+                                    Drill Source
+                                </button>
+                                <button type="button" onclick="runTrainingBlockSynthesis()" id="btn-synthesize-block" class="px-3 py-1.5 bg-sage-primary hover:bg-sage-dark text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                                    <span>Analyze Last 10–15</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="block-synthesis-body" class="text-xs text-beige-muted space-y-3">
+                            <!-- Dynamic Rolling Block Synthesis Output -->
+                        </div>
+                    </div>
+
                     <!-- Profile & Racquet Spec Snapshot -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="bg-beige-card border border-beige-border rounded-2xl p-4 shadow-sm space-y-2">
@@ -390,8 +420,8 @@
                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
                             </span>
                             <div>
-                                <h3 class="text-sm font-extrabold text-navy-deep">Unified Session Log &amp; AI Coach</h3>
-                                <p class="text-[11px] text-navy-muted">One synchronized log with built-in AI tactical coaching</p>
+                                <h3 class="text-sm font-extrabold text-navy-deep">Unified Session Log &amp; Reflection AI</h3>
+                                <p class="text-[11px] text-navy-muted">Match telemetry, T-Rex 3 HR &amp; 3-prompt coaching reflection</p>
                             </div>
                         </div>
                         <span id="ai-engine-badge" class="text-[10px] bg-sage-primary/20 text-sage-dark px-2 py-0.5 rounded font-mono font-bold">Coach AI</span>
@@ -489,6 +519,69 @@
                             </div>
                         </div>
 
+                        <!-- Amazfit T-Rex 3 HR & Multi-Match TCX Slicer -->
+                        <details id="trex-hr-details" class="bg-beige-muted border border-beige-border rounded-xl p-2.5 group">
+                            <summary class="text-[11px] font-bold text-navy-deep cursor-pointer flex items-center justify-between select-none">
+                                <span class="flex items-center gap-1.5">
+                                    <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-red-600"></i>
+                                    <span>Amazfit T-Rex 3 HR &amp; .TCX Slicer</span>
+                                </span>
+                                <span id="sidebar-hr-summary" class="font-mono text-[10px] text-navy-muted bg-beige-card px-2 py-0.5 rounded border border-beige-border">Optional</span>
+                            </summary>
+                            <div class="pt-2.5 mt-2 border-t border-beige-border/80 space-y-2.5 text-[11px]">
+                                <!-- Zepp TCX File Uploader -->
+                                <div class="flex items-center justify-between gap-2 bg-beige-card border border-beige-border rounded-lg p-2">
+                                    <div class="leading-tight">
+                                        <div class="font-bold text-navy-deep">Import Zepp .TCX Workout</div>
+                                        <div class="text-[10px] text-navy-muted">Splits by Lap button OR auto-slices bench breaks</div>
+                                    </div>
+                                    <label class="px-2.5 py-1.5 bg-navy-deep hover:bg-navy-slate text-sage-accent font-bold text-[10px] rounded-lg cursor-pointer flex items-center gap-1 flex-shrink-0 transition-colors">
+                                        <i data-lucide="upload" class="w-3 h-3"></i>
+                                        <span>Load .TCX</span>
+                                        <input type="file" accept=".tcx,.xml" onchange="handleTcxFileUpload(event)" class="hidden">
+                                    </label>
+                                </div>
+
+                                <!-- Detected TCX Laps / Auto-Sliced Match Blocks -->
+                                <div id="tcx-slices-container" class="hidden space-y-1.5 bg-navy-deep text-beige-card rounded-lg p-2.5">
+                                    <div class="flex items-center justify-between">
+                                        <span id="tcx-slices-header" class="text-[10px] font-bold text-sage-accent">Detected Workout Slices</span>
+                                        <button type="button" onclick="clearTcxSlices()" class="text-[10px] text-beige-muted hover:text-white underline">Clear</button>
+                                    </div>
+                                    <div id="tcx-slices-list" class="flex flex-wrap gap-1.5"></div>
+                                </div>
+
+                                <!-- Manual / Populated HR & Load Order Fields -->
+                                <div class="grid grid-cols-12 gap-1.5">
+                                    <div class="col-span-3">
+                                        <label class="block text-[10px] font-semibold text-navy-muted mb-0.5">Avg HR</label>
+                                        <input type="number" id="session-avg-hr" oninput="updateSidebarHrSummary()" placeholder="142" min="60" max="220"
+                                               class="w-full bg-beige-card border border-beige-border rounded-lg px-2 py-1 text-xs text-navy-deep font-mono focus:outline-none focus:border-sage-primary">
+                                    </div>
+                                    <div class="col-span-3">
+                                        <label class="block text-[10px] font-semibold text-navy-muted mb-0.5">Max HR</label>
+                                        <input type="number" id="session-max-hr" oninput="updateSidebarHrSummary()" placeholder="174" min="60" max="230"
+                                               class="w-full bg-beige-card border border-beige-border rounded-lg px-2 py-1 text-xs text-navy-deep font-mono focus:outline-none focus:border-sage-primary">
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="block text-[10px] font-semibold text-navy-muted mb-0.5">Mins</label>
+                                        <input type="number" id="session-duration-min" oninput="updateSidebarHrSummary()" placeholder="45" min="1" max="360"
+                                               class="w-full bg-beige-card border border-beige-border rounded-lg px-2 py-1 text-xs text-navy-deep font-mono focus:outline-none focus:border-sage-primary">
+                                    </div>
+                                    <div class="col-span-4">
+                                        <label class="block text-[10px] font-semibold text-navy-muted mb-0.5">Load Order</label>
+                                        <select id="session-load-order" onchange="updateSidebarHrSummary()" class="w-full bg-beige-card border border-beige-border rounded-lg px-1.5 py-1 text-[11px] text-navy-deep focus:outline-none focus:border-sage-primary">
+                                            <option value="Fresh (Match 1)">Fresh (Match 1)</option>
+                                            <option value="Mid-Session (Match 2)">Mid (Match 2)</option>
+                                            <option value="Late / Fatigued (Match 3+)">Late (Match 3+)</option>
+                                            <option value="Bulk Court Day">Bulk Day HR</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="session-z45-min" value="">
+                            </div>
+                        </details>
+
                         <!-- Collapsible Compact Tactical Ratings (1-5) -->
                         <details class="bg-beige-muted border border-beige-border rounded-xl p-2.5 group" open>
                             <summary class="text-[11px] font-bold text-navy-deep cursor-pointer flex items-center justify-between select-none">
@@ -546,11 +639,11 @@
                             </button>
                         </div>
 
-                        <!-- Unified Save & Analyze Buttons -->
+                        <!-- Unified Save & Reflect Buttons -->
                         <div class="grid grid-cols-12 gap-2 pt-0.5">
                             <button type="button" onclick="submitUnifiedSession(true)" id="btn-save-analyze" class="col-span-8 py-2.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-sage-primary/20 flex items-center justify-center gap-1.5">
                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
-                                <span>Save &amp; Analyze with AI</span>
+                                <span>Save &amp; Reflect with AI</span>
                             </button>
                             <button type="button" onclick="submitUnifiedSession(false)" id="btn-save-only" class="col-span-4 py-2.5 bg-navy-deep hover:bg-navy-slate text-beige-card font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-1">
                                 <i data-lucide="save" class="w-3.5 h-3.5 text-sage-accent"></i>
@@ -559,35 +652,48 @@
                         </div>
                     </div>
 
-                    <!-- Parsed AI Coaching Breakdown Card -->
+                    <!-- Parsed AI Reflective Debrief Card -->
                     <div id="ai-evaluation-output" class="bg-navy-deep text-beige-card border border-navy-slate rounded-xl p-4 shadow-md space-y-3">
                         <div class="flex items-center justify-between pb-2 border-b border-navy-slate">
                             <span class="text-xs font-bold text-sage-accent flex items-center gap-1.5">
-                                <i data-lucide="award" class="w-4 h-4"></i>
-                                Parsed AI Coaching Breakdown
+                                <i data-lucide="message-square-quote" class="w-4 h-4"></i>
+                                Reflective Session Debrief
                             </span>
                             <span id="eval-status-badge" class="text-[10px] bg-navy-slate text-navy-muted px-2 py-0.5 rounded font-mono">Ready</span>
                         </div>
                         <div id="eval-output-body" class="text-xs text-beige-muted space-y-2 min-h-[110px] flex items-center justify-center text-center">
                             <div class="space-y-1 p-2">
                                 <i data-lucide="file-text" class="w-6 h-6 mx-auto text-navy-muted"></i>
-                                <p>Log your session above and click <strong>"Save &amp; Analyze with AI"</strong>.</p>
-                                <p class="text-[10px] text-navy-muted">Your ratings, opponent scouting &amp; parsed AI coaching save together in one entry.</p>
+                                <p>Log your session above and click <strong>"Save &amp; Reflect with AI"</strong>.</p>
+                                <p class="text-[10px] text-navy-muted">Generates a 3-part reflection (What worked, Friction/HR pattern &amp; 1 question for next hit). Use <strong>Analyze Last 10–15</strong> on the left for drill prescriptions.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Unified Recent Sessions Stream -->
                     <div class="space-y-2.5 pt-1">
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-center gap-2">
                             <h4 class="text-xs font-extrabold text-navy-deep flex items-center gap-1.5">
                                 <i data-lucide="history" class="w-3.5 h-3.5 text-sage-primary"></i>
                                 Recent Synchronized Sessions
                             </h4>
-                            <button type="button" onclick="switchTab('match')" class="text-[10px] font-bold text-sage-primary hover:underline">
-                                View All (<span id="eval-stream-count">0</span>) →
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <label title="Parse a bulk Amazfit T-Rex 3 .TCX file first and attach slices to existing match logs" class="px-2 py-0.5 bg-navy-deep hover:bg-navy-slate text-sage-accent text-[10px] font-bold rounded-md cursor-pointer flex items-center gap-1 transition-colors">
+                                    <i data-lucide="heart-pulse" class="w-3 h-3"></i>
+                                    <span>Import .TCX</span>
+                                    <input type="file" accept=".tcx,.xml" onchange="handleTcxFileUpload(event, 'workbench')" class="hidden">
+                                </label>
+                                <button type="button" onclick="switchTab('match')" class="text-[10px] font-bold text-sage-primary hover:underline">
+                                    View All (<span id="eval-stream-count">0</span>) →
+                                </button>
+                            </div>
                         </div>
+
+                        <!-- Staged .TCX Parser & Existing-Log Mapper Workbench -->
+                        <div id="staged-tcx-workbench" class="hidden bg-navy-deep text-beige-card border border-sage-primary/40 rounded-xl p-3.5 space-y-2.5 shadow-md">
+                            <!-- Dynamic Staged .TCX Slices -->
+                        </div>
+
                         <div id="evaluations-stream-container" class="space-y-2.5 max-h-[340px] overflow-y-auto pr-1">
                             <!-- Dynamic Unified Stream Items -->
                         </div>
@@ -832,6 +938,33 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Curated Drill Source Library (Used by Rolling 10-15 Match Synthesizer) -->
+            <div class="bg-beige-card border border-beige-border rounded-2xl p-6 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-beige-border">
+                    <div>
+                        <h3 class="text-base font-extrabold text-navy-deep flex items-center gap-2">
+                            <i data-lucide="library" class="w-5 h-5 text-sage-primary"></i>
+                            Curated Drill Source Library
+                        </h3>
+                        <p class="text-xs text-navy-muted mt-0.5">
+                            Your verified drill repository. When you run the <strong>Rolling 10–15 Match Synthesizer</strong>, the AI selects 1–2 drills strictly from this source list.
+                        </p>
+                    </div>
+                    <button type="button" onclick="openModal('add-drill-modal')" class="px-3.5 py-2 bg-sage-primary hover:bg-sage-dark text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 self-start sm:self-center">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Add Source Drill</span>
+                    </button>
+                </div>
+
+                <!-- Pillar Filter Pills -->
+                <div id="drill-pillar-filters" class="flex flex-wrap gap-1.5"></div>
+
+                <!-- Drill Cards Grid -->
+                <div id="drill-library-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Dynamic Drill Source Cards -->
+                </div>
+            </div>
         </section>
     </main>
 
@@ -898,11 +1031,11 @@
             <div class="bg-sage-light/70 border border-sage-primary/30 rounded-xl p-3.5 space-y-2 text-xs">
                 <div class="font-bold text-sage-dark flex items-center gap-1.5">
                     <i data-lucide="table" class="w-4 h-4"></i>
-                    <span>Google Sheets Setup Checklist (Code.gs v5)</span>
+                    <span>Google Sheets Setup Checklist (Code.gs v6)</span>
                 </div>
                 <ol class="list-decimal list-inside text-[11px] text-navy-slate space-y-1 leading-relaxed">
                     <li>Open your Google Sheet → <strong>Extensions → Apps Script</strong> and paste the updated <code>Code.gs</code>.</li>
-                    <li>Select <strong><code>setupSpreadsheet</code></strong> in the top toolbar dropdown and click <strong>Run</strong> to build &amp; format all 5 sheet tabs (<code>Summary</code>, <code>Session Logs</code>, <code>Opponents</code>, <code>Gym Logs</code>, <code>Checklist</code>).</li>
+                    <li>Select <strong><code>setupSpreadsheet</code></strong> in the top toolbar dropdown and click <strong>Run</strong> to build &amp; format all 6 sheet tabs (<code>Summary</code>, <code>Session Logs</code>, <code>Opponents</code>, <code>Drill Library</code>, <code>Gym Logs</code>, <code>Checklist</code>).</li>
                     <li>Click <strong>Deploy → Manage deployments → Edit → New version → Deploy</strong>, then click <strong>Push to Cloud</strong> below.</li>
                 </ol>
             </div>
@@ -1150,21 +1283,251 @@
         </div>
     </div>
 
+    <!-- Modal 7: Add Curated Source Drill Modal -->
+    <div id="add-drill-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
+                <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
+                    <i data-lucide="library" class="w-5 h-5 text-sage-primary"></i>
+                    Add Drill to Source Library
+                </h3>
+                <button onclick="closeModal('add-drill-modal')" class="text-navy-muted hover:text-navy-deep">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="add-drill-form" onsubmit="handleAddSourceDrill(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Drill Name</label>
+                    <input type="text" id="drill-name-input" required placeholder="e.g. Disguised Drop-Shot Split-Step Box"
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">Target Pillar</label>
+                        <select id="drill-pillar-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                            <option value="Drop-Shot Braking">Drop-Shot Braking</option>
+                            <option value="Baseline <1m">Baseline &lt;1m</option>
+                            <option value="2HB Depth">2HB Depth</option>
+                            <option value="2nd Serve">2nd Serve</option>
+                            <option value="Fatigue & Stamina">Fatigue &amp; Stamina</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-deep mb-1">Court Setup</label>
+                        <select id="drill-setup-input" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                            <option value="Hitting Partner">Hitting Partner</option>
+                            <option value="Ball Machine / Feed">Ball Machine / Feed</option>
+                            <option value="Solo / Wall">Solo / Wall</option>
+                            <option value="Group / Match Play">Group / Match Play</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Duration / Rep Target</label>
+                    <input type="text" id="drill-duration-input" required placeholder="e.g. 15 mins (3 sets × 12 balls)"
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-navy-deep mb-1">Execution Rules &amp; Cues</label>
+                    <textarea id="drill-desc-input" rows="3" required placeholder="Exact rules, targets, and biomechanical cues..."
+                              class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-sm text-navy-deep focus:outline-none focus:border-sage-primary"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('add-drill-modal')" class="px-4 py-2 bg-beige-muted text-navy-deep text-xs font-bold rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-sage-primary text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20">Save to Library</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 8: Retroactive Amazfit T-Rex 3 HR & .TCX Mapper Modal -->
+    <div id="retro-hr-modal" class="fixed inset-0 bg-navy-deep/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-beige-card border border-beige-border rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-beige-border">
+                <div>
+                    <h3 class="text-base font-bold text-navy-deep flex items-center gap-2">
+                        <i data-lucide="heart-pulse" class="w-5 h-5 text-red-600"></i>
+                        Attach / Edit Amazfit T-Rex 3 HR
+                    </h3>
+                    <p id="retro-hr-session-subtitle" class="text-[11px] text-navy-muted mt-0.5">Target Session</p>
+                </div>
+                <button type="button" onclick="closeModal('retro-hr-modal')" class="text-navy-muted hover:text-navy-deep">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Upload .TCX directly inside Modal -->
+            <div class="flex items-center justify-between gap-2 bg-beige-muted border border-beige-border rounded-xl p-3 text-xs">
+                <div>
+                    <div class="font-bold text-navy-deep">Parse Zepp .TCX Workout File</div>
+                    <div class="text-[11px] text-navy-muted">Splits by Lap button or auto-detects bench breaks</div>
+                </div>
+                <label class="px-3 py-1.5 bg-navy-deep hover:bg-navy-slate text-sage-accent font-bold text-xs rounded-lg cursor-pointer flex items-center gap-1.5 flex-shrink-0 transition-colors">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    <span>Load .TCX</span>
+                    <input type="file" accept=".tcx,.xml" onchange="handleTcxFileUpload(event, 'modal')" class="hidden">
+                </label>
+            </div>
+
+            <!-- Staged .TCX Slices Quick-Picker inside Modal -->
+            <div id="retro-modal-slices-box" class="hidden bg-navy-deep text-beige-card rounded-xl p-3 space-y-2 border border-sage-primary/40">
+                <div class="flex items-center justify-between">
+                    <span id="retro-modal-slices-label" class="text-[11px] font-bold text-sage-accent">Staged .TCX Slices — Tap to Fill</span>
+                    <button type="button" onclick="clearTcxSlices()" class="text-[10px] text-beige-muted hover:text-white underline">Clear</button>
+                </div>
+                <div id="retro-modal-slices-list" class="flex flex-wrap gap-1.5"></div>
+            </div>
+
+            <!-- Manual / Slice-Populated HR Inputs -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                <div>
+                    <label class="block text-[11px] font-bold text-navy-deep mb-1">Avg HR (bpm)</label>
+                    <input type="number" id="retro-avg-hr" placeholder="142" min="50" max="220"
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-2 text-xs text-navy-deep font-mono focus:outline-none focus:border-sage-primary">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-navy-deep mb-1">Max HR (bpm)</label>
+                    <input type="number" id="retro-max-hr" placeholder="175" min="50" max="235"
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-2 text-xs text-navy-deep font-mono focus:outline-none focus:border-sage-primary">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-navy-deep mb-1">Duration (min)</label>
+                    <input type="number" id="retro-duration-min" placeholder="45" min="1" max="360"
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-2 text-xs text-navy-deep font-mono focus:outline-none focus:border-sage-primary">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-navy-deep mb-1">Zone 4/5 (min)</label>
+                    <input type="number" id="retro-z45-min" placeholder="12" min="0" max="360"
+                           class="w-full bg-beige-muted border border-beige-border rounded-xl px-2.5 py-2 text-xs text-navy-deep font-mono focus:outline-none focus:border-sage-primary">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-navy-deep mb-1">Same-Day Session Load Order</label>
+                <select id="retro-load-order" class="w-full bg-beige-muted border border-beige-border rounded-xl px-3 py-2 text-xs text-navy-deep focus:outline-none focus:border-sage-primary">
+                    <option value="Fresh (Match 1)">Fresh (Match 1)</option>
+                    <option value="Mid-Session (Match 2)">Mid-Session (Match 2)</option>
+                    <option value="Late / Fatigued (Match 3+)">Late / Fatigued (Match 3+)</option>
+                    <option value="Bulk Court Day">Bulk Court Day</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 pt-3 border-t border-beige-border">
+                <button type="button" onclick="removeRetroHrData()" class="px-3 py-2 bg-red-100/70 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl transition-colors">
+                    Clear HR
+                </button>
+                <div class="flex flex-wrap justify-end gap-2">
+                    <button type="button" onclick="saveRetroHrData(false)" class="px-3.5 py-2 bg-navy-deep hover:bg-navy-slate text-beige-card text-xs font-bold rounded-xl transition-colors">
+                        Save HR Only
+                    </button>
+                    <button type="button" onclick="saveRetroHrData(true)" class="px-3.5 py-2 bg-sage-primary hover:bg-sage-dark text-white text-xs font-bold rounded-xl shadow-md shadow-sage-primary/20 flex items-center gap-1.5 transition-colors">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                        <span>Save &amp; Re-Reflect with HR</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- APPLICATION JAVASCRIPT LOGIC -->
     <script>
-        const STORAGE_KEY = 'singles_match_ready_v5_state';
+        const STORAGE_KEY = 'singles_match_ready_v6_state';
+        const LEGACY_STORAGE_KEY_V5 = 'singles_match_ready_v5_state';
         const LEGACY_STORAGE_KEY_V3 = 'singles_match_ready_v3_state';
         const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwNKHkbe745Z0P5AGl_m-MMbeGV_zHE3vSa9so1ECSt5MhIn0OcuxLMgPsvX3Bcljkm/exec';
 
         const DEFAULT_CHECKLIST = [
-            { id: 'task-1', title: 'Eccentric Leg Deceleration Workout', subtext: 'Bulgarian split squats (3x8 slow lower phase) & RDLs at gym.', category: 'Gym Conditioning', completed: false },
-            { id: 'task-2', title: 'First-Step Acceleration Sled Pushes', subtext: '4 sets × 15 seconds max effort sled pushes.', category: 'Gym Conditioning', completed: false },
-            { id: 'task-3', title: 'Rotator Cuff & Shoulder Protection', subtext: 'Cable face pulls (3x15) & Y-T-W scapular raises (2x12).', category: 'Gym Conditioning', completed: false },
-            { id: 'task-4', title: 'Hold Baseline Position (< 1m line)', subtext: 'Stay within 1m of baseline. Take moonballs on the rise.', category: 'Group Play Micro-Goals', completed: false },
-            { id: 'task-5', title: 'Drop Shot Cue Detection Focus', subtext: 'Scan opponent racquet deceleration & open face posture.', category: 'Group Play Micro-Goals', completed: false },
-            { id: 'task-6', title: 'Proactive 2nd Serve Return Attack', subtext: 'Step 1-2 feet inside baseline on weak serves to drive deep crosscourt.', category: 'Group Play Micro-Goals', completed: false },
-            { id: 'task-7', title: 'Equipment & String Check', subtext: 'Verify Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs string tension.', category: 'Recovery & Matchday', completed: false },
-            { id: 'task-8', title: '10-Min Dynamic Hip & Shoulder Warmup', subtext: 'Thoracic rotations & leg swings prior to playing.', category: 'Recovery & Matchday', completed: false }
+            { id: 'task-1', category: 'Gym Conditioning', title: 'Bulgarian Split Squats (3s Eccentric Braking)', subtext: '3 × 8 reps to build 100kg quad deceleration power for disguised drop shots', completed: false },
+            { id: 'task-2', category: 'Gym Conditioning', title: 'Romanian Deadlifts (RDLs) & Sled/KB Swings', subtext: '3 × 8 RDLs + 4 × 15s explosive sprint push-off conditioning', completed: false },
+            { id: 'task-3', category: 'Gym Conditioning', title: 'Cable Face Pulls & Scapular Y-T-W Raises', subtext: '3 × 15 face pulls for rotator cuff durability on 12:30 topspin 2nd serves', completed: false },
+            { id: 'task-4', category: 'Group Play Micro-Goals', title: 'Hold Baseline Position (<1m line)', subtext: 'Take high moonballs on the rise at shoulder height to cut drop-shot sprint distance', completed: false },
+            { id: 'task-5', category: 'Group Play Micro-Goals', title: 'Scan Racquet Deceleration Cues', subtext: 'Trigger 2 forward split-steps the moment opponent off-hand drops off racquet throat', completed: false },
+            { id: 'task-6', category: 'Group Play Micro-Goals', title: '2HB Quiet-Chin & Left-Hand Upward Lead', subtext: 'Anchor chin on front shoulder through strike to eliminate long backhand misses', completed: false },
+            { id: 'task-7', category: 'Recovery & Matchday', title: 'Wilson RF01 Pro String & Tension Check', subtext: 'Solinco Tour Bite 17g @ 51 lbs + fresh overgrip 48h before matchday', completed: false },
+            { id: 'task-8', category: 'Recovery & Matchday', title: 'Amazfit T-Rex 3 Charged & Lap Button Ready', subtext: 'Record match HR load & press Lap button between opponents for clean .TCX splits', completed: false }
+        ];
+
+        const DEFAULT_DRILL_LIBRARY = [
+            {
+                id: 'drill-1',
+                name: 'Cue-Read & Split-Step Deceleration Box',
+                pillar: 'Drop-Shot Braking',
+                setup: 'Hitting Partner',
+                duration: '15 mins (4 × 8 balls)',
+                description: 'Rally crosscourt from <1m inside the baseline. Partner randomly disguises a drop shot off any ball. Trigger a forward split-step the instant their swing speed slows, brake low on outside quad, and play a deep crosscourt counter-drop or lob.'
+            },
+            {
+                id: 'drill-2',
+                name: 'Red-Zone Baseline Hold (<1m Tape Drill)',
+                pillar: 'Baseline <1m',
+                setup: 'Hitting Partner',
+                duration: '15 mins (3 × 5-min games)',
+                description: 'Place a flat marker/towel 1 meter behind the baseline. Rally against heavy moonballs; stepping behind the 1m line forfeits the point. Take high bounces on the rise at shoulder height to rob opponent time.'
+            },
+            {
+                id: 'drill-3',
+                name: '2HB Quiet-Chin Deep Target Ladder',
+                pillar: '2HB Depth',
+                setup: 'Ball Machine / Feed',
+                duration: '15 mins (60 balls)',
+                description: 'Feed heavy high-bouncing balls to the two-handed backhand. Keep chin anchored to front shoulder through contact and lead upward with left hand. Score 1 pt for landing within 1m of baseline; -1 pt for any ball sailing long.'
+            },
+            {
+                id: 'drill-4',
+                name: 'Figure-8 Crosscourt to Line Transition',
+                pillar: '2HB Depth',
+                setup: 'Hitting Partner',
+                duration: '15 mins (3 × 10 rallies)',
+                description: 'Hit 3 heavy crosscourt backhands with Solinco Tour Bite topspin margin, then redirect the 4th ball down the line without lifting chest early. Resets rhythm and eliminates rushed long misses.'
+            },
+            {
+                id: 'drill-5',
+                name: '12:30 Toss Topspin-Slice 2nd Serve Box',
+                pillar: '2nd Serve',
+                setup: 'Solo / Wall',
+                duration: '15 mins (50 serves)',
+                description: 'Place a cone 1m inside the service line wide on Ad court and body on Deuce court. Toss at 12:30/1:00 o’clock and brush 7-to-1 with relaxed wrist snap—zero lower-back arching.'
+            },
+            {
+                id: 'drill-6',
+                name: '1-2 Serve + First-Ball Baseline Squeeze',
+                pillar: '2nd Serve',
+                setup: 'Hitting Partner',
+                duration: '15 mins (20 points)',
+                description: 'Play points starting exclusively with a 2nd serve. Immediately recover inside the <1m baseline zone after landing and attack the returner’s weaker wing before they can drop-shot.'
+            },
+            {
+                id: 'drill-7',
+                name: '3-Ball Sprint-Brake-Recover Shuttle',
+                pillar: 'Drop-Shot Braking',
+                setup: 'Solo / Wall',
+                duration: '12 mins (4 sets × 4 reps)',
+                description: 'Start at <1m baseline, sprint forward to touch service line with low eccentric quad load, brake cleanly, backpedal/shuffle to baseline, and shadow-swing a high 2HB. Trains 100kg braking stamina.'
+            },
+            {
+                id: 'drill-8',
+                name: 'Half-Volley Rise Absorption Drill',
+                pillar: 'Baseline <1m',
+                setup: 'Hitting Partner',
+                duration: '12 mins (3 × 4 mins)',
+                description: 'Stand on the baseline while partner feeds deep bouncing balls right at your shoelaces. Compact backswing, firm wrist, absorb pace crosscourt without retreating.'
+            },
+            {
+                id: 'drill-9',
+                name: 'Zone-4 Fatigue 7-Point Tiebreak Simulation',
+                pillar: 'Fatigue & Stamina',
+                setup: 'Group / Match Play',
+                duration: '15 mins (2 tiebreaks)',
+                description: 'Immediately after a high-HR rally block (155+ bpm), play a 7-point tiebreak where you must verbalize your 2-word cue ("Chin Quiet" or "Hold Line") before every return.'
+            },
+            {
+                id: 'drill-10',
+                name: '2nd Serve Return Step-In Attack',
+                pillar: 'Baseline <1m',
+                setup: 'Hitting Partner',
+                duration: '15 mins (30 returns)',
+                description: 'Start 1–2 feet inside the baseline on 2nd serves. Split-step as server strikes, take the ball early, and drive deep crosscourt to neutralize drop-shotters on ball 1.'
+            }
         ];
 
         const STEALTH_GOALS = [
@@ -1189,7 +1552,12 @@
         let currentStealthIndex = 0;
         let countdownInterval = null;
         let activeOpponentFilter = 'ALL';
+        let activeDrillPillarFilter = 'ALL';
         let lastDiscoveredLiveModels = [];
+        let parsedTcxSlices = [];
+        let parsedTcxModeLabel = '';
+        let parsedTcxActivityDate = '';
+        let activeRetroSessionId = null;
 
         let appState = {
             targetMatchday: "2026-11-15",
@@ -1197,6 +1565,8 @@
             gymLogs: [],
             sessionLogs: [],
             opponentProfiles: {},
+            drillLibrary: JSON.parse(JSON.stringify(DEFAULT_DRILL_LIBRARY)),
+            blockSynthesis: null,
             stealthCompletedToday: false,
             webhookUrl: DEFAULT_WEBHOOK_URL,
             autoSync: true,
@@ -1296,6 +1666,12 @@
             if (!merged.opponentProfiles || typeof merged.opponentProfiles !== 'object') {
                 merged.opponentProfiles = {};
             }
+            if (!Array.isArray(merged.drillLibrary) || merged.drillLibrary.length === 0) {
+                merged.drillLibrary = JSON.parse(JSON.stringify(DEFAULT_DRILL_LIBRARY));
+            }
+            if (!merged.blockSynthesis || typeof merged.blockSynthesis !== 'object') {
+                merged.blockSynthesis = null;
+            }
 
             // Migrate legacy separate matchLogs & evalLogs if encountered
             if (Array.isArray(raw?.matchLogs) && raw.matchLogs.length > 0 && merged.sessionLogs.length === 0) {
@@ -1309,6 +1685,7 @@
                         scoreline: m.scoreline || '',
                         tacticalIdea: m.tacticalIdea || '',
                         ideaOutcome: m.ideaOutcome || 'Testing / Baseline',
+                        hrData: m.hrData || null,
                         ratings: m.ratings || { dropshot: 3, positioning: 3, backhand: 3, serve: 3 },
                         notes: m.notes || '',
                         aiAnalysis: m.aiAnalysis || null
@@ -1327,14 +1704,14 @@
                         scoreline: '',
                         tacticalIdea: ev.tacticalIdea || '',
                         ideaOutcome: ev.tacticalIdea ? 'Worked Well' : 'Testing / Baseline',
+                        hrData: null,
                         ratings: null,
                         notes: ev.notes || '',
                         aiAnalysis: {
-                            verdict: cleanMarkdownText(res.summary || ''),
+                            whatWorked: cleanMarkdownText(res.summary || ''),
+                            frictionPattern: cleanMarkdownText(res.technicalTakeaways || ''),
+                            nextHitQuestion: 'How early can you spot racquet deceleration before your split-step next session?',
                             focusTags: Array.isArray(res.areasOfImprovement) ? res.areasOfImprovement.map(cleanMarkdownText) : [],
-                            opponentAdjustment: '',
-                            biomechanicalCue: cleanMarkdownText(res.technicalTakeaways || ''),
-                            recommendedDrill: cleanMarkdownText(res.recommendedDrill || ''),
                             modelUsed: ev.modelUsed || 'local-coach-ai'
                         }
                     });
@@ -1348,15 +1725,16 @@
 
         function loadState() {
             try {
-                const rawV5 = localStorage.getItem(STORAGE_KEY);
+                const rawV6 = localStorage.getItem(STORAGE_KEY);
+                const rawV5 = localStorage.getItem(LEGACY_STORAGE_KEY_V5);
                 const rawV3 = localStorage.getItem(LEGACY_STORAGE_KEY_V3);
-                const parsed = rawV5 ? JSON.parse(rawV5) : (rawV3 ? JSON.parse(rawV3) : null);
+                const parsed = rawV6 ? JSON.parse(rawV6) : (rawV5 ? JSON.parse(rawV5) : (rawV3 ? JSON.parse(rawV3) : null));
 
                 if (parsed) {
                     appState = normalizeStatePayload(parsed);
                     if (!appState.webhookUrl) appState.webhookUrl = DEFAULT_WEBHOOK_URL;
                     if (!appState.selectedAiModel) appState.selectedAiModel = "gemini-3.8-flash";
-                    if (!rawV5 && rawV3) {
+                    if (!rawV6 && (rawV5 || rawV3)) {
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
                     }
                 }
@@ -1497,6 +1875,8 @@
                 gymLogs: appState.gymLogs,
                 sessionLogs: appState.sessionLogs,
                 opponentProfiles: appState.opponentProfiles,
+                drillLibrary: appState.drillLibrary,
+                blockSynthesis: appState.blockSynthesis,
                 stealthCompletedToday: appState.stealthCompletedToday
             };
 
@@ -1572,98 +1952,916 @@
         }
 
         // ==========================================
-        // AI MODEL DROPDOWN & LIVE AVAILABILITY CHECK
+        // AMAZFIT T-REX 3 .TCX PARSER & AUTO-SLICER
         // ==========================================
-        function saveGeminiApiKey() {
-            const val = document.getElementById('gemini-apikey-input')?.value.trim() || "";
-            appState.geminiApiKey = val;
-            saveState(false);
-            showToast(val ? "Gemini API key saved locally." : "Cleared Gemini API key (using built-in Coach AI).", "success");
-            if (val && appState.selectedAiModel !== 'local-coach-ai') {
-                verifySelectedModelAvailability(true);
-            } else if (appState.selectedAiModel === 'local-coach-ai') {
-                updateModelAvailabilityUI('available', 'Built-in Offline Coach AI • Ready (Local)');
+        function updateSidebarHrSummary() {
+            const avg = document.getElementById('session-avg-hr')?.value;
+            const max = document.getElementById('session-max-hr')?.value;
+            const mins = document.getElementById('session-duration-min')?.value;
+            const summaryEl = document.getElementById('sidebar-hr-summary');
+            if (!summaryEl) return;
+
+            if (avg || max || mins) {
+                const parts = [];
+                if (mins) parts.push(`${mins}m`);
+                if (avg) parts.push(`Avg ${avg}`);
+                if (max) parts.push(`Max ${max}`);
+                summaryEl.innerText = parts.join(' • ') + ' bpm';
+                summaryEl.className = 'font-mono text-[10px] text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200 font-bold';
             } else {
-                updateModelAvailabilityUI('nokey', 'No API key set • Will use Offline fallback or add key');
+                summaryEl.innerText = 'Optional';
+                summaryEl.className = 'font-mono text-[10px] text-navy-muted bg-beige-card px-2 py-0.5 rounded border border-beige-border';
             }
         }
 
-        function openApiKeySettings() {
-            openModal('sync-modal');
-            setTimeout(() => {
-                const input = document.getElementById('gemini-apikey-input');
-                if (input) input.focus();
-            }, 80);
+        function clearTcxSlices() {
+            parsedTcxSlices = [];
+            parsedTcxModeLabel = '';
+            parsedTcxActivityDate = '';
+            const container = document.getElementById('tcx-slices-container');
+            const list = document.getElementById('tcx-slices-list');
+            const wb = document.getElementById('staged-tcx-workbench');
+            const modalBox = document.getElementById('retro-modal-slices-box');
+            if (container) container.classList.add('hidden');
+            if (list) list.innerHTML = '';
+            if (wb) wb.classList.add('hidden');
+            if (modalBox) modalBox.classList.add('hidden');
         }
 
-        function syncModelDropdownSelection(discoveredModels = []) {
-            const select = document.getElementById('ai-model-select');
-            if (!select) return;
+        function handleTcxFileUpload(event, sourceContext = 'form') {
+            const file = event.target.files?.[0];
+            if (!file) return;
 
-            const currentVal = appState.selectedAiModel || 'gemini-3.8-flash';
-            const liveMap = new Map();
-            discoveredModels.forEach(m => liveMap.set(m.id, m));
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const xmlText = e.target.result;
+                    const result = parseTcxWorkoutXml(xmlText);
+                    if (!result || result.slices.length === 0) {
+                        showToast("Could not extract HR or timing data from this .TCX file.", "error");
+                        return;
+                    }
 
-            const options = [];
-            const seenIds = new Set();
+                    parsedTcxSlices = result.slices;
+                    parsedTcxModeLabel = result.modeLabel;
+                    parsedTcxActivityDate = result.activityDate || '';
 
-            AI_MODEL_CATALOG.forEach(item => {
-                seenIds.add(item.id);
-                const liveInfo = liveMap.get(item.id);
-                const suffix = discoveredModels.length > 0 && item.id !== 'local-coach-ai'
-                    ? (liveInfo ? ' ✓ Verified' : ' (Unavailable on Key)')
-                    : '';
-                options.push(`<option value="${escapeHtml(item.id)}">${escapeHtml(item.label + suffix)}</option>`);
+                    if (sourceContext === 'form') {
+                        if (result.activityDate) {
+                            const dateInput = document.getElementById('session-date-input');
+                            if (dateInput) dateInput.value = result.activityDate;
+                        }
+                        renderTcxSliceChips(result.modeLabel);
+                        applyTcxSliceToForm(0);
+                    } else if (sourceContext === 'modal') {
+                        renderRetroModalSlices();
+                        applyStagedSliceToRetroModal(0);
+                    }
+
+                    renderStagedTcxWorkbench();
+                    showToast(`Parsed T-Rex 3 .TCX (${result.modeLabel})! Assign slices to new or existing match logs.`, "success");
+                } catch (err) {
+                    console.error("TCX parse error:", err);
+                    showToast("Invalid .TCX XML file format.", "error");
+                } finally {
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function parseTcxWorkoutXml(xmlText) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(xmlText, 'application/xml');
+            if (doc.querySelector('parsererror')) {
+                throw new Error('Malformed XML');
+            }
+
+            const getNodes = (parent, tagName) => {
+                const nsNodes = parent.getElementsByTagNameNS('*', tagName);
+                return nsNodes && nsNodes.length > 0 ? Array.from(nsNodes) : Array.from(parent.getElementsByTagName(tagName));
+            };
+
+            const lapNodes = getNodes(doc, 'Lap');
+            if (lapNodes.length === 0) return null;
+
+            const orderLabels = ['Fresh (Match 1)', 'Mid-Session (Match 2)', 'Late / Fatigued (Match 3+)'];
+            const extractPointsFromNode = (node) => {
+                const tps = getNodes(node, 'Trackpoint');
+                const pts = [];
+                tps.forEach(tp => {
+                    const timeEl = getNodes(tp, 'Time')[0];
+                    const hrParent = getNodes(tp, 'HeartRateBpm')[0];
+                    const hrValEl = hrParent ? getNodes(hrParent, 'Value')[0] : null;
+                    const ts = timeEl ? Date.parse(timeEl.textContent.trim()) : NaN;
+                    const hr = hrValEl ? parseInt(hrValEl.textContent.trim(), 10) : 0;
+                    if (!isNaN(ts)) {
+                        pts.push({ ts, hr: isNaN(hr) ? 0 : hr });
+                    }
+                });
+                pts.sort((a, b) => a.ts - b.ts);
+                return pts;
+            };
+
+            const summarizePoints = (pts, fallbackSec = 0, fallbackAvg = 0, fallbackMax = 0) => {
+                const validHrs = pts.filter(p => p.hr > 40).map(p => p.hr);
+                let durationMin = fallbackSec > 0 ? Math.round(fallbackSec / 60) : 0;
+                if (pts.length >= 2) {
+                    const spanMin = Math.round((pts[pts.length - 1].ts - pts[0].ts) / 60000);
+                    if (spanMin > 0) durationMin = spanMin;
+                }
+                const avgHr = validHrs.length > 0
+                    ? Math.round(validHrs.reduce((a, b) => a + b, 0) / validHrs.length)
+                    : Math.round(fallbackAvg || 0);
+                const maxHr = validHrs.length > 0
+                    ? Math.max(...validHrs)
+                    : Math.round(fallbackMax || 0);
+
+                // Zone 4/5 threshold for 29yo (~80% of 191 bpm = 152 bpm)
+                let z45Ms = 0;
+                for (let i = 1; i < pts.length; i++) {
+                    const dt = Math.min(pts[i].ts - pts[i - 1].ts, 15000);
+                    if (dt > 0 && pts[i].hr >= 152) {
+                        z45Ms += dt;
+                    }
+                }
+                return {
+                    durationMin: Math.max(1, durationMin),
+                    avgHr,
+                    maxHr,
+                    z45Min: Math.round(z45Ms / 60000)
+                };
+            };
+
+            let activityDate = '';
+            const firstStart = lapNodes[0].getAttribute('StartTime');
+            if (firstStart && firstStart.length >= 10) {
+                activityDate = firstStart.slice(0, 10);
+            }
+
+            const slices = [];
+            let modeLabel = 'Bulk Session';
+
+            if (lapNodes.length > 1) {
+                // User remembered to press the T-Rex 3 Lap button between matches!
+                modeLabel = `${lapNodes.length} Manual Laps`;
+                const allPts = [];
+                lapNodes.forEach((lap, idx) => {
+                    const pts = extractPointsFromNode(lap);
+                    allPts.push(...pts);
+                    const totalSec = parseFloat(getNodes(lap, 'TotalTimeSeconds')[0]?.textContent || '0');
+                    const avgNode = lap.querySelector('AverageHeartRateBpm Value') || getNodes(lap, 'AverageHeartRateBpm')[0];
+                    const maxNode = lap.querySelector('MaximumHeartRateBpm Value') || getNodes(lap, 'MaximumHeartRateBpm')[0];
+                    const stats = summarizePoints(
+                        pts,
+                        totalSec,
+                        parseFloat(avgNode?.textContent || '0'),
+                        parseFloat(maxNode?.textContent || '0')
+                    );
+                    slices.push({
+                        label: `Lap ${idx + 1}`,
+                        durationMin: stats.durationMin,
+                        avgHr: stats.avgHr,
+                        maxHr: stats.maxHr,
+                        z45Min: stats.z45Min,
+                        loadOrder: orderLabels[Math.min(idx, orderLabels.length - 1)]
+                    });
+                });
+
+                if (allPts.length > 0) {
+                    const totalStats = summarizePoints(allPts);
+                    slices.push({
+                        label: 'Full Day Total',
+                        durationMin: totalStats.durationMin,
+                        avgHr: totalStats.avgHr,
+                        maxHr: totalStats.maxHr,
+                        z45Min: totalStats.z45Min,
+                        loadOrder: 'Bulk Court Day'
+                    });
+                }
+            } else {
+                // Single continuous bulk Lap -> Auto-slice by bench rest valleys (HR < 122 bpm for >= 4 mins)
+                const lap = lapNodes[0];
+                const pts = extractPointsFromNode(lap);
+                const totalSec = parseFloat(getNodes(lap, 'TotalTimeSeconds')[0]?.textContent || '0');
+                const fullStats = summarizePoints(pts, totalSec);
+
+                if (pts.length > 10) {
+                    const blocks = [];
+                    let blockStartIdx = 0;
+                    let restStartTs = null;
+                    let restStartIdx = null;
+
+                    for (let i = 1; i < pts.length; i++) {
+                        const gapMs = pts[i].ts - pts[i - 1].ts;
+                        const isLowHr = pts[i].hr > 0 && pts[i].hr < 122;
+
+                        if (gapMs >= 240000) {
+                            // 4+ min watch pause/gap
+                            const seg = pts.slice(blockStartIdx, i);
+                            if (seg.length >= 2 && (seg[seg.length - 1].ts - seg[0].ts) >= 480000) {
+                                blocks.push(seg);
+                            }
+                            blockStartIdx = i;
+                            restStartTs = null;
+                        } else if (isLowHr) {
+                            if (restStartTs === null) {
+                                restStartTs = pts[i].ts;
+                                restStartIdx = i;
+                            }
+                        } else {
+                            if (restStartTs !== null && (pts[i].ts - restStartTs) >= 240000) {
+                                const seg = pts.slice(blockStartIdx, restStartIdx);
+                                if (seg.length >= 2 && (seg[seg.length - 1].ts - seg[0].ts) >= 480000) {
+                                    blocks.push(seg);
+                                }
+                                blockStartIdx = i;
+                            }
+                            restStartTs = null;
+                        }
+                    }
+
+                    const tailEnd = restStartTs !== null && (pts[pts.length - 1].ts - restStartTs) >= 240000 ? restStartIdx : pts.length;
+                    const finalSeg = pts.slice(blockStartIdx, tailEnd);
+                    if (finalSeg.length >= 2 && (finalSeg[finalSeg.length - 1].ts - finalSeg[0].ts) >= 480000) {
+                        blocks.push(finalSeg);
+                    }
+
+                    if (blocks.length > 1) {
+                        modeLabel = `${blocks.length} Auto-Sliced Match Blocks`;
+                        blocks.forEach((seg, idx) => {
+                            const s = summarizePoints(seg);
+                            slices.push({
+                                label: `Block ${idx + 1}`,
+                                durationMin: s.durationMin,
+                                avgHr: s.avgHr,
+                                maxHr: s.maxHr,
+                                z45Min: s.z45Min,
+                                loadOrder: orderLabels[Math.min(idx, orderLabels.length - 1)]
+                            });
+                        });
+                    } else {
+                        modeLabel = 'Single Continuous Session';
+                    }
+                }
+
+                slices.push({
+                    label: slices.length > 0 ? 'Full Day Total' : 'Full Session',
+                    durationMin: fullStats.durationMin,
+                    avgHr: fullStats.avgHr,
+                    maxHr: fullStats.maxHr,
+                    z45Min: fullStats.z45Min,
+                    loadOrder: slices.length > 0 ? 'Bulk Court Day' : 'Fresh (Match 1)'
+                });
+            }
+
+            return { slices, modeLabel, activityDate };
+        }
+
+        function renderTcxSliceChips(modeLabel, activeIdx = 0) {
+            const container = document.getElementById('tcx-slices-container');
+            const header = document.getElementById('tcx-slices-header');
+            const list = document.getElementById('tcx-slices-list');
+            if (!container || !list) return;
+
+            container.classList.remove('hidden');
+            if (header) header.innerText = `T-Rex 3 .TCX (${modeLabel}) — Tap slice to assign:`;
+
+            list.innerHTML = parsedTcxSlices.map((sl, idx) => {
+                const isActive = idx === activeIdx;
+                return `
+                    <button type="button" onclick="applyTcxSliceToForm(${idx})"
+                            class="px-2 py-1 rounded text-[10px] font-mono transition-all border ${isActive ? 'bg-sage-primary text-white border-sage-accent font-bold' : 'bg-navy-slate text-beige-muted border-navy-muted/40 hover:text-white'}">
+                        ${escapeHtml(sl.label)}: ${sl.durationMin}m • ${sl.avgHr}/${sl.maxHr}bpm
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function applyTcxSliceToForm(idx) {
+            const sl = parsedTcxSlices[idx];
+            if (!sl) return;
+
+            const avgEl = document.getElementById('session-avg-hr');
+            const maxEl = document.getElementById('session-max-hr');
+            const durEl = document.getElementById('session-duration-min');
+            const orderEl = document.getElementById('session-load-order');
+            const z45El = document.getElementById('session-z45-min');
+
+            if (avgEl) avgEl.value = sl.avgHr || '';
+            if (maxEl) maxEl.value = sl.maxHr || '';
+            if (durEl) durEl.value = sl.durationMin || '';
+            if (orderEl && sl.loadOrder) orderEl.value = sl.loadOrder;
+            if (z45El) z45El.value = sl.z45Min || '';
+
+            const headerText = document.getElementById('tcx-slices-header')?.innerText.replace('T-Rex 3 .TCX (', '').split(')')[0] || 'TCX';
+            renderTcxSliceChips(headerText, idx);
+            updateSidebarHrSummary();
+        }
+
+        // ==========================================
+        // STAGED .TCX WORKBENCH & RETROACTIVE HR MAPPER
+        // ==========================================
+        function renderStagedTcxWorkbench() {
+            const wb = document.getElementById('staged-tcx-workbench');
+            if (!wb) return;
+
+            if (!parsedTcxSlices || parsedTcxSlices.length === 0) {
+                wb.classList.add('hidden');
+                wb.innerHTML = '';
+                return;
+            }
+
+            wb.classList.remove('hidden');
+
+            // Prioritize existing logs from the same date as the .TCX workout
+            const sortedLogs = [...appState.sessionLogs].sort((a, b) => {
+                const aMatch = parsedTcxActivityDate && a.date === parsedTcxActivityDate ? 1 : 0;
+                const bMatch = parsedTcxActivityDate && b.date === parsedTcxActivityDate ? 1 : 0;
+                return bMatch - aMatch;
             });
 
-            discoveredModels.forEach(m => {
-                if (!seenIds.has(m.id) && m.id.startsWith('gemini-')) {
-                    seenIds.add(m.id);
-                    options.push(`<option value="${escapeHtml(m.id)}">${escapeHtml((m.displayName || m.id) + ' (' + m.id + ') ✓ Verified')}</option>`);
+            const logOptionsHtml = sortedLogs.length > 0
+                ? sortedLogs.map(s => {
+                    const isSameDay = parsedTcxActivityDate && s.date === parsedTcxActivityDate;
+                    const hasHr = s.hrData && (s.hrData.avgHr || s.hrData.maxHr);
+                    const label = `${isSameDay ? '★ ' : ''}${s.date} • ${s.opponentName || s.type}${s.scoreline ? ' (' + s.scoreline + ')' : ''}${hasHr ? ' [Has HR]' : ''}`;
+                    return `<option value="${escapeHtml(s.id)}">${escapeHtml(label)}</option>`;
+                }).join('')
+                : `<option value="">No existing logs yet</option>`;
+
+            wb.innerHTML = `
+                <div class="flex items-start justify-between gap-2 pb-2 border-b border-navy-slate">
+                    <div>
+                        <div class="text-xs font-extrabold text-sage-accent flex items-center gap-1.5">
+                            <i data-lucide="heart-pulse" class="w-4 h-4 text-red-400"></i>
+                            <span>Staged T-Rex 3 .TCX (${escapeHtml(parsedTcxModeLabel || 'Parsed')})</span>
+                        </div>
+                        <div class="text-[10px] text-beige-muted mt-0.5">
+                            ${parsedTcxActivityDate ? `Workout Date: <strong>${escapeHtml(parsedTcxActivityDate)}</strong> • ` : ''}Attach each slice to an existing match log or pre-fill a new session:
+                        </div>
+                    </div>
+                    <button type="button" onclick="clearTcxSlices()" class="text-[10px] text-beige-muted hover:text-white underline flex-shrink-0">Dismiss</button>
+                </div>
+
+                <div class="space-y-2">
+                    ${parsedTcxSlices.map((sl, idx) => `
+                        <div class="bg-navy-slate/90 border border-navy-muted/30 rounded-lg p-2.5 space-y-2 text-[11px]">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="font-bold text-white">${escapeHtml(sl.label)}</span>
+                                    <span class="font-mono text-[10px] bg-navy-deep text-sage-accent px-1.5 py-0.5 rounded">${sl.durationMin}m</span>
+                                    <span class="font-mono text-[10px] bg-red-950/80 text-red-300 border border-red-500/30 px-1.5 py-0.5 rounded">❤️ Avg ${sl.avgHr} / Max ${sl.maxHr} bpm</span>
+                                    ${sl.z45Min ? `<span class="font-mono text-[10px] text-amber-300">Z4/5: ${sl.z45Min}m</span>` : ''}
+                                </div>
+                                <button type="button" onclick="fillNewFormFromStagedSlice(${idx})" class="px-2 py-0.5 bg-navy-deep hover:bg-navy-muted/40 text-beige-card border border-navy-muted/40 rounded text-[10px] font-semibold">
+                                    Fill New Form
+                                </button>
+                            </div>
+                            ${sortedLogs.length > 0 ? `
+                                <div class="flex items-center gap-1.5">
+                                    <select id="tcx-target-select-${idx}" class="flex-1 min-w-0 bg-navy-deep border border-navy-muted/40 rounded-lg px-2 py-1 text-[11px] text-beige-card focus:outline-none focus:border-sage-accent">
+                                        ${logOptionsHtml}
+                                    </select>
+                                    <button type="button" onclick="attachStagedSliceToExistingLog(${idx})" class="px-2.5 py-1 bg-sage-primary hover:bg-sage-dark text-white font-bold text-[10px] rounded-lg flex-shrink-0 transition-colors">
+                                        Attach
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function fillNewFormFromStagedSlice(idx) {
+            const detailsEl = document.getElementById('trex-hr-details');
+            if (detailsEl) detailsEl.open = true;
+            if (parsedTcxActivityDate) {
+                const dateInput = document.getElementById('session-date-input');
+                if (dateInput) dateInput.value = parsedTcxActivityDate;
+            }
+            renderTcxSliceChips(parsedTcxModeLabel || 'TCX', idx);
+            applyTcxSliceToForm(idx);
+            showToast(`Loaded "${parsedTcxSlices[idx]?.label}" into the New Session form above.`, "info");
+        }
+
+        function attachStagedSliceToExistingLog(sliceIdx) {
+            const sl = parsedTcxSlices[sliceIdx];
+            const selectEl = document.getElementById(`tcx-target-select-${sliceIdx}`);
+            const targetLogId = selectEl ? selectEl.value : '';
+            if (!sl || !targetLogId) {
+                showToast("Select an existing session log to attach this slice.", "error");
+                return;
+            }
+
+            const log = appState.sessionLogs.find(s => s.id === targetLogId);
+            if (!log) return;
+
+            log.hrData = {
+                avgHr: sl.avgHr || null,
+                maxHr: sl.maxHr || null,
+                durationMin: sl.durationMin || null,
+                z45Min: sl.z45Min || null,
+                loadOrder: sl.loadOrder || 'Fresh (Match 1)'
+            };
+
+            saveState(true);
+            showToast(`Attached ${sl.label} (${sl.avgHr}/${sl.maxHr} bpm) to ${log.date} (${log.opponentName || log.type})! Click ✨ on that card to re-reflect with HR.`, "success");
+        }
+
+        function openRetroHrModal(sessionId) {
+            const log = appState.sessionLogs.find(s => s.id === sessionId);
+            if (!log) return;
+
+            activeRetroSessionId = sessionId;
+            const subEl = document.getElementById('retro-hr-session-subtitle');
+            if (subEl) {
+                subEl.innerText = `${log.date} • ${log.opponentName || log.type}${log.scoreline ? ' (' + log.scoreline + ')' : ''}`;
+            }
+
+            const hr = log.hrData || {};
+            document.getElementById('retro-avg-hr').value = hr.avgHr || '';
+            document.getElementById('retro-max-hr').value = hr.maxHr || '';
+            document.getElementById('retro-duration-min').value = hr.durationMin || '';
+            document.getElementById('retro-z45-min').value = hr.z45Min || '';
+            document.getElementById('retro-load-order').value = hr.loadOrder || 'Fresh (Match 1)';
+
+            renderRetroModalSlices();
+            openModal('retro-hr-modal');
+        }
+
+        function renderRetroModalSlices() {
+            const box = document.getElementById('retro-modal-slices-box');
+            const label = document.getElementById('retro-modal-slices-label');
+            const list = document.getElementById('retro-modal-slices-list');
+            if (!box || !list) return;
+
+            if (!parsedTcxSlices || parsedTcxSlices.length === 0) {
+                box.classList.add('hidden');
+                list.innerHTML = '';
+                return;
+            }
+
+            box.classList.remove('hidden');
+            if (label) label.innerText = `Staged .TCX (${parsedTcxModeLabel || 'Parsed'}) — Tap slice to fill:`;
+            list.innerHTML = parsedTcxSlices.map((sl, idx) => `
+                <button type="button" onclick="applyStagedSliceToRetroModal(${idx})"
+                        class="px-2.5 py-1 bg-navy-slate hover:bg-sage-primary text-beige-card hover:text-white border border-navy-muted/40 rounded-lg text-[10px] font-mono transition-colors">
+                    ${escapeHtml(sl.label)}: ${sl.durationMin}m • ${sl.avgHr}/${sl.maxHr}bpm
+                </button>
+            `).join('');
+        }
+
+        function applyStagedSliceToRetroModal(sliceIdx) {
+            const sl = parsedTcxSlices[sliceIdx];
+            if (!sl) return;
+            document.getElementById('retro-avg-hr').value = sl.avgHr || '';
+            document.getElementById('retro-max-hr').value = sl.maxHr || '';
+            document.getElementById('retro-duration-min').value = sl.durationMin || '';
+            document.getElementById('retro-z45-min').value = sl.z45Min || '';
+            if (sl.loadOrder) document.getElementById('retro-load-order').value = sl.loadOrder;
+            showToast(`Applied ${sl.label} (${sl.avgHr}/${sl.maxHr} bpm) to form.`, "info");
+        }
+
+        async function saveRetroHrData(reReflect = false) {
+            const log = appState.sessionLogs.find(s => s.id === activeRetroSessionId);
+            if (!log) return;
+
+            const avgHr = document.getElementById('retro-avg-hr')?.value;
+            const maxHr = document.getElementById('retro-max-hr')?.value;
+            const durationMin = document.getElementById('retro-duration-min')?.value;
+            const z45Min = document.getElementById('retro-z45-min')?.value;
+            const loadOrder = document.getElementById('retro-load-order')?.value || 'Fresh (Match 1)';
+
+            if (!avgHr && !maxHr && !durationMin) {
+                showToast("Enter at least Avg HR, Max HR, or Duration (or pick a .TCX slice).", "error");
+                return;
+            }
+
+            log.hrData = {
+                avgHr: avgHr ? Number(avgHr) : null,
+                maxHr: maxHr ? Number(maxHr) : null,
+                durationMin: durationMin ? Number(durationMin) : null,
+                z45Min: z45Min ? Number(z45Min) : null,
+                loadOrder
+            };
+
+            closeModal('retro-hr-modal');
+            saveState(!reReflect);
+
+            if (reReflect) {
+                await analyzeExistingSessionLog(log.id);
+            } else {
+                showToast(`Saved T-Rex 3 HR (${log.hrData.avgHr || '-'}/${log.hrData.maxHr || '-'} bpm) to ${log.date} session!`, "success");
+            }
+        }
+
+        function removeRetroHrData() {
+            const log = appState.sessionLogs.find(s => s.id === activeRetroSessionId);
+            if (!log) return;
+            log.hrData = null;
+            closeModal('retro-hr-modal');
+            saveState(true);
+            showToast("Cleared HR data from this session.", "info");
+        }
+
+        // ==========================================
+        // CURATED DRILL SOURCE LIBRARY (PLAYBOOK)
+        // ==========================================
+        function setDrillPillarFilter(pillar) {
+            activeDrillPillarFilter = pillar || 'ALL';
+            renderDrillLibrary();
+        }
+
+        function handleAddSourceDrill(event) {
+            event.preventDefault();
+            const name = document.getElementById('drill-name-input')?.value.trim();
+            const pillar = document.getElementById('drill-pillar-input')?.value || 'Baseline <1m';
+            const setup = document.getElementById('drill-setup-input')?.value || 'Hitting Partner';
+            const duration = document.getElementById('drill-duration-input')?.value.trim();
+            const description = document.getElementById('drill-desc-input')?.value.trim();
+            if (!name || !description) return;
+
+            appState.drillLibrary.unshift({
+                id: 'drill-' + Date.now(),
+                name,
+                pillar,
+                setup,
+                duration: duration || '15 mins',
+                description,
+                isCustom: true
+            });
+
+            document.getElementById('add-drill-form').reset();
+            closeModal('add-drill-modal');
+            saveState(true);
+            showToast(`Added "${name}" to your Curated Drill Source Library!`, "success");
+        }
+
+        function deleteSourceDrill(drillId) {
+            appState.drillLibrary = appState.drillLibrary.filter(d => d.id !== drillId);
+            saveState(true);
+            showToast("Drill removed from source library.", "info");
+        }
+
+        function renderDrillLibrary() {
+            const container = document.getElementById('drill-library-container');
+            const filterContainer = document.getElementById('drill-pillar-filters');
+            if (!container) return;
+
+            const activePrescribedIds = new Set(
+                (appState.blockSynthesis?.selectedDrills || []).map(d => d.drillId)
+            );
+
+            const pillars = ['ALL', ...new Set(appState.drillLibrary.map(d => d.pillar))];
+            if (filterContainer) {
+                filterContainer.innerHTML = pillars.map(p => {
+                    const count = p === 'ALL' ? appState.drillLibrary.length : appState.drillLibrary.filter(d => d.pillar === p).length;
+                    const isSel = activeDrillPillarFilter === p;
+                    return `<button type="button" onclick="setDrillPillarFilter('${escapeHtml(p)}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${isSel ? 'bg-navy-deep text-white' : 'bg-beige-muted text-navy-slate hover:bg-beige-border'}">${escapeHtml(p === 'ALL' ? 'All Pillars' : p)} (${count})</button>`;
+                }).join('');
+            }
+
+            const filtered = activeDrillPillarFilter === 'ALL'
+                ? appState.drillLibrary
+                : appState.drillLibrary.filter(d => d.pillar === activeDrillPillarFilter);
+
+            container.innerHTML = filtered.map(drill => {
+                const isActiveFocus = activePrescribedIds.has(drill.id);
+                return `
+                    <div id="source-drill-${escapeHtml(drill.id)}" class="rounded-2xl p-4 border transition-all flex flex-col justify-between space-y-2.5 ${isActiveFocus ? 'bg-sage-light/80 border-sage-primary ring-2 ring-sage-primary/30' : 'bg-beige-muted border-beige-border'}">
+                        <div class="space-y-1.5">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="font-extrabold text-sm text-navy-deep">${escapeHtml(drill.name)}</div>
+                                ${drill.isCustom ? `
+                                    <button type="button" onclick="deleteSourceDrill('${escapeHtml(drill.id)}')" title="Delete custom drill" class="p-1 text-navy-muted hover:text-red-600 rounded">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span class="text-[10px] font-bold bg-navy-deep text-beige-card px-2 py-0.5 rounded">${escapeHtml(drill.pillar)}</span>
+                                <span class="text-[10px] font-mono bg-beige-card text-navy-slate border border-beige-border px-2 py-0.5 rounded">${escapeHtml(drill.setup)}</span>
+                                <span class="text-[10px] font-mono bg-beige-card text-sage-dark border border-beige-border px-2 py-0.5 rounded">${escapeHtml(drill.duration)}</span>
+                                ${isActiveFocus ? `<span class="text-[10px] font-bold bg-sage-primary text-white px-2 py-0.5 rounded">★ Active Block Drill</span>` : ''}
+                            </div>
+                            <p class="text-xs text-navy-slate leading-relaxed pt-1">${escapeHtml(drill.description)}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // ==========================================
+        // ROLLING 10-15 MATCH TRAINING BLOCK SYNTHESIZER
+        // ==========================================
+        function computeRollingTelemetry(windowLogs) {
+            const sums = { dropshot: 0, positioning: 0, backhand: 0, serve: 0 };
+            let ratedCount = 0;
+
+            let hrCount = 0;
+            let avgHrSum = 0;
+            let maxHrPeak = 0;
+            let z45Total = 0;
+            let freshRatingSum = 0, freshRatingCount = 0;
+            let lateRatingSum = 0, lateRatingCount = 0;
+
+            const stalledExperiments = [];
+
+            windowLogs.forEach(s => {
+                const r = s.ratings || {};
+                const hasR = s.ratings && (r.dropshot || r.positioning || r.backhand || r.serve);
+                let sessionAvg = null;
+                if (hasR) {
+                    ratedCount += 1;
+                    sums.dropshot += Number(r.dropshot || 0);
+                    sums.positioning += Number(r.positioning || 0);
+                    sums.backhand += Number(r.backhand || 0);
+                    sums.serve += Number(r.serve || 0);
+                    sessionAvg = (Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4;
+                }
+
+                const hr = s.hrData || {};
+                if (hr.avgHr || hr.maxHr) {
+                    hrCount += 1;
+                    if (hr.avgHr) avgHrSum += Number(hr.avgHr);
+                    if (hr.maxHr && Number(hr.maxHr) > maxHrPeak) maxHrPeak = Number(hr.maxHr);
+                    if (hr.z45Min) z45Total += Number(hr.z45Min);
+                }
+
+                if (sessionAvg !== null && hr.loadOrder) {
+                    if (hr.loadOrder.indexOf('Fresh') === 0) {
+                        freshRatingSum += sessionAvg;
+                        freshRatingCount += 1;
+                    } else if (hr.loadOrder.indexOf('Mid') === 0 || hr.loadOrder.indexOf('Late') === 0) {
+                        lateRatingSum += sessionAvg;
+                        lateRatingCount += 1;
+                    }
+                }
+
+                if (s.tacticalIdea && (s.ideaOutcome === 'Mixed / Needs Tweak' || s.ideaOutcome === "Didn't Work")) {
+                    stalledExperiments.push(`${s.date} (${s.opponentName || 'Session'}): "${s.tacticalIdea}" -> ${s.ideaOutcome}`);
                 }
             });
 
-            if (!seenIds.has(currentVal)) {
-                options.unshift(`<option value="${escapeHtml(currentVal)}">${escapeHtml(currentVal)}</option>`);
-            }
+            const pillarAvgs = ratedCount > 0 ? [
+                { pillar: 'Drop-Shot Braking', avg: Number((sums.dropshot / ratedCount).toFixed(2)) },
+                { pillar: 'Baseline <1m', avg: Number((sums.positioning / ratedCount).toFixed(2)) },
+                { pillar: '2HB Depth', avg: Number((sums.backhand / ratedCount).toFixed(2)) },
+                { pillar: '2nd Serve', avg: Number((sums.serve / ratedCount).toFixed(2)) }
+            ].sort((a, b) => a.avg - b.avg) : [];
 
-            select.innerHTML = options.join('');
-            select.value = currentVal;
-        }
-
-        function handleAiModelChange(modelId) {
-            appState.selectedAiModel = modelId;
-            saveState(false);
-
-            if (modelId === 'local-coach-ai') {
-                updateModelAvailabilityUI('available', 'Built-in Offline Coach AI • Ready (Local)');
-            } else if (!appState.geminiApiKey) {
-                updateModelAvailabilityUI('nokey', 'No Gemini API key set • Will use Offline fallback or add key');
-            } else {
-                updateModelAvailabilityUI('idle', `Selected ${modelId} • Will verify before execution`);
-            }
-        }
-
-        function updateModelAvailabilityUI(status, message, extraHtml = '') {
-            const el = document.getElementById('model-availability-status');
-            if (!el) return;
-
-            const styles = {
-                idle: { cls: 'text-navy-muted', icon: 'shield-question', iconCls: 'text-sage-primary' },
-                checking: { cls: 'text-sage-dark font-semibold', icon: 'loader-2', iconCls: 'text-sage-primary animate-spin' },
-                available: { cls: 'text-emerald-700 font-semibold', icon: 'check-circle-2', iconCls: 'text-emerald-600' },
-                unavailable: { cls: 'text-red-700 font-semibold', icon: 'alert-circle', iconCls: 'text-red-600' },
-                nokey: { cls: 'text-amber-700 font-medium', icon: 'key-round', iconCls: 'text-amber-600' }
+            return {
+                windowSize: windowLogs.length,
+                ratedCount,
+                pillarAvgs,
+                hrCount,
+                meanAvgHr: hrCount > 0 ? Math.round(avgHrSum / hrCount) : null,
+                maxHrPeak: maxHrPeak || null,
+                z45Total,
+                freshAvg: freshRatingCount > 0 ? Number((freshRatingSum / freshRatingCount).toFixed(2)) : null,
+                lateAvg: lateRatingCount > 0 ? Number((lateRatingSum / lateRatingCount).toFixed(2)) : null,
+                stalledExperiments
             };
-            const cfg = styles[status] || styles.idle;
+        }
 
-            el.className = `text-[10px] flex items-center justify-between gap-2 pt-0.5 flex-wrap ${cfg.cls}`;
-            el.innerHTML = `
-                <span class="flex items-center gap-1">
-                    <i data-lucide="${cfg.icon}" class="w-3 h-3 flex-shrink-0 ${cfg.iconCls}"></i>
-                    <span>${escapeHtml(message)}</span>
-                </span>
-                ${extraHtml}
+        function generateLocalBlockSynthesis(windowLogs, telemetry, modelUsed = 'local-coach-ai') {
+            const weakest = telemetry.pillarAvgs[0] || { pillar: 'Baseline <1m', avg: 3.5 };
+            const secondWeakest = telemetry.pillarAvgs[1] || { pillar: '2HB Depth', avg: 3.8 };
+
+            const primaryDrill = appState.drillLibrary.find(d => d.pillar === weakest.pillar) || appState.drillLibrary[0];
+            const secondaryDrill = appState.drillLibrary.find(d => d.pillar === secondWeakest.pillar && d.id !== primaryDrill.id) || appState.drillLibrary[1];
+
+            const selectedDrills = [];
+            if (primaryDrill) {
+                selectedDrills.push({
+                    drillId: primaryDrill.id,
+                    drillName: primaryDrill.name,
+                    targetMetric: `${weakest.pillar} (${weakest.avg}/5 rolling avg)`,
+                    reason: `Lowest rolling pillar across your last ${telemetry.windowSize} sessions. Targets the exact mechanical/positioning leak logged across your recent matches.`
+                });
+            }
+            if (secondaryDrill) {
+                selectedDrills.push({
+                    drillId: secondaryDrill.id,
+                    drillName: secondaryDrill.name,
+                    targetMetric: `${secondWeakest.pillar} (${secondWeakest.avg}/5 rolling avg)`,
+                    reason: `Second-lowest rolling pillar in your current ${telemetry.windowSize}-session block; pairs directly with your primary drill to stabilize rally depth.`
+                });
+            }
+
+            let hrFatigueInsight = 'No Amazfit T-Rex 3 HR data logged in this window yet. Upload a .TCX or enter Avg/Max HR to separate technical errors from late-session cardiac fatigue.';
+            if (telemetry.hrCount > 0) {
+                const fatigueDelta = (telemetry.freshAvg !== null && telemetry.lateAvg !== null)
+                    ? ` Execution ratings shifted from ${telemetry.freshAvg}/5 when Fresh (Match 1) to ${telemetry.lateAvg}/5 in Match 2+ (${telemetry.lateAvg < telemetry.freshAvg - 0.3 ? 'confirming late-session fatigue drop-off' : 'showing strong cardiac durability'}).`
+                    : '';
+                hrFatigueInsight = `Across ${telemetry.hrCount} HR-tracked sessions, mean Avg HR was ${telemetry.meanAvgHr} bpm (peak ${telemetry.maxHrPeak} bpm, ${telemetry.z45Total} total Zone 4/5 mins).${fatigueDelta}`;
+            }
+
+            return {
+                generatedAt: new Date().toISOString(),
+                windowSize: telemetry.windowSize,
+                modelUsed,
+                executiveDiagnosis: `Across your last ${telemetry.windowSize} sessions (${telemetry.ratedCount} rated), "${weakest.pillar}" (${weakest.avg}/5) and "${secondWeakest.pillar}" (${secondWeakest.avg}/5) are your primary bottlenecks. Lock in these 2 source drills for your next 3–4 hitting sessions before switching focus.`,
+                hrFatigueInsight,
+                selectedDrills
+            };
+        }
+
+        async function runTrainingBlockSynthesis() {
+            const windowLogs = appState.sessionLogs.slice(0, 15);
+            if (windowLogs.length === 0) {
+                showToast("Log at least 1 session first so the synthesizer has match data to analyze.", "error");
+                return;
+            }
+
+            const btn = document.getElementById('btn-synthesize-block');
+            const body = document.getElementById('block-synthesis-body');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Synthesizing...</span>`;
+            }
+            if (body) {
+                body.innerHTML = `<div class="py-4 text-center text-sage-accent font-semibold">Diagnosing rolling ${windowLogs.length}-session patterns &amp; matching against your Curated Drill Source...</div>`;
+            }
+
+            const telemetry = computeRollingTelemetry(windowLogs);
+            const selectedModel = appState.selectedAiModel || 'gemini-3.8-flash';
+            let synthesisResult = null;
+
+            if (selectedModel !== 'local-coach-ai' && appState.geminiApiKey) {
+                const availability = await verifySelectedModelAvailability(false);
+                if (availability.available) {
+                    const libraryCatalogText = appState.drillLibrary.map(d =>
+                        `- ID: "${d.id}" | Name: "${d.name}" | Pillar: ${d.pillar} | Setup: ${d.setup} | Duration: ${d.duration} | Rule: ${d.description}`
+                    ).join('\n');
+
+                    const logsDigestText = windowLogs.map((s, idx) => {
+                        const r = s.ratings || {};
+                        const hr = s.hrData || {};
+                        const hrStr = (hr.avgHr || hr.maxHr)
+                            ? `HR: Avg ${hr.avgHr || '-'} / Max ${hr.maxHr || '-'} bpm (${hr.durationMin || '-'}m, ${hr.loadOrder || 'Unspecified'})`
+                            : 'HR: Not logged';
+                        return `[#${idx + 1} ${s.date}] vs ${s.opponentName || 'Unspecified'} (${s.opponentStyle || '-'}) | Idea: "${s.tacticalIdea || 'None'}" -> ${s.ideaOutcome || '-'} | Ratings(Drop=${r.dropshot || '-'}, <1m=${r.positioning || '-'}, 2HB=${r.backhand || '-'}, 2ndSrv=${r.serve || '-'}) | ${hrStr} | Notes: "${s.notes}"`;
+                    }).join('\n');
+
+                    const systemPrompt = `You are an elite NTRP 4.0 tennis performance analyst. Analyze the player's rolling window of up to 15 sessions (including Amazfit T-Rex 3 HR load and tactical ratings).
+CRITICAL CONSTRAINT: You MUST select 1 to 2 drills STRICTLY from the provided CURATED DRILL SOURCE LIBRARY using their exact "id" and "name". Do NOT invent new drills.
+Return clean plain-text JSON (no markdown asterisks) matching this schema:
+{
+  "executiveDiagnosis": "2-3 sentence diagnosis of recurring bottlenecks across the rolling window",
+  "hrFatigueInsight": "1-2 sentence insight connecting Amazfit T-Rex 3 HR / Match Order load to stroke/footwork breakdown (or noting if HR data is sparse)",
+  "selectedDrills": [
+    {
+      "drillId": "exact id from library",
+      "drillName": "exact name from library",
+      "targetMetric": "e.g. 2HB Depth (2.8/5 rolling avg)",
+      "reason": "Specific evidence from the logged matches/opponents explaining why this source drill was chosen"
+    }
+  ]
+}`;
+
+                    const promptText = `ROLLING TELEMETRY SUMMARY (${telemetry.windowSize} sessions):
+Pillar Averages: ${telemetry.pillarAvgs.map(p => `${p.pillar}=${p.avg}/5`).join(', ') || 'Unrated'}
+HR Summary: ${telemetry.hrCount} sessions with HR | Mean Avg HR=${telemetry.meanAvgHr || 'N/A'} | Peak Max HR=${telemetry.maxHrPeak || 'N/A'} | Fresh Avg Rating=${telemetry.freshAvg || 'N/A'} vs Late/Mid Avg Rating=${telemetry.lateAvg || 'N/A'}
+
+SESSION LOGS (NEWEST FIRST):
+${logsDigestText}
+
+CURATED DRILL SOURCE LIBRARY (PICK 1-2 EXACT IDs ONLY):
+${libraryCatalogText}`;
+
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(selectedModel)}:generateContent?key=${encodeURIComponent(appState.geminiApiKey)}`;
+                    try {
+                        const res = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{ parts: [{ text: promptText }] }],
+                                systemInstruction: { parts: [{ text: systemPrompt }] },
+                                generationConfig: { responseMimeType: "application/json" }
+                            })
+                        });
+                        if (res.ok) {
+                            const jsonRes = await res.json();
+                            let rawText = jsonRes.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                            rawText = rawText.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
+                            const parsed = JSON.parse(rawText);
+                            const validIds = new Set(appState.drillLibrary.map(d => d.id));
+                            const cleanDrills = (Array.isArray(parsed.selectedDrills) ? parsed.selectedDrills : [])
+                                .filter(sd => validIds.has(sd.drillId))
+                                .slice(0, 2)
+                                .map(sd => {
+                                    const libItem = appState.drillLibrary.find(d => d.id === sd.drillId);
+                                    return {
+                                        drillId: sd.drillId,
+                                        drillName: libItem ? libItem.name : cleanMarkdownText(sd.drillName),
+                                        targetMetric: cleanMarkdownText(sd.targetMetric || libItem?.pillar || ''),
+                                        reason: cleanMarkdownText(sd.reason || '')
+                                    };
+                                });
+
+                            if (cleanDrills.length > 0) {
+                                synthesisResult = {
+                                    generatedAt: new Date().toISOString(),
+                                    windowSize: windowLogs.length,
+                                    modelUsed: selectedModel,
+                                    executiveDiagnosis: cleanMarkdownText(parsed.executiveDiagnosis || ''),
+                                    hrFatigueInsight: cleanMarkdownText(parsed.hrFatigueInsight || ''),
+                                    selectedDrills: cleanDrills
+                                };
+                            }
+                        }
+                    } catch (err) {
+                        console.warn("Block synthesis Gemini fallback:", err);
+                    }
+                }
+            }
+
+            if (!synthesisResult) {
+                await new Promise(r => setTimeout(r, 300));
+                synthesisResult = generateLocalBlockSynthesis(windowLogs, telemetry, 'local-coach-ai');
+            }
+
+            appState.blockSynthesis = synthesisResult;
+            saveState(true);
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>Analyze Last 10–15</span>`;
+            }
+            showToast(`Synthesized last ${windowLogs.length} sessions & prescribed ${synthesisResult.selectedDrills.length} source drill(s)!`, "success");
+        }
+
+        function jumpToSourceDrill(drillId) {
+            switchTab('playbook');
+            setDrillPillarFilter('ALL');
+            setTimeout(() => {
+                const el = document.getElementById(`source-drill-${drillId}`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        }
+
+        function renderBlockSynthesisCard() {
+            const badge = document.getElementById('block-window-badge');
+            const body = document.getElementById('block-synthesis-body');
+            const windowCount = Math.min(appState.sessionLogs.length, 15);
+            if (badge) badge.innerText = `${windowCount} / 15 Logs`;
+            if (!body) return;
+
+            const syn = appState.blockSynthesis;
+            if (!syn || !Array.isArray(syn.selectedDrills) || syn.selectedDrills.length === 0) {
+                body.innerHTML = `
+                    <div class="bg-navy-slate/70 border border-navy-muted/30 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <div class="font-bold text-white">No Active Training Block Prescription Yet</div>
+                            <p class="text-[11px] text-beige-muted leading-relaxed">
+                                Instead of generating a new drill after every single match, click <strong>"Analyze Last 10–15"</strong> to diagnose your rolling match telemetry (${windowCount} session${windowCount === 1 ? '' : 's'} currently available) and lock in 1–2 drills from your Playbook Source Library.
+                            </p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const dateLabel = syn.generatedAt ? new Date(syn.generatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Recent';
+            body.innerHTML = `
+                <div class="bg-navy-slate/80 border border-sage-primary/30 rounded-xl p-3.5 space-y-2">
+                    <div class="flex items-center justify-between text-[10px] font-mono text-sage-accent">
+                        <span>DIAGNOSIS (${syn.windowSize}-SESSION ROLLING WINDOW • ${escapeHtml(dateLabel)})</span>
+                        <span>${escapeHtml(syn.modelUsed || 'Coach AI')}</span>
+                    </div>
+                    <p class="text-xs text-white leading-relaxed">${escapeHtml(syn.executiveDiagnosis)}</p>
+                    ${syn.hrFatigueInsight ? `
+                        <div class="text-[11px] text-beige-muted bg-navy-deep/60 border border-navy-muted/30 rounded-lg p-2.5 flex items-start gap-2">
+                            <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5"></i>
+                            <span>${escapeHtml(syn.hrFatigueInsight)}</span>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    ${syn.selectedDrills.map((sd, i) => {
+                        const lib = appState.drillLibrary.find(d => d.id === sd.drillId);
+                        return `
+                            <div onclick="jumpToSourceDrill('${escapeHtml(sd.drillId)}')" class="cursor-pointer bg-navy-slate hover:bg-navy-slate/70 border border-sage-primary/40 rounded-xl p-3 space-y-1.5 transition-all">
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="text-[10px] font-mono font-bold text-sage-accent uppercase">Focus Drill #${i + 1}</span>
+                                    <span class="text-[10px] font-mono bg-sage-primary/20 text-sage-accent px-1.5 py-0.5 rounded">${escapeHtml(sd.targetMetric || lib?.pillar || '')}</span>
+                                </div>
+                                <div class="font-extrabold text-xs text-white">${escapeHtml(sd.drillName)}</div>
+                                ${lib ? `<div class="text-[10px] font-mono text-beige-muted/80">${escapeHtml(lib.setup)} • ${escapeHtml(lib.duration)}</div>` : ''}
+                                <p class="text-[11px] text-beige-muted leading-snug">${escapeHtml(sd.reason)}</p>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
             `;
             if (window.lucide) lucide.createIcons();
         }
@@ -2370,25 +3568,105 @@
 
             if (presetNum === 1) {
                 if (oppEl) oppEl.value = "Budi";
-                if (styleEl) styleEl.value = "Moonballer / Drop-shotter";
-                if (scoreEl) scoreEl.value = "6-4";
-                if (ideaEl) ideaEl.value = "Hold <1m inside baseline + early split step";
+                if (styleEl) styleEl.value = "Drop-shotter / Counterpuncher";
+                if (scoreEl) scoreEl.value = "6-4, 3-6";
+                if (ideaEl) ideaEl.value = "Hold <1m baseline & read racquet deceleration";
                 if (outcomeEl) outcomeEl.value = "Worked Well";
-                notesEl.value = "Played 2 sets against Budi. He hit heavy moonballs to push me 2m behind the baseline, then disguised a forehand drop shot. Holding inside <1m of the baseline cut down the sprint distance in set 2 and saved my quads.";
+                notesEl.value = "Set 1 held <1m line well and reached 4 of 5 disguised drop shots early. Set 2 legs felt heavy after 50 mins and retreated 2m back, giving Budi room to drop shot corners.";
             } else {
                 if (oppEl) oppEl.value = "Andi";
-                if (styleEl) styleEl.value = "Lefty Counterpuncher";
-                if (scoreEl) scoreEl.value = "5-7, 6-3";
-                if (ideaEl) ideaEl.value = "Heavy crosscourt loop to BH + quiet chin";
-                if (outcomeEl) outcomeEl.value = "Worked Well";
-                notesEl.value = "Tested heavy crosscourt loops to Andi's backhand. When I rushed my 2HB on high balls, 4 shots sailed 1 foot long. Keeping my chin quiet and leading with my left hand let Solinco Tour Bite 17g dip the ball right onto his baseline.";
+                if (styleEl) styleEl.value = "Heavy Moonballer";
+                if (scoreEl) scoreEl.value = "5-7, 6-4";
+                if (ideaEl) ideaEl.value = "2HB quiet chin + left-hand upward lead on high balls";
+                if (outcomeEl) outcomeEl.value = "Mixed / Needs Tweak";
+                notesEl.value = "First 6 games sailed 4 two-handed backhands 0.5m long when lifting head early on shoulder-high moonballs. Anchored chin on front shoulder in Set 2 and depth locked inside baseline.";
+            }
+            showToast(`Loaded sample session #${presetNum}.`, "info");
+        }
+
+        function openApiKeySettings() {
+            openModal('sync-modal');
+            setTimeout(() => {
+                const input = document.getElementById('gemini-apikey-input');
+                if (input) input.focus();
+            }, 80);
+        }
+
+        function saveGeminiApiKey() {
+            const input = document.getElementById('gemini-apikey-input');
+            const key = input ? input.value.trim() : '';
+            appState.geminiApiKey = key;
+            saveState(false);
+            if (key) {
+                showToast("Gemini API key saved locally! Verifying model availability...", "success");
+                verifySelectedModelAvailability(true);
+            } else {
+                updateModelAvailabilityUI('nokey', 'No API key set • Will use Offline fallback or add key');
+                showToast("Gemini API key cleared.", "info");
             }
         }
 
-        function generateLocalCoachEvaluation(sessionCtx) {
+        function handleAiModelChange(modelId) {
+            appState.selectedAiModel = modelId || 'gemini-3.8-flash';
+            saveState(false);
+            verifySelectedModelAvailability(false);
+        }
+
+        function syncModelDropdownSelection(discoveredModels = []) {
+            const selectEl = document.getElementById('ai-model-select');
+            if (!selectEl) return;
+
+            const knownIds = new Set(AI_MODEL_CATALOG.map(m => m.id));
+            const optionsHtml = AI_MODEL_CATALOG.map(m => {
+                const isLive = discoveredModels.some(dm => dm.id === m.id);
+                const suffix = isLive ? ' ✓' : '';
+                return `<option value="${escapeHtml(m.id)}">${escapeHtml(m.label + suffix)}</option>`;
+            });
+
+            discoveredModels.forEach(dm => {
+                if (!knownIds.has(dm.id) && dm.id.startsWith('gemini-')) {
+                    optionsHtml.push(`<option value="${escapeHtml(dm.id)}">${escapeHtml(dm.displayName)} (${escapeHtml(dm.id)}) ✓</option>`);
+                }
+            });
+
+            selectEl.innerHTML = optionsHtml.join('');
+            const targetVal = appState.selectedAiModel || 'gemini-3.8-flash';
+            if (!Array.from(selectEl.options).some(o => o.value === targetVal)) {
+                const opt = document.createElement('option');
+                opt.value = targetVal;
+                opt.textContent = targetVal;
+                selectEl.insertBefore(opt, selectEl.firstChild);
+            }
+            selectEl.value = targetVal;
+        }
+
+        function updateModelAvailabilityUI(statusType, message, actionHtml = '') {
+            const statusEl = document.getElementById('model-availability-status');
+            if (!statusEl) return;
+
+            const styles = {
+                available: { icon: 'check-circle-2', color: 'text-sage-dark' },
+                checking: { icon: 'loader-2', color: 'text-sage-primary animate-spin' },
+                unavailable: { icon: 'alert-circle', color: 'text-red-600' },
+                nokey: { icon: 'key-round', color: 'text-amber-700' }
+            };
+            const cfg = styles[statusType] || styles.nokey;
+
+            statusEl.innerHTML = `
+                <span class="flex items-center gap-1 ${cfg.color} font-medium truncate">
+                    <i data-lucide="${cfg.icon}" class="w-3 h-3 flex-shrink-0"></i>
+                    <span class="truncate">${escapeHtml(message)}</span>
+                </span>
+                ${actionHtml ? `<span class="flex-shrink-0">${actionHtml}</span>` : ''}
+            `;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function generateLocalCoachReflection(sessionCtx) {
             const notes = sessionCtx.notes || '';
             const lower = notes.toLowerCase();
             const r = sessionCtx.ratings || {};
+            const hr = sessionCtx.hrData || {};
 
             const isDropShot = lower.includes('drop') || lower.includes('sprint') || lower.includes('moonball') || Number(r.dropshot || 5) <= 3;
             const isBackhand = lower.includes('backhand') || lower.includes('2hb') || lower.includes('long') || Number(r.backhand || 5) <= 3;
@@ -2398,64 +3676,57 @@
             if (isDropShot) focusTags.push("Early Split-Step on Racquet Deceleration");
             if (isBackhand) focusTags.push("Left-Hand Lead & Quiet Chin on 2HB");
             if (isServe) focusTags.push("12:30 Toss & 7-to-1 Topspin Brush");
+            if (hr.avgHr || hr.maxHr) focusTags.push(`HR Load: ${hr.avgHr || '-'}/${hr.maxHr || '-'} bpm`);
             if (focusTags.length < 3) {
                 focusTags.push("Hold <1m Baseline Recovery Line");
-                focusTags.push("Eccentric Quad Braking Stamina");
             }
 
-            const oppName = sessionCtx.opponentName ? `vs. ${sessionCtx.opponentName}` : 'in this session';
-            const ideaSnippet = sessionCtx.tacticalIdea
-                ? `Your tactical test ("${sessionCtx.tacticalIdea}" — ${sessionCtx.ideaOutcome}) gave actionable baseline data.`
-                : 'Establishing a clear first-strike pattern early will dictate rally tempo.';
+            const oppLabel = sessionCtx.opponentName ? ` against ${sessionCtx.opponentName}` : '';
+            const whatWorked = sessionCtx.tacticalIdea && sessionCtx.ideaOutcome === 'Worked Well'
+                ? `Your tactical test ("${sessionCtx.tacticalIdea}") paid off${oppLabel}—staying intentional on that pattern kept rallies on your terms.`
+                : `You captured clear telemetry${oppLabel} with your RF01 Pro + Tour Bite 17g setup, giving you a clean baseline to compare across your 10–15 match block.`;
 
-            const opponentAdjustment = sessionCtx.opponentName
-                ? `Against ${sessionCtx.opponentName}${sessionCtx.opponentStyle ? ` (${sessionCtx.opponentStyle})` : ''}, hold <1m inside the baseline on neutral balls to take away their drop-shot angle, and redirect heavy topspin loops deep to their weaker wing before stepping in.`
-                : `Hold <1m inside the baseline on high balls so drop shots require only a 5–6m forward burst rather than a 15m sprint.`;
+            let frictionPattern = '';
+            if (hr.avgHr && Number(hr.avgHr) >= 148 && (hr.loadOrder || '').indexOf('Late') === 0) {
+                frictionPattern = `High cumulative cardiac load (Avg ${hr.avgHr} bpm, ${hr.loadOrder}) likely slowed your 100kg eccentric braking and caused your chest/chin to lift late on high balls.`;
+            } else if (isBackhand) {
+                frictionPattern = `When rushed on high-bouncing balls, lifting your chin early opened your shoulders and sent 2HB shots long—a timing leak rather than a string/tension issue.`;
+            } else if (isDropShot) {
+                frictionPattern = `Giving up >1m behind the baseline forced long emergency sprints on disguised drop shots, spiking quad fatigue unnecessarily.`;
+            } else {
+                frictionPattern = `Watch for late-set recovery drift after 4+ ball rallies; keeping your split-step compact preserves energy for offensive first strikes.`;
+            }
 
-            const biomechanicalCue = isBackhand
-                ? "With your Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs, lifting your head early on high two-handed backhands opens the chest and sends shots 1–2 feet long. Anchor your chin to your front shoulder through contact and drive upward with your non-dominant left hand."
-                : "For a 100 kg athletic build, load your outside leg before contact and execute a compact split-step the instant your opponent's swing speed decelerates—this converts emergency sprints into controlled two-step recoveries.";
-
-            const recommendedDrill = isDropShot
-                ? "15-Min Cue-Read & Brake Drill: Partner feeds 3 deep crosscourt balls followed by a random disguised drop shot; trigger a forward split-step the moment their racquet face opens."
-                : "15-Min Figure-8 Baseline Depth Drill: Alternate heavy crosscourt 2HB topspin and deep down-the-line drives aiming within 1m of the baseline with zero long misses.";
+            const nextHitQuestion = isDropShot
+                ? `Next hit: Can you spot the opponent's off-hand leaving the throat 0.5 seconds earlier so your first step goes forward instead of reactive?`
+                : (isBackhand
+                    ? `Next hit: On your next 10 high backhands, what happens to your depth when you keep your chin glued to your front shoulder until the ball crosses the net?`
+                    : `Next hit: Which single first-strike pattern gave you the easiest ball to attack without over-sprinting?`);
 
             return {
-                verdict: `Strong ${sessionCtx.type.toLowerCase()} log ${oppName}. ${ideaSnippet}`,
+                whatWorked: cleanMarkdownText(whatWorked),
+                frictionPattern: cleanMarkdownText(frictionPattern),
+                nextHitQuestion: cleanMarkdownText(nextHitQuestion),
                 focusTags: focusTags.slice(0, 3),
-                opponentAdjustment: cleanMarkdownText(opponentAdjustment),
-                biomechanicalCue: cleanMarkdownText(biomechanicalCue),
-                recommendedDrill: cleanMarkdownText(recommendedDrill),
                 modelUsed: 'local-coach-ai'
             };
         }
 
-        function parseAndNormalizeAiResponse(rawObj, sessionCtx, modelUsed) {
-            const fallback = generateLocalCoachEvaluation(sessionCtx);
+        function parseAndNormalizeAiReflection(rawObj, sessionCtx, modelUsed) {
+            const fallback = generateLocalCoachReflection(sessionCtx);
             if (!rawObj || typeof rawObj !== 'object') return fallback;
 
-            const verdict = cleanMarkdownText(rawObj.verdict || rawObj.summary || fallback.verdict);
-            const rawTags = Array.isArray(rawObj.focusTags)
-                ? rawObj.focusTags
-                : (Array.isArray(rawObj.areasOfImprovement) ? rawObj.areasOfImprovement : fallback.focusTags);
+            const whatWorked = cleanMarkdownText(rawObj.whatWorked || rawObj.verdict || rawObj.summary || fallback.whatWorked);
+            const frictionPattern = cleanMarkdownText(rawObj.frictionPattern || rawObj.biomechanicalCue || fallback.frictionPattern);
+            const nextHitQuestion = cleanMarkdownText(rawObj.nextHitQuestion || fallback.nextHitQuestion);
+            const rawTags = Array.isArray(rawObj.focusTags) ? rawObj.focusTags : fallback.focusTags;
             const focusTags = rawTags.map(cleanMarkdownText).filter(Boolean).slice(0, 4);
 
-            const opponentAdjustment = cleanMarkdownText(
-                rawObj.opponentAdjustment || rawObj.matchupStrategy || fallback.opponentAdjustment
-            );
-            const biomechanicalCue = cleanMarkdownText(
-                rawObj.biomechanicalCue || rawObj.technicalTakeaways || fallback.biomechanicalCue
-            );
-            const recommendedDrill = cleanMarkdownText(
-                rawObj.recommendedDrill || fallback.recommendedDrill
-            );
-
             return {
-                verdict,
+                whatWorked,
+                frictionPattern,
+                nextHitQuestion,
                 focusTags: focusTags.length > 0 ? focusTags : fallback.focusTags,
-                opponentAdjustment,
-                biomechanicalCue,
-                recommendedDrill,
                 modelUsed: modelUsed || 'local-coach-ai'
             };
         }
@@ -2482,7 +3753,6 @@
 
             const availability = await verifySelectedModelAvailability(false);
 
-            // If user picked a cloud model & has an API key, but model is unavailable:
             if (selectedModel !== 'local-coach-ai' && appState.geminiApiKey && !availability.available) {
                 if (badge) {
                     badge.innerText = "Model Unavailable";
@@ -2499,11 +3769,11 @@
                                 <span>Selected model "${escapeHtml(selectedModel)}" is unavailable</span>
                             </div>
                             <p class="text-[11px] text-beige-muted leading-relaxed">
-                                Your session was saved safely, but live registry check confirmed <strong>${escapeHtml(selectedModel)}</strong> is unavailable (${escapeHtml(availability.reason)}). Run analysis with an available model below:
+                                Your session was saved safely, but live registry check confirmed <strong>${escapeHtml(selectedModel)}</strong> is unavailable (${escapeHtml(availability.reason)}). Run reflection with an available model below:
                             </p>
                             <div class="flex flex-wrap gap-2 pt-1">
                                 <button type="button" onclick="switchToModelAndExecute('${escapeHtml(altModel)}', true, ${idArg})" class="px-3 py-1.5 bg-sage-primary hover:bg-sage-dark text-white font-bold text-[11px] rounded-lg transition-colors">
-                                    Use ${escapeHtml(altModel)} &amp; Analyze
+                                    Use ${escapeHtml(altModel)} &amp; Reflect
                                 </button>
                                 <button type="button" onclick="switchToModelAndExecute('local-coach-ai', true, ${idArg})" class="px-3 py-1.5 bg-navy-slate hover:bg-navy-muted/40 text-beige-card font-semibold text-[11px] rounded-lg border border-navy-muted/40">
                                     Use Offline Coach AI
@@ -2517,13 +3787,13 @@
                 return null;
             }
 
-            if (badge) badge.innerText = "Analyzing...";
+            if (badge) badge.innerText = "Reflecting...";
             if (body) {
                 body.className = "text-xs text-beige-muted space-y-2 min-h-[110px] flex items-center justify-center text-center";
                 body.innerHTML = `
                     <div class="py-5 text-center space-y-2">
                         <div class="w-7 h-7 border-2 border-sage-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p class="text-xs text-sage-accent font-semibold">Generating structured coaching breakdown (${escapeHtml(selectedModel)})...</p>
+                        <p class="text-xs text-sage-accent font-semibold">Synthesizing 3-part session reflection (${escapeHtml(selectedModel)})...</p>
                     </div>
                 `;
             }
@@ -2531,21 +3801,30 @@
             let parsedResult = null;
 
             if (selectedModel !== 'local-coach-ai' && appState.geminiApiKey && availability.available) {
-                const systemPrompt = `You are an elite NTRP 4.0 singles tennis coach. Player Profile: 29yo, 100kg, 175cm athletic build, Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs. Playstyle: Counterpuncher / Aggressive Baseliner.
-Analyze the unified session log (ratings 1-5, opponent matchup, tactical idea tested, and notes). Return clean plain-text JSON (no markdown asterisks) matching this exact schema:
+                const systemPrompt = `You are a reflective NTRP 4.0 singles tennis debrief partner. Player Profile: 29yo, 100kg, 175cm athletic build, Wilson RF01 Pro + Solinco Tour Bite 17g @ 51 lbs.
+IMPORTANT: Do NOT prescribe practice drills in per-session debriefs (drills are prescribed separately across a 10-15 match block). Focus purely on concise, sharp reflection around 3 prompts:
+1) whatWorked: What worked & why (1-2 sentences)
+2) frictionPattern: Friction or HR/fatigue pattern noticed (1-2 sentences separating stroke mechanics from cardiac/late-session fatigue)
+3) nextHitQuestion: One sharp question to test next hit (1 sentence)
+Return clean plain-text JSON (no markdown asterisks) matching this exact schema:
 {
-  "verdict": "2-sentence tactical summary of the session",
-  "focusTags": ["Short focus tag 1", "Short focus tag 2", "Short focus tag 3"],
-  "opponentAdjustment": "Specific tactical adjustment against this opponent's style",
-  "biomechanicalCue": "Specific stroke/footwork cue tailored for 100kg build and RF01 Pro setup",
-  "recommendedDrill": "Specific 15-minute drill with clear target"
+  "whatWorked": "string",
+  "frictionPattern": "string",
+  "nextHitQuestion": "string",
+  "focusTags": ["Short tag 1", "Short tag 2", "Short tag 3"]
 }`;
                 const r = sessionCtx.ratings || {};
+                const hr = sessionCtx.hrData || {};
+                const hrLine = (hr.avgHr || hr.maxHr || hr.durationMin)
+                    ? `Amazfit T-Rex 3 HR: Avg=${hr.avgHr || 'N/A'} bpm, Max=${hr.maxHr || 'N/A'} bpm, Duration=${hr.durationMin || 'N/A'} mins, Load Order=${hr.loadOrder || 'Unspecified'}`
+                    : 'Amazfit T-Rex 3 HR: Not recorded for this session';
+
                 const promptText = `Session Type: ${sessionCtx.type}
 Date: ${sessionCtx.date}
 Opponent: ${sessionCtx.opponentName || 'Unspecified'} (${sessionCtx.opponentStyle || 'Style unspecified'})
 Scoreline: ${sessionCtx.scoreline || 'N/A'}
 Tactical Idea Tested: ${sessionCtx.tacticalIdea || 'None'} -> Outcome: ${sessionCtx.ideaOutcome || 'N/A'}
+${hrLine}
 Ratings (1-5): Drop-Shot Brake=${r.dropshot || '-'}/5, Baseline Depth=${r.positioning || '-'}/5, 2HB Control=${r.backhand || '-'}/5, 2nd Serve/Shoulder=${r.serve || '-'}/5
 Session Notes: "${sessionCtx.notes}"`;
 
@@ -2558,13 +3837,12 @@ Session Notes: "${sessionCtx.notes}"`;
                         responseSchema: {
                             type: "OBJECT",
                             properties: {
-                                "verdict": { "type": "STRING" },
-                                "focusTags": { "type": "ARRAY", "items": { "type": "STRING" } },
-                                "opponentAdjustment": { "type": "STRING" },
-                                "biomechanicalCue": { "type": "STRING" },
-                                "recommendedDrill": { "type": "STRING" }
+                                "whatWorked": { "type": "STRING" },
+                                "frictionPattern": { "type": "STRING" },
+                                "nextHitQuestion": { "type": "STRING" },
+                                "focusTags": { "type": "ARRAY", "items": { "type": "STRING" } }
                             },
-                            "required": ["verdict", "focusTags", "opponentAdjustment", "biomechanicalCue", "recommendedDrill"]
+                            "required": ["whatWorked", "frictionPattern", "nextHitQuestion", "focusTags"]
                         }
                     }
                 };
@@ -2581,7 +3859,7 @@ Session Notes: "${sessionCtx.notes}"`;
                         jsonText = jsonText.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
                         if (jsonText) {
                             const rawParsed = JSON.parse(jsonText);
-                            parsedResult = parseAndNormalizeAiResponse(rawParsed, sessionCtx, selectedModel);
+                            parsedResult = parseAndNormalizeAiReflection(rawParsed, sessionCtx, selectedModel);
                         }
                     } else {
                         const errData = await res.json().catch(() => ({}));
@@ -2593,10 +3871,10 @@ Session Notes: "${sessionCtx.notes}"`;
             }
 
             if (!parsedResult) {
-                await new Promise(r => setTimeout(r, 320));
-                parsedResult = generateLocalCoachEvaluation(sessionCtx);
+                await new Promise(r => setTimeout(r, 300));
+                parsedResult = generateLocalCoachReflection(sessionCtx);
                 if (selectedModel !== 'local-coach-ai' && !appState.geminiApiKey) {
-                    showToast("No API key set — analyzed with Built-in Offline Coach AI.", "info");
+                    showToast("No API key set — reflected with Built-in Offline Coach AI.", "info");
                 }
             }
 
@@ -2622,92 +3900,92 @@ Session Notes: "${sessionCtx.notes}"`;
         }
 
         /**
-         * Builds clean, structured HTML for parsed AI Coaching Breakdown (used in both Dark Sidebar & Light Log Cards)
+         * Builds clean, structured HTML for the 3-Part Reflective Debrief (with backward compatibility for older logs)
          */
         function buildParsedAiHtml(ai, isDarkTheme = false) {
             const tags = Array.isArray(ai.focusTags) ? ai.focusTags : [];
+            const isReflectiveFormat = Boolean(ai.whatWorked || ai.frictionPattern || ai.nextHitQuestion);
+
             if (isDarkTheme) {
+                if (isReflectiveFormat) {
+                    return `
+                        ${ai.whatWorked ? `
+                            <div class="bg-navy-slate/90 border border-sage-primary/30 rounded-lg p-2.5">
+                                <div class="text-[10px] uppercase font-bold text-sage-accent tracking-wider mb-0.5">1. What Worked &amp; Why</div>
+                                <p class="text-white font-medium leading-relaxed">${escapeHtml(ai.whatWorked)}</p>
+                            </div>
+                        ` : ''}
+                        ${ai.frictionPattern ? `
+                            <div class="space-y-0.5 text-[11px] leading-relaxed">
+                                <span class="font-bold text-amber-300 flex items-center gap-1"><i data-lucide="activity" class="w-3 h-3"></i> 2. Friction / Fatigue Pattern:</span>
+                                <p class="text-beige-muted/95">${escapeHtml(ai.frictionPattern)}</p>
+                            </div>
+                        ` : ''}
+                        ${ai.nextHitQuestion ? `
+                            <div class="bg-navy-slate p-2.5 rounded-lg border border-navy-muted/30 text-[11px] leading-relaxed">
+                                <span class="font-bold text-sage-accent flex items-center gap-1 mb-0.5"><i data-lucide="help-circle" class="w-3 h-3"></i> 3. Question to Test Next Hit:</span>
+                                <p class="text-beige-card italic">${escapeHtml(ai.nextHitQuestion)}</p>
+                            </div>
+                        ` : ''}
+                        ${tags.length > 0 ? `
+                            <div class="flex flex-wrap gap-1.5">
+                                ${tags.map(t => `<span class="px-2 py-0.5 bg-sage-primary/25 text-sage-accent border border-sage-primary/40 rounded-md text-[10px] font-semibold">• ${escapeHtml(t)}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    `;
+                }
                 return `
                     <div class="bg-navy-slate/90 border border-sage-primary/30 rounded-lg p-2.5">
                         <div class="text-[10px] uppercase font-bold text-sage-accent tracking-wider mb-0.5">Tactical Verdict</div>
-                        <p class="text-white font-medium leading-relaxed">${escapeHtml(ai.verdict)}</p>
+                        <p class="text-white font-medium leading-relaxed">${escapeHtml(ai.verdict || '')}</p>
                     </div>
-                    ${tags.length > 0 ? `
-                        <div class="flex flex-wrap gap-1.5">
-                            ${tags.map(t => `<span class="px-2 py-0.5 bg-sage-primary/25 text-sage-accent border border-sage-primary/40 rounded-md text-[10px] font-semibold">• ${escapeHtml(t)}</span>`).join('')}
-                        </div>
-                    ` : ''}
-                    ${ai.opponentAdjustment ? `
-                        <div class="space-y-0.5 text-[11px] leading-relaxed">
-                            <span class="font-bold text-sage-accent flex items-center gap-1"><i data-lucide="crosshair" class="w-3 h-3"></i> Opponent Counter-Plan:</span>
-                            <p class="text-beige-muted/95">${escapeHtml(ai.opponentAdjustment)}</p>
-                        </div>
-                    ` : ''}
-                    ${ai.biomechanicalCue ? `
-                        <div class="space-y-0.5 text-[11px] leading-relaxed">
-                            <span class="font-bold text-white flex items-center gap-1"><i data-lucide="sliders" class="w-3 h-3 text-sage-accent"></i> Biomechanical &amp; Gear Cue:</span>
-                            <p class="text-beige-muted/90">${escapeHtml(ai.biomechanicalCue)}</p>
-                        </div>
-                    ` : ''}
-                    ${ai.recommendedDrill ? `
-                        <div class="bg-navy-slate p-2.5 rounded-lg border border-navy-muted/30 text-[11px] leading-relaxed">
-                            <span class="font-bold text-sage-accent flex items-center gap-1 mb-0.5"><i data-lucide="zap" class="w-3 h-3"></i> 15-Min Drill Prescription:</span>
-                            <p class="text-beige-card">${escapeHtml(ai.recommendedDrill)}</p>
-                        </div>
-                    ` : ''}
                 `;
             }
 
-            // Light Beige Card theme for the Unified Logbook
+            // Full Logbook Card View
             return `
                 <div class="bg-navy-deep text-beige-card rounded-xl p-4 space-y-3 border border-navy-slate">
                     <div class="flex items-center justify-between pb-2 border-b border-navy-slate">
                         <span class="text-xs font-extrabold text-sage-accent flex items-center gap-1.5">
-                            <i data-lucide="sparkles" class="w-4 h-4"></i>
-                            AI Coaching Breakdown
+                            <i data-lucide="message-square-quote" class="w-4 h-4"></i>
+                            Reflective Session Debrief
                         </span>
                         <span class="text-[10px] font-mono bg-navy-slate text-sage-accent px-2 py-0.5 rounded">${escapeHtml(ai.modelUsed || 'Coach AI')}</span>
                     </div>
 
-                    <div class="bg-navy-slate/80 border border-sage-primary/30 rounded-lg p-3">
-                        <div class="text-[10px] uppercase font-bold text-sage-accent tracking-wider mb-0.5">Tactical Verdict</div>
-                        <p class="text-xs text-white font-medium leading-relaxed">${escapeHtml(ai.verdict)}</p>
-                    </div>
+                    ${isReflectiveFormat ? `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            ${ai.whatWorked ? `
+                                <div class="bg-navy-slate/80 border border-sage-primary/30 rounded-lg p-3 space-y-1">
+                                    <div class="text-[10px] uppercase font-bold text-sage-accent tracking-wider">1. What Worked &amp; Why</div>
+                                    <p class="text-white leading-relaxed text-[11px]">${escapeHtml(ai.whatWorked)}</p>
+                                </div>
+                            ` : ''}
+                            ${ai.frictionPattern ? `
+                                <div class="bg-navy-slate/60 border border-navy-muted/30 rounded-lg p-3 space-y-1">
+                                    <div class="text-[10px] uppercase font-bold text-amber-300 tracking-wider">2. Friction / Fatigue Pattern</div>
+                                    <p class="text-beige-muted leading-relaxed text-[11px]">${escapeHtml(ai.frictionPattern)}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${ai.nextHitQuestion ? `
+                            <div class="bg-sage-primary/20 border border-sage-primary/40 rounded-lg p-3 text-xs">
+                                <div class="text-[11px] font-bold text-sage-accent flex items-center gap-1.5 mb-0.5">
+                                    <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+                                    <span>3. Question to Test Next Hit</span>
+                                </div>
+                                <p class="text-beige-card italic leading-relaxed text-[11px]">${escapeHtml(ai.nextHitQuestion)}</p>
+                            </div>
+                        ` : ''}
+                    ` : `
+                        <div class="bg-navy-slate/80 border border-sage-primary/30 rounded-lg p-3">
+                            <p class="text-xs text-white leading-relaxed">${escapeHtml(ai.verdict || '')}</p>
+                        </div>
+                    `}
 
                     ${tags.length > 0 ? `
                         <div class="flex flex-wrap gap-1.5">
                             ${tags.map(t => `<span class="px-2.5 py-0.5 bg-sage-primary/25 text-sage-accent border border-sage-primary/40 rounded-full text-[11px] font-semibold">• ${escapeHtml(t)}</span>`).join('')}
-                        </div>
-                    ` : ''}
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                        ${ai.opponentAdjustment ? `
-                            <div class="bg-navy-slate/60 border border-navy-muted/30 rounded-lg p-3 space-y-1">
-                                <div class="text-[11px] font-bold text-sage-accent flex items-center gap-1.5">
-                                    <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
-                                    <span>Opponent Counter-Adjustment</span>
-                                </div>
-                                <p class="text-beige-muted leading-relaxed text-[11px]">${escapeHtml(ai.opponentAdjustment)}</p>
-                            </div>
-                        ` : ''}
-                        ${ai.biomechanicalCue ? `
-                            <div class="bg-navy-slate/60 border border-navy-muted/30 rounded-lg p-3 space-y-1">
-                                <div class="text-[11px] font-bold text-white flex items-center gap-1.5">
-                                    <i data-lucide="sliders" class="w-3.5 h-3.5 text-sage-accent"></i>
-                                    <span>Biomechanical &amp; Gear Cue</span>
-                                </div>
-                                <p class="text-beige-muted leading-relaxed text-[11px]">${escapeHtml(ai.biomechanicalCue)}</p>
-                            </div>
-                        ` : ''}
-                    </div>
-
-                    ${ai.recommendedDrill ? `
-                        <div class="bg-sage-primary/20 border border-sage-primary/40 rounded-lg p-3 text-xs">
-                            <div class="text-[11px] font-bold text-sage-accent flex items-center gap-1.5 mb-0.5">
-                                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-                                <span>15-Min Prescription Drill</span>
-                            </div>
-                            <p class="text-beige-card leading-relaxed text-[11px]">${escapeHtml(ai.recommendedDrill)}</p>
                         </div>
                     ` : ''}
                 </div>
@@ -2730,6 +4008,20 @@ Session Notes: "${sessionCtx.notes}"`;
             const tacticalIdea = document.getElementById('session-tactical-idea')?.value.trim() || '';
             const ideaOutcome = document.getElementById('session-idea-outcome')?.value || 'Testing / Baseline';
 
+            const avgHrVal = document.getElementById('session-avg-hr')?.value;
+            const maxHrVal = document.getElementById('session-max-hr')?.value;
+            const durMinVal = document.getElementById('session-duration-min')?.value;
+            const loadOrderVal = document.getElementById('session-load-order')?.value || 'Fresh (Match 1)';
+            const z45MinVal = document.getElementById('session-z45-min')?.value;
+
+            const hrData = (avgHrVal || maxHrVal || durMinVal) ? {
+                avgHr: avgHrVal ? Number(avgHrVal) : null,
+                maxHr: maxHrVal ? Number(maxHrVal) : null,
+                durationMin: durMinVal ? Number(durMinVal) : null,
+                z45Min: z45MinVal ? Number(z45MinVal) : null,
+                loadOrder: loadOrderVal
+            } : null;
+
             const ratings = {
                 dropshot: Number(document.getElementById('sb-rate-dropshot')?.value || 4),
                 positioning: Number(document.getElementById('sb-rate-positioning')?.value || 4),
@@ -2746,6 +4038,7 @@ Session Notes: "${sessionCtx.notes}"`;
                 scoreline,
                 tacticalIdea,
                 ideaOutcome,
+                hrData,
                 ratings,
                 notes,
                 aiAnalysis: null
@@ -2775,23 +4068,23 @@ Session Notes: "${sessionCtx.notes}"`;
                 const btnAnalyze = document.getElementById('btn-save-analyze');
                 if (btnAnalyze) {
                     btnAnalyze.disabled = true;
-                    btnAnalyze.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing...</span>`;
+                    btnAnalyze.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Reflecting...</span>`;
                 }
 
                 const aiResult = await runAiCoachingEngine(newLog, newLog.id);
 
                 if (btnAnalyze) {
                     btnAnalyze.disabled = false;
-                    btnAnalyze.innerHTML = `<i data-lucide="sparkles" class="w-4 h-4"></i><span>Save &amp; Analyze with AI</span>`;
+                    btnAnalyze.innerHTML = `<i data-lucide="sparkles" class="w-4 h-4"></i><span>Save &amp; Reflect with AI</span>`;
                 }
 
                 if (aiResult) {
                     newLog.aiAnalysis = aiResult;
                     saveState(true);
-                    showToast(`Unified session saved & analyzed (${aiResult.modelUsed})!`, "success");
+                    showToast(`Session saved & reflected (${aiResult.modelUsed})!`, "success");
                 }
             } else {
-                showToast("Unified session saved! You can run AI analysis anytime.", "success");
+                showToast("Unified session saved! You can run AI reflection anytime.", "success");
             }
 
             if (notesEl) notesEl.value = '';
@@ -2824,17 +4117,19 @@ Session Notes: "${sessionCtx.notes}"`;
             if (!container) return;
 
             if (appState.sessionLogs.length === 0) {
-                container.innerHTML = `<div class="text-[11px] text-navy-muted bg-beige-muted p-4 rounded-xl border border-beige-border text-center">No synchronized sessions yet. Log a match or practice session above to combine ratings &amp; AI coaching in one place.</div>`;
+                container.innerHTML = `<div class="text-[11px] text-navy-muted bg-beige-muted p-4 rounded-xl border border-beige-border text-center">No synchronized sessions yet. Log a match or practice session above to combine ratings, T-Rex 3 HR &amp; AI reflection in one place.</div>`;
                 return;
             }
 
             container.innerHTML = appState.sessionLogs.slice(0, 8).map(s => {
                 const r = s.ratings || {};
+                const hr = s.hrData || {};
                 const hasRatings = s.ratings && (r.dropshot || r.positioning || r.backhand || r.serve);
                 const avg = hasRatings
                     ? ((Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4).toFixed(1)
                     : null;
                 const ai = s.aiAnalysis;
+                const headline = ai ? (ai.whatWorked || ai.verdict || '') : '';
 
                 return `
                     <div class="bg-beige-muted border border-beige-border rounded-xl p-3.5 space-y-2 text-xs">
@@ -2843,9 +4138,13 @@ Session Notes: "${sessionCtx.notes}"`;
                                 <span class="text-[10px] font-mono font-bold bg-navy-deep text-beige-card px-2 py-0.5 rounded">${escapeHtml(s.date)}</span>
                                 ${s.opponentName ? `<span class="text-[11px] font-bold text-sage-dark bg-sage-light px-2 py-0.5 rounded">vs ${escapeHtml(s.opponentName)}</span>` : ''}
                                 ${avg ? `<span class="text-[10px] font-mono font-bold bg-beige-card text-navy-deep border border-beige-border px-1.5 py-0.5 rounded">Avg ${avg}/5</span>` : ''}
+                                ${(hr.avgHr || hr.maxHr) ? `<span class="text-[10px] font-mono bg-red-50 text-red-700 border border-red-200 px-1.5 py-0.5 rounded">❤️ ${hr.avgHr || '-'}/${hr.maxHr || '-'}</span>` : ''}
                             </div>
                             <div class="flex items-center gap-1">
-                                <button type="button" onclick="analyzeExistingSessionLog('${escapeHtml(s.id)}')" title="${ai ? 'Re-run AI Analysis' : 'Generate AI Analysis'}" class="p-1 text-sage-primary hover:text-sage-dark rounded">
+                                <button type="button" onclick="openRetroHrModal('${escapeHtml(s.id)}')" title="Attach or Edit T-Rex 3 HR / .TCX" class="px-1.5 py-0.5 text-[10px] font-mono font-bold rounded border transition-colors ${(hr.avgHr || hr.maxHr) ? 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100' : 'bg-beige-card text-navy-slate border-beige-border hover:border-sage-primary'}">
+                                    ${(hr.avgHr || hr.maxHr) ? 'Edit HR' : '+ HR'}
+                                </button>
+                                <button type="button" onclick="analyzeExistingSessionLog('${escapeHtml(s.id)}')" title="${ai ? 'Re-run AI Reflection' : 'Generate AI Reflection'}" class="p-1 text-sage-primary hover:text-sage-dark rounded">
                                     <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
                                 </button>
                                 <button type="button" onclick="deleteUnifiedSessionLog('${escapeHtml(s.id)}')" title="Delete log" class="p-1 text-navy-muted hover:text-red-600 rounded">
@@ -2861,19 +4160,14 @@ Session Notes: "${sessionCtx.notes}"`;
                             </div>
                         ` : ''}
 
-                        ${ai && ai.verdict ? `
-                            <p class="text-[11px] text-navy-slate leading-relaxed">${escapeHtml(ai.verdict)}</p>
-                            ${Array.isArray(ai.focusTags) && ai.focusTags.length > 0 ? `
-                                <div class="flex flex-wrap gap-1">
-                                    ${ai.focusTags.map(tag => `<span class="text-[9px] font-semibold px-1.5 py-0.5 bg-sage-light text-sage-dark rounded border border-sage-primary/20">${escapeHtml(tag)}</span>`).join('')}
-                                </div>
-                            ` : ''}
-                            ${ai.recommendedDrill ? `<div class="text-[10px] text-sage-dark font-semibold">Drill: ${escapeHtml(ai.recommendedDrill)}</div>` : ''}
+                        ${headline ? `
+                            <p class="text-[11px] text-navy-slate leading-relaxed">${escapeHtml(headline)}</p>
+                            ${ai.nextHitQuestion ? `<div class="text-[10px] text-sage-dark italic font-medium">Next Hit Q: ${escapeHtml(ai.nextHitQuestion)}</div>` : ''}
                         ` : `
                             <p class="text-[11px] text-navy-muted italic line-clamp-2">"${escapeHtml(s.notes)}"</p>
                             <button type="button" onclick="analyzeExistingSessionLog('${escapeHtml(s.id)}')" class="text-[10px] font-bold text-sage-primary hover:underline flex items-center gap-1">
                                 <i data-lucide="sparkles" class="w-3 h-3"></i>
-                                <span>Run AI Coaching Analysis</span>
+                                <span>Run AI Reflection</span>
                             </button>
                         `}
                     </div>
@@ -2894,12 +4188,12 @@ Session Notes: "${sessionCtx.notes}"`;
 
             if (heading) {
                 heading.innerText = activeOpponentFilter === 'ALL'
-                    ? `Synchronized Session & AI Analysis History (${filtered.length})`
+                    ? `Synchronized Session & Reflection History (${filtered.length})`
                     : `Sessions vs. ${filtered[0]?.opponentName || activeOpponentFilter} (${filtered.length})`;
             }
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-xs text-navy-muted bg-beige-card p-6 rounded-2xl border border-beige-border text-center">No synchronized sessions found for this filter. Use the <strong>Unified Session Log &amp; AI Coach</strong> on the Dashboard to record a session.</div>`;
+                container.innerHTML = `<div class="text-xs text-navy-muted bg-beige-card p-6 rounded-2xl border border-beige-border text-center">No synchronized sessions found for this filter. Use the <strong>Unified Session Log &amp; Reflection AI</strong> on the Dashboard to record a session.</div>`;
                 return;
             }
 
@@ -2913,12 +4207,14 @@ Session Notes: "${sessionCtx.notes}"`;
 
             container.innerHTML = filtered.map(s => {
                 const r = s.ratings || {};
+                const hr = s.hrData || {};
                 const hasRatings = s.ratings && (r.dropshot || r.positioning || r.backhand || r.serve);
                 const avg = hasRatings
                     ? ((Number(r.dropshot || 0) + Number(r.positioning || 0) + Number(r.backhand || 0) + Number(r.serve || 0)) / 4).toFixed(1)
                     : null;
                 const badgeCls = outcomeColors[s.ideaOutcome] || outcomeColors['Testing / Baseline'];
                 const ai = s.aiAnalysis;
+                const hasAi = Boolean(ai && (ai.whatWorked || ai.verdict));
 
                 return `
                     <div class="bg-beige-card border border-beige-border rounded-2xl p-5 shadow-sm space-y-3.5">
@@ -2930,12 +4226,21 @@ Session Notes: "${sessionCtx.notes}"`;
                                 ${s.opponentStyle ? `<span class="text-xs text-navy-muted">• ${escapeHtml(s.opponentStyle)}</span>` : ''}
                                 ${s.scoreline ? `<span class="text-xs font-mono font-bold bg-sage-light text-sage-dark px-2 py-0.5 rounded border border-sage-primary/20">${escapeHtml(s.scoreline)}</span>` : ''}
                                 <span class="text-[11px] bg-beige-muted text-navy-slate px-2 py-0.5 rounded border border-beige-border">${escapeHtml(s.type)}</span>
+                                ${(hr.avgHr || hr.maxHr || hr.durationMin) ? `
+                                    <span class="text-[11px] font-mono font-semibold bg-red-50 text-red-700 px-2 py-0.5 rounded border border-red-200">
+                                        ❤️ ${hr.durationMin ? hr.durationMin + 'm • ' : ''}Avg ${hr.avgHr || '-'} / Max ${hr.maxHr || '-'} bpm (${escapeHtml(hr.loadOrder || 'HR')})
+                                    </span>
+                                ` : ''}
                             </div>
                             <div class="flex items-center gap-2">
                                 ${avg ? `<span class="text-xs font-mono font-bold bg-sage-light text-sage-dark px-2.5 py-1 rounded-lg border border-sage-primary/20">Avg ${avg} / 5</span>` : ''}
+                                <button type="button" onclick="openRetroHrModal('${escapeHtml(s.id)}')" class="px-2.5 py-1 bg-beige-muted hover:bg-beige-border text-navy-deep border border-beige-border text-[11px] font-bold rounded-lg flex items-center gap-1 transition-colors">
+                                    <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-red-600"></i>
+                                    <span>${(hr.avgHr || hr.maxHr) ? 'Edit HR' : '+ HR / .TCX'}</span>
+                                </button>
                                 <button type="button" onclick="analyzeExistingSessionLog('${escapeHtml(s.id)}')" class="px-2.5 py-1 bg-navy-deep hover:bg-navy-slate text-sage-accent text-[11px] font-bold rounded-lg flex items-center gap-1 transition-colors">
                                     <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                                    <span>${ai ? 'Re-Analyze' : 'Run AI'}</span>
+                                    <span>${hasAi ? 'Re-Reflect' : 'Run AI'}</span>
                                 </button>
                                 <button type="button" onclick="deleteUnifiedSessionLog('${escapeHtml(s.id)}')" class="p-1.5 text-navy-muted hover:text-red-600 rounded-lg">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -2983,13 +4288,13 @@ Session Notes: "${sessionCtx.notes}"`;
                             </div>
                         ` : ''}
 
-                        <!-- Parsed AI Coaching Breakdown -->
-                        ${ai && ai.verdict ? buildParsedAiHtml(ai, false) : `
+                        <!-- Parsed AI Reflective Debrief -->
+                        ${hasAi ? buildParsedAiHtml(ai, false) : `
                             <div class="bg-beige-muted border border-dashed border-beige-border rounded-xl p-3 flex items-center justify-between gap-2 text-xs">
-                                <span class="text-navy-muted">No AI coaching breakdown generated for this session yet.</span>
+                                <span class="text-navy-muted">No AI reflection generated for this session yet.</span>
                                 <button type="button" onclick="analyzeExistingSessionLog('${escapeHtml(s.id)}')" class="px-3 py-1.5 bg-sage-primary hover:bg-sage-dark text-white font-bold rounded-lg text-[11px] flex items-center gap-1">
                                     <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                                    <span>Generate AI Analysis</span>
+                                    <span>Generate AI Reflection</span>
                                 </button>
                             </div>
                         `}
@@ -3038,22 +4343,24 @@ Session Notes: "${sessionCtx.notes}"`;
         function exportCSV() {
             const rows = [[
                 'Date', 'Type', 'Opponent Name', 'Opponent Style', 'Scoreline',
-                'Tactical Idea', 'Idea Outcome', 'Drop-Shot', 'Baseline Depth', '2HB Control', '2nd Serve',
-                'Session Notes', 'AI Tactical Verdict', 'AI Focus Pillars', 'AI Opponent Adjustment', 'AI Biomechanical Cue', 'AI Recommended Drill'
+                'Tactical Idea', 'Idea Outcome', 'Avg HR', 'Max HR', 'Duration (min)', 'Load Order',
+                'Drop-Shot', 'Baseline Depth', '2HB Control', '2nd Serve',
+                'Session Notes', 'AI What Worked', 'AI Friction/Fatigue Pattern', 'AI Next Hit Question', 'AI Focus Tags'
             ]];
             appState.sessionLogs.forEach(s => {
                 const r = s.ratings || {};
+                const hr = s.hrData || {};
                 const ai = s.aiAnalysis || {};
                 rows.push([
                     s.date || '', s.type || '', s.opponentName || '', s.opponentStyle || '', s.scoreline || '',
                     s.tacticalIdea || '', s.ideaOutcome || '',
+                    hr.avgHr || '', hr.maxHr || '', hr.durationMin || '', hr.loadOrder || '',
                     r.dropshot || '', r.positioning || '', r.backhand || '', r.serve || '',
                     (s.notes || '').replace(/"/g, '""'),
-                    (ai.verdict || '').replace(/"/g, '""'),
-                    (Array.isArray(ai.focusTags) ? ai.focusTags.join(' | ') : '').replace(/"/g, '""'),
-                    (ai.opponentAdjustment || '').replace(/"/g, '""'),
-                    (ai.biomechanicalCue || '').replace(/"/g, '""'),
-                    (ai.recommendedDrill || '').replace(/"/g, '""')
+                    (ai.whatWorked || ai.verdict || '').replace(/"/g, '""'),
+                    (ai.frictionPattern || ai.biomechanicalCue || '').replace(/"/g, '""'),
+                    (ai.nextHitQuestion || '').replace(/"/g, '""'),
+                    (Array.isArray(ai.focusTags) ? ai.focusTags.join(' | ') : '').replace(/"/g, '""')
                 ]);
             });
             const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
@@ -3064,7 +4371,7 @@ Session Notes: "${sessionCtx.notes}"`;
             a.download = `singles-unified-sessions-${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
-            showToast("Unified session & AI logs CSV exported!", "success");
+            showToast("Unified session & reflection CSV exported!", "success");
         }
 
         function confirmResetData() {
@@ -3073,6 +4380,7 @@ Session Notes: "${sessionCtx.notes}"`;
                 "This will clear your local checklist progress, gym logs, unified session logs, and opponent scouting cards. Cloud data in Google Sheets will remain intact until you push.",
                 () => {
                     localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem(LEGACY_STORAGE_KEY_V5);
                     localStorage.removeItem(LEGACY_STORAGE_KEY_V3);
                     appState = {
                         targetMatchday: "2026-11-15",
@@ -3080,6 +4388,8 @@ Session Notes: "${sessionCtx.notes}"`;
                         gymLogs: [],
                         sessionLogs: [],
                         opponentProfiles: {},
+                        drillLibrary: JSON.parse(JSON.stringify(DEFAULT_DRILL_LIBRARY)),
+                        blockSynthesis: null,
                         stealthCompletedToday: false,
                         webhookUrl: DEFAULT_WEBHOOK_URL,
                         autoSync: true,
@@ -3088,6 +4398,8 @@ Session Notes: "${sessionCtx.notes}"`;
                         lastSynced: null
                     };
                     activeOpponentFilter = 'ALL';
+                    activeDrillPillarFilter = 'ALL';
+                    clearTcxSlices();
                     syncModelDropdownSelection([]);
                     saveState(false);
                     closeModal('sync-modal');
@@ -3107,6 +4419,9 @@ Session Notes: "${sessionCtx.notes}"`;
             renderGymLogs();
             updateOpponentDatalist();
             renderOpponentsSection();
+            renderBlockSynthesisCard();
+            renderDrillLibrary();
+            renderStagedTcxWorkbench();
             renderUnifiedSessionLogs();
             renderUnifiedSessionStream();
 
